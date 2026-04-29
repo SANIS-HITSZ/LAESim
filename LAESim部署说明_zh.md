@@ -1,6 +1,6 @@
-# AirSim_Multi 部署说明
+# LAESim 部署说明
 
-这份文档面向接手 `AirSim_Multi` 的使用者，重点说明源码仓库如何编译、如何接入 UE、如何继续使用 Windows API 和 ROS。当前这套工程已经不是只在单机环境里可运行的临时目录，而是一套可以继续编译、继续接入 UE 4.27、继续在 WSL / ROS Noetic 中联调的源码工程。
+这份文档面向接手 `LAESim` 的使用者，重点说明源码仓库如何编译、如何接入 UE、如何继续使用 Windows API 和 ROS。当前这套工程已经不是只在单机环境里可运行的临时目录，而是一套可以继续编译、继续接入 UE 4.27、继续在 WSL / ROS Noetic 中联调的源码工程。
 
 ## 1. 交付
 
@@ -14,10 +14,10 @@
 推荐先导出一份干净源码：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 -DestinationRoot D:\AirSim_Multi_portable
+powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 -DestinationRoot ..\LAESim_portable
 ```
 
-然后把 `D:\AirSim_Multi_portable` 交给对方。
+然后把仓库同级目录下的 `LAESim_portable` 交给对方。
 
 ## 2. 电脑需要准备什么（去知乎看Airsim的安装教程的配置就好了，做好适配了）
 
@@ -42,19 +42,17 @@ powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 -Destinatio
 
 ### 3.1 手动版
 
-打开 `x64 Native Tools Command Prompt for VS 2019/2022`：
+打开 `x64 Native Tools Command Prompt for VS 2019/2022`，进入仓库根目录后执行：
 
 ```cmd
-cd /d D:\AirSim_Multi
 build.cmd --Release
 ```
 
 ### 3.2 封装版
 
-普通 `cmd`、`PowerShell` 或 `x64 Native Tools Command Prompt` 都可以：
+普通 `cmd`、`PowerShell` 或 `x64 Native Tools Command Prompt` 都可以，在仓库根目录执行：
 
 ```cmd
-cd /d D:\AirSim_Multi
 BuildAirSimRelease.bat
 ```
 
@@ -67,7 +65,7 @@ BuildAirSimRelease.bat
 运行完 `build.cmd --Release` 或 `BuildAirSimRelease.bat` 后，可以把下面这个插件目录复制到 UE 项目里：
 
 ```text
-<AirSim_Multi根目录>\Unreal\Plugins\AirSim
+<LAESim根目录>\Unreal\Plugins\AirSim
 ```
 
 目标位置通常是：
@@ -78,7 +76,7 @@ BuildAirSimRelease.bat
 
 推荐流程：
 
-1. 先把 `AirSim_Multi` 本体编好。
+1. 先把 `LAESim` 本体编好。
 2. 把 `Unreal\Plugins\AirSim` 整个目录复制到 UE 项目 `Plugins` 下。
 3. UE 项目最好是 `C++` 项目，而不是纯蓝图项目。
 4. 为该 UE 项目生成工程文件。
@@ -169,11 +167,11 @@ ros\src\example
 建议特别强调下面几件事：
 
 1. 不要只拷 `ros` 子目录。
-2. 要把整个 `AirSim_Multi` 放进 WSL 的 ext4 路径，比如 `/home/ag/AirSim_Multi`。
+2. 要把整个 `LAESim` 放进 WSL 的 ext4 路径，比如 `/home/ag/LAESim`。
 3. 在 WSL 中编译：
 
 ```bash
-cd ~/AirSim_Multi/ros
+cd ~/LAESim/ros
 catkin_make -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8
 source devel/setup.bash
 ```
@@ -194,7 +192,7 @@ bash src/example/connect_ue_ros.sh
 
 到目前为止，已经验证过的链路包括：
 
-- `AirSim_Multi` 本体 Windows 编译
+- `LAESim` 本体 Windows 编译
 - 插件接入 UE 4.27
 - `AirGround` 多无人机 + 多汽车
 - Windows 侧 API-only 控制
