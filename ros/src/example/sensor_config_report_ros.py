@@ -17,7 +17,7 @@ from _ros_example_common import (
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Report AirSim_Multi sensor config and ROS topic visibility.")
+    parser = argparse.ArgumentParser(description="Report LAESim sensor config and ROS topic visibility.")
     parser.add_argument("--settings", default=None, help="Path to settings.json inside WSL.")
     parser.add_argument("--vehicle", action="append", help="Only inspect the specified vehicle. Repeatable.")
     parser.add_argument("--namespace", default="/airsim_node")

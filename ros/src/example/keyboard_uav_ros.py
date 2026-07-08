@@ -75,7 +75,7 @@ def draw_status(screen, font, lines):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ROS pygame control example for AirSim_Multi multirotors.")
+    parser = argparse.ArgumentParser(description="ROS pygame control example for LAESim multirotors.")
     parser.add_argument("--vehicle", default="UAV")
     parser.add_argument("--namespace", default="/airsim_node")
     parser.add_argument("--rate", type=float, default=30.0)

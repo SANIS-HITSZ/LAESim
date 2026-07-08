@@ -42,7 +42,7 @@ class LidarRecorder:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Record lidar topics from AirSim_Multi ROS bridge.")
+    parser = argparse.ArgumentParser(description="Record lidar topics from LAESim ROS bridge.")
     parser.add_argument("--settings", default=None, help="Path to settings.json inside WSL.")
     parser.add_argument("--vehicle", action="append", help="Only record the specified vehicle. Repeatable.")
     parser.add_argument("--namespace", default="/airsim_node")

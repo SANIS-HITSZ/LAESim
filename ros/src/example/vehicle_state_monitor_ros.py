@@ -72,7 +72,7 @@ class VehicleStateMonitor:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Monitor ROS vehicle states from AirSim_Multi.")
+    parser = argparse.ArgumentParser(description="Monitor ROS vehicle states from LAESim.")
     parser.add_argument("--settings", default=None, help="Path to settings.json inside WSL.")
     parser.add_argument("--vehicle", action="append", help="Only monitor the specified vehicle. Repeatable.")
     parser.add_argument("--namespace", default="/airsim_node")

@@ -38,7 +38,7 @@ def bootstrap_python_client():
 
     raise ModuleNotFoundError(
         "Cannot find AirSim PythonClient. Set AIRSIM_PYTHON_CLIENT or AIRSIM_REPO_ROOT, "
-        "or place this script inside an AirSim_Multi repository."
+        "or place this script inside a LAESim repository."
     )
 
 

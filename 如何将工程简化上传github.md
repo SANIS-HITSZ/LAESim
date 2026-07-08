@@ -1,13 +1,13 @@
 # 如何将工程简化上传 GitHub
 
-本文记录这次从工作工程 `E:\AAA_project\CETC\AirSim_Multi` 生成 GitHub 上传版 `E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min` 的思路和操作。目标是得到一个干净、可维护、尽量接近旧仓库 `E:\AAA_project\CETC\AirSim_Multi-main` 风格的源码包，而不是把本机编译产物和 UE 项目部署产物一起上传。
+本文记录这次从工作工程 `E:\AAA_project\CETC\LAESim` 生成 GitHub 上传版 `E:\AAA_project\CETC\LAESim_upload_gitclean` 的思路和操作。目标是得到一个干净、可维护、尽量接近旧仓库 `E:\AAA_project\CETC\AirSim_Multi-main` 风格的源码包，而不是把本机编译产物和 UE 项目部署产物一起上传。
 
 ## 1. 最终选择
 
 本次最终采用：
 
 ```text
-E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min
+E:\AAA_project\CETC\LAESim_upload_gitclean
 ```
 
 当前修正版大小约为：
@@ -28,7 +28,7 @@ E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min
 
 ## 2. 为什么不用工作目录直接上传
 
-`AirSim_Multi` 是工作目录，已经经历过编译、UE 插件部署、资源导入等操作，里面会混入大量不适合上传 GitHub 的内容，例如：
+`LAESim` 是工作目录，已经经历过编译、UE 插件部署、资源导入等操作，里面会混入大量不适合上传 GitHub 的内容，例如：
 
 - `AirLib/deps`
 - `AirLib/lib`
@@ -145,8 +145,8 @@ IF EXIST Unreal\Assets\Boat\Models\Boat (
 
 ```powershell
 $base = 'E:\AAA_project\CETC\AirSim_Multi-main'
-$src  = 'E:\AAA_project\CETC\AirSim_Multi'
-$out  = 'E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min'
+$src  = 'E:\AAA_project\CETC\LAESim'
+$out  = 'E:\AAA_project\CETC\LAESim_upload_gitclean'
 
 robocopy $base $out /E `
   /XD .git .vs .vscode Build Binaries Intermediate Saved DerivedDataCache temp __pycache__ build devel obj `
@@ -160,7 +160,7 @@ robocopy $base $out /E `
 ```text
 build.cmd
 BuildAirSimRelease.bat
-AirSim_Multi部署说明_zh.md
+LAESim部署说明_zh.md
 如何加入新的载具类型.md
 如何将工程简化上传github.md
 AirLib/include
@@ -198,8 +198,8 @@ robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Conten
 如果已经复制过一个缺少 Content 的最小版，可以从工作工程补回：
 
 ```powershell
-$src = 'E:\AAA_project\CETC\AirSim_Multi'
-$out = 'E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min'
+$src = 'E:\AAA_project\CETC\LAESim'
+$out = 'E:\AAA_project\CETC\LAESim_upload_gitclean'
 
 robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Content" /E /MT:16 `
   /XD "$src\Unreal\Plugins\AirSim\Content\Models\Boat" `
@@ -254,7 +254,7 @@ how_to_use_settings\settings_airground_2uav_1car_1boat_with_sensors.json
 可用下面命令快速检查大小：
 
 ```powershell
-Get-ChildItem -LiteralPath 'E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min' -Recurse -File |
+Get-ChildItem -LiteralPath 'E:\AAA_project\CETC\LAESim_upload_gitclean' -Recurse -File |
   Measure-Object Length -Sum |
   ForEach-Object { '{0:N2} MB' -f ($_.Sum / 1MB) }
 ```
@@ -264,14 +264,14 @@ Get-ChildItem -LiteralPath 'E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min
 别人 clone 这个最小版后，推荐流程是：
 
 ```cmd
-cd /d <AirSim_Multi根目录>
+cd /d <LAESim根目录>
 BuildAirSimRelease.bat
 ```
 
 编译完成后，把生成的插件复制到 UE 项目：
 
 ```text
-<AirSim_Multi根目录>\Unreal\Plugins\AirSim
+<LAESim根目录>\Unreal\Plugins\AirSim
 ```
 
 目标位置：

@@ -1,11 +1,11 @@
-# AirSim_Multi ROS 示例使用说明
+# LAESim ROS 示例使用说明
 
-这个目录放的是 `AirSim_Multi + UE + ROS Noetic` 的示例脚本。目标不是做一个大而全的单体程序，而是把最常见的联调任务拆成若干小工具，方便接手的人逐步定位问题。
+这个目录放的是 `LAESim + UE + ROS Noetic` 的示例脚本。目标不是做一个大而全的单体程序，而是把最常见的联调任务拆成若干小工具，方便接手的人逐步定位问题。
 
 默认假设使用环境满足下面几件事：
 
 - Windows 上的 UE 工程已经打开并 `Play`
-- WSL 里已经把整个 `AirSim_Multi` 放在 ext4 路径中，例如 `/home/ag/AirSim_Multi`
+- WSL 里已经把整个 `LAESim` 放在 ext4 路径中，例如 `/home/ag/LAESim`
 - `ros/` 已经 `catkin_make`
 - 当前终端已经 `source /opt/ros/noetic/setup.bash` 和 `source devel/setup.bash`
 
