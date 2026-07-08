@@ -2,20 +2,6 @@
 
 这份文档面向接手 `AirSim_Multi` 的使用者，重点说明源码仓库如何编译、如何接入 UE、如何继续使用 Windows API 和 ROS。当前这套工程已经不是只在单机环境里可运行的临时目录，而是一套可以继续编译、继续接入 UE 4.27、继续在 WSL / ROS Noetic 中联调的源码工程。
 
-## 当前版本要点
-
-- 支持 `AirGround` 混合多载具仿真：多无人机、多车、多船可以同时在同一个 `settings.json` 中配置。
-- 新增 `SimpleBoat` / `PhysXBoat` 船载具类型，默认 API 端口为 `41481`。
-- 船具备 Python API、ROS topic、示例脚本、settings 模板和传感器配置链路。
-- 默认船模型为 052B Boat，源码资产放在 `Unreal\Assets\Boat\Models\Boat`，构建时自动复制到 AirSim 插件 Content。
-- GitHub 上传版采用精简源码结构，不上传编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries。
-
-更多细节：
-
-- `如何加入新的载具类型.md`
-- `如何将工程简化上传github.md`
-- `how_to_use_settings\README_zh.md`
-
 ## 1. 交付
 
 仓库根目录自带：
@@ -159,8 +145,9 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 - `how_to_use_settings\settings_single_uav_with_sensors.json`
 - `how_to_use_settings\settings_single_car_with_sensors.json`
 - `how_to_use_settings\settings_airground_3uav_3car_with_sensors.json`
+- `how_to_use_settings\settings_airground_2uav_1car_1boat_with_sensors.json`
 
-这些模板已经把常用相机、雷达、ROS 发布项写好，并且对车的 `magnetometer/barometer` 做了显式规避。
+这些模板已经把常用相机、雷达、ROS 发布项写好，并且对车和船的 `magnetometer/barometer` 做了显式规避。
 
 ## 6. Windows API 示例代码在哪里
 
@@ -178,7 +165,10 @@ Multi_use
 
 - `keyboard_control.py`：无人机 `pygame` 控制
 - `car_keyboard_control.py`：汽车 `pygame` 控制
+- `boat_keyboard_control.py`：船 / 水面载具 `pygame` 控制
 - `sensor_probe.py`：按 `settings.json` 抓取相机和雷达数据
+
+船的运动模型是地面平面上的简化船舶三自由度模型：纵向速度 `u`、横向漂移速度 `v`、艏向角速度 `r`。它不要求 UE 关卡里有真实水面，也不模拟波浪、水流、浮力，只适合把蓝色地面区域当作水域来跑船舶运动和传感器链路。
 
 ## 7. ROS 示例代码在哪里
 
@@ -197,6 +187,7 @@ ros\src\example
 - `connect_ue_ros.sh`：一键连接 Windows 上正在运行的 UE / AirSim
 - `keyboard_uav_ros.py`：ROS + `pygame` 控无人机
 - `keyboard_car_ros.py`：ROS + `pygame` 控汽车
+- `keyboard_boat_ros.py`：ROS + `pygame` 控船
 - `vehicle_state_monitor_ros.py`：查看各实例状态
 - `sensor_config_report_ros.py`：读取 `settings.json` 并核对 ROS 话题
 - `camera_record_ros.py`：保存 ROS 相机数据
@@ -216,6 +207,13 @@ catkin_make -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-
 source devel/setup.bash
 ```
 
+如果当前 WSL 没有 `/usr/bin/g++-8`，可以先直接用默认编译器：
+
+```bash
+catkin_make
+source devel/setup.bash
+```
+
 4. 再连接 Windows 上的 UE：
 
 ```bash
@@ -227,6 +225,7 @@ bash src/example/connect_ue_ros.sh
 - `41451`：CV / 通用
 - `41461`：Car
 - `41471`：Multirotor
+- `41481`：Boat
 
 ## 9. 当前已经验证过什么
 
@@ -234,7 +233,7 @@ bash src/example/connect_ue_ros.sh
 
 - `AirSim_Multi` 本体 Windows 编译
 - 插件接入 UE 4.27
-- `AirGround` 多无人机 + 多汽车
+- 多无人机 + 多汽车 + 多船
 - Windows 侧 API-only 控制
 - 相机 / 雷达数据抓取
 - WSL + ROS Noetic 连接 UE
