@@ -24,7 +24,7 @@ E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min
 旧的偏臃肿版 AirSim_Multi_upload_clean：676.38 MB
 ```
 
-`gitclean_min` 早期曾尝试做到约 218 MB，但实践证明从 GitHub 新 clone 后进入 UE 会因为缺少 AirSim 插件基础 Content 而崩溃。现在修正版保留了必要的插件基础 Content，并继续排除高模 SUV、Boat 构建产物和编译产物。
+`gitclean_min` 早期曾尝试做到约 218 MB，但实践证明从 GitHub 新 clone 后进入 UE 会因为缺少 AirSim 插件基础 Content 而崩溃。之后又发现排除 `StarterContent` 虽然不影响运行，但会触发 CDO 默认属性警告。现在修正版保留必要的插件基础 Content 和 StarterContent，并继续排除高模 SUV、Boat 构建产物和编译产物。
 
 ## 2. 为什么不用工作目录直接上传
 
@@ -86,19 +86,28 @@ UE4Editor_AirSim!ACarPawn::ACarPawn()
 Unreal/Plugins/AirSim/Content/Blueprints
 Unreal/Plugins/AirSim/Content/HUDAssets
 Unreal/Plugins/AirSim/Content/Models
+Unreal/Plugins/AirSim/Content/StarterContent
 Unreal/Plugins/AirSim/Content/VehicleAdv
 Unreal/Plugins/AirSim/Content/Weather
 ```
+
+其中 `StarterContent` 也需要保留。否则虽然插件能运行，但 UE 会在进入工程时弹默认属性警告，例如：
+
+```text
+CDO Constructor (SimModeBase): Failed to find ParticleSystem'/AirSim/StarterContent/Particles/P_Explosion.P_Explosion'
+加载失败 /AirSim/StarterContent/Materials/M_Tech_Hex_Tile_Pulse...
+```
+
+原因是 `SimModeBase.cpp` 和相关 UE 资产依赖了 StarterContent 里的爆炸粒子、材质和贴图。为避免每次启动 UE 都报默认属性警告，GitHub 版应保留整个 `Unreal/Plugins/AirSim/Content/StarterContent`。
 
 同时继续排除：
 
 ```text
 Unreal/Plugins/AirSim/Content/VehicleAdv/SUV
 Unreal/Plugins/AirSim/Content/Models/Boat
-Unreal/Plugins/AirSim/Content/StarterContent
 ```
 
-其中 `VehicleAdv/SUV` 由 `build.cmd` 下载，`Models/Boat` 由 `Unreal/Assets/Boat` 构建时复制，`StarterContent` 不是 AirSim 插件运行所必需。
+其中 `VehicleAdv/SUV` 由 `build.cmd` 下载，`Models/Boat` 由 `Unreal/Assets/Boat` 构建时复制。
 
 ## 4. Boat 模型如何保留
 
@@ -178,13 +187,12 @@ robocopy "$src\Unreal\Plugins\AirSim\Source" "$out\Unreal\Plugins\AirSim\Source"
       "$src\Unreal\Plugins\AirSim\Source\Saved"
 ```
 
-修正版需要复制插件基础 Content，但排除高模 SUV、Boat 构建产物和 StarterContent：
+修正版需要复制插件基础 Content 和 StarterContent，但排除高模 SUV 与 Boat 构建产物：
 
 ```powershell
 robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Content" /E /MT:16 `
   /XD "$src\Unreal\Plugins\AirSim\Content\Models\Boat" `
-      "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV" `
-      "$src\Unreal\Plugins\AirSim\Content\StarterContent"
+      "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV"
 ```
 
 如果已经复制过一个缺少 Content 的最小版，可以从工作工程补回：
@@ -195,8 +203,7 @@ $out = 'E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min'
 
 robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Content" /E /MT:16 `
   /XD "$src\Unreal\Plugins\AirSim\Content\Models\Boat" `
-      "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV" `
-      "$src\Unreal\Plugins\AirSim\Content\StarterContent"
+      "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV"
 ```
 
 ## 6. 上传前检查清单
@@ -237,6 +244,8 @@ Unreal\Plugins\AirSim\Content\Blueprints\BP_PIPCamera.uasset
 Unreal\Plugins\AirSim\Content\VehicleAdv\PhysicsMaterials\Slippery.uasset
 Unreal\Plugins\AirSim\Content\VehicleAdv\PhysicsMaterials\NonSlippery.uasset
 Unreal\Plugins\AirSim\Content\VehicleAdv\Sound\Engine_Loop_Cue.uasset
+Unreal\Plugins\AirSim\Content\StarterContent\Particles\P_Explosion.uasset
+Unreal\Plugins\AirSim\Content\StarterContent\Materials\M_Tech_Hex_Tile_Pulse.uasset
 Unreal\Plugins\AirSim\Source\Vehicles\Boat\BoatPawn.cpp
 Unreal\Plugins\AirSim\Source\Vehicles\AirGround\SimModeAirGround.cpp
 how_to_use_settings\settings_airground_2uav_1car_1boat_with_sensors.json

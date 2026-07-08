@@ -8,7 +8,7 @@
 - 新增 `SimpleBoat` / `PhysXBoat` 船载具类型，默认 API 端口为 `41481`。
 - 船具备 Python API、ROS topic、示例脚本、settings 模板和传感器配置链路。
 - 默认船模型为 052B Boat，源码资产放在 `Unreal\Assets\Boat\Models\Boat`，构建时自动复制到 AirSim 插件 Content。
-- GitHub 上传版保留 AirSim 插件基础 Content，排除编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries、高模 SUV 和 Boat 构建产物。
+- GitHub 上传版保留 AirSim 插件基础 Content 和 StarterContent，排除编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries、高模 SUV 和 Boat 构建产物。
 
 更多细节：
 
