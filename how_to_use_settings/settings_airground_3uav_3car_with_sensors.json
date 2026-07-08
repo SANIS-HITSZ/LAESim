@@ -1,0 +1,397 @@
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "AirGround",
+  "ClockType": "ScalableClock",
+  "ApiServerPortCV": 41451,
+  "ApiServerPortCar": 41461,
+  "ApiServerPortMultirotor": 41471,
+  "Vehicles": {
+    "UAV": {
+      "VehicleType": "SimpleFlight",
+      "X": 0.0,
+      "Y": 5.0,
+      "Z": -2.0,
+      "Roll": 0,
+      "Pitch": 0,
+      "Yaw": 90,
+      "Sensors": {
+        "imu": { "SensorType": 2, "Enabled": true },
+        "gps": { "SensorType": 3, "Enabled": true },
+        "magnetometer": { "SensorType": 4, "Enabled": true },
+        "barometer": { "SensorType": 1, "Enabled": true },
+        "Lidar": {
+          "SensorType": 6,
+          "Enabled": true,
+          "NumberOfChannels": 16,
+          "RotationsPerSecond": 10,
+          "PointsPerSecond": 10000,
+          "X": 0,
+          "Y": 0,
+          "Z": -1.2,
+          "Roll": 0,
+          "Pitch": 0,
+          "Yaw": 0,
+          "VerticalFOVUpper": 7,
+          "VerticalFOVLower": -52,
+          "HorizontalFOVStart": -180,
+          "HorizontalFOVEnd": 180,
+          "DrawDebugPoints": false,
+          "DataFrame": "SensorLocalFrame"
+        }
+      },
+      "Cameras": {
+        "front_center_scene": {
+          "CaptureSettings": [
+            {
+              "PublishToRos": 1,
+              "ImageType": 0,
+              "Width": 640,
+              "Height": 480,
+              "FOV_Degrees": 120,
+              "DepthOfFieldFstop": 2.8,
+              "DepthOfFieldFocalDistance": 200.0,
+              "DepthOfFieldFocalRegion": 200.0,
+              "TargetGamma": 1.5
+            },
+            {
+              "PublishToRos": 1,
+              "ImageType": 1,
+              "Width": 640,
+              "Height": 480,
+              "FOV_Degrees": 120
+            },
+            {
+              "PublishToRos": 1,
+              "ImageType": 5,
+              "Width": 640,
+              "Height": 480,
+              "FOV_Degrees": 120
+            }
+          ],
+          "Pitch": 0,
+          "Roll": 0.0,
+          "X": 0.25,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": 0.3
+        },
+        "down_center_scene": {
+          "CaptureSettings": [
+            {
+              "PublishToRos": 1,
+              "ImageType": 0,
+              "Width": 320,
+              "Height": 240,
+              "FOV_Degrees": 120,
+              "DepthOfFieldFstop": 2.8,
+              "DepthOfFieldFocalDistance": 200.0,
+              "DepthOfFieldFocalRegion": 200.0,
+              "TargetGamma": 1.5
+            }
+          ],
+          "Pitch": -90,
+          "Roll": 0.0,
+          "X": 0.25,
+          "Y": 0.0,
+          "Yaw": 0,
+          "Z": 0.3
+        }
+      }
+    },
+    "UAV2": {
+      "VehicleType": "SimpleFlight",
+      "X": 0.0,
+      "Y": 9.0,
+      "Z": -2.0,
+      "Yaw": 0,
+      "Sensors": {
+        "imu": { "SensorType": 2, "Enabled": true },
+        "gps": { "SensorType": 3, "Enabled": true },
+        "magnetometer": { "SensorType": 4, "Enabled": true },
+        "barometer": { "SensorType": 1, "Enabled": true },
+        "Lidar": {
+          "SensorType": 6,
+          "Enabled": true,
+          "NumberOfChannels": 16,
+          "RotationsPerSecond": 10,
+          "PointsPerSecond": 10000,
+          "X": 0,
+          "Y": 0,
+          "Z": -1.2,
+          "Roll": 0,
+          "Pitch": 0,
+          "Yaw": 0,
+          "VerticalFOVUpper": 7,
+          "VerticalFOVLower": -52,
+          "HorizontalFOVStart": -180,
+          "HorizontalFOVEnd": 180,
+          "DrawDebugPoints": false,
+          "DataFrame": "SensorLocalFrame"
+        }
+      },
+      "Cameras": {
+        "front_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 1, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 5, "Width": 640, "Height": 480, "FOV_Degrees": 120 }
+          ],
+          "Pitch": 0,
+          "Roll": 0.0,
+          "X": 0.25,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": 0.3
+        },
+        "down_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 320, "Height": 240, "FOV_Degrees": 120 }
+          ],
+          "Pitch": -90,
+          "Roll": 0.0,
+          "X": 0.25,
+          "Y": 0.0,
+          "Yaw": 0,
+          "Z": 0.3
+        }
+      }
+    },
+    "UAV3": {
+      "VehicleType": "SimpleFlight",
+      "X": 0.0,
+      "Y": 13.0,
+      "Z": -2.0,
+      "Yaw": 0,
+      "Sensors": {
+        "imu": { "SensorType": 2, "Enabled": true },
+        "gps": { "SensorType": 3, "Enabled": true },
+        "magnetometer": { "SensorType": 4, "Enabled": true },
+        "barometer": { "SensorType": 1, "Enabled": true },
+        "Lidar": {
+          "SensorType": 6,
+          "Enabled": true,
+          "NumberOfChannels": 16,
+          "RotationsPerSecond": 10,
+          "PointsPerSecond": 10000,
+          "X": 0,
+          "Y": 0,
+          "Z": -1.2,
+          "Roll": 0,
+          "Pitch": 0,
+          "Yaw": 0,
+          "VerticalFOVUpper": 7,
+          "VerticalFOVLower": -52,
+          "HorizontalFOVStart": -180,
+          "HorizontalFOVEnd": 180,
+          "DrawDebugPoints": false,
+          "DataFrame": "SensorLocalFrame"
+        }
+      },
+      "Cameras": {
+        "front_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 1, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 5, "Width": 640, "Height": 480, "FOV_Degrees": 120 }
+          ],
+          "Pitch": 0,
+          "Roll": 0.0,
+          "X": 0.25,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": 0.3
+        },
+        "down_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 320, "Height": 240, "FOV_Degrees": 120 }
+          ],
+          "Pitch": -90,
+          "Roll": 0.0,
+          "X": 0.25,
+          "Y": 0.0,
+          "Yaw": 0,
+          "Z": 0.3
+        }
+      }
+    },
+    "Car": {
+      "VehicleType": "PhysXCar",
+      "X": 0,
+      "Y": -60,
+      "Z": 0,
+      "Yaw": 90,
+      "Sensors": {
+        "imu": { "SensorType": 2, "Enabled": true },
+        "gps": { "SensorType": 3, "Enabled": true },
+        "magnetometer": { "SensorType": 4, "Enabled": false },
+        "barometer": { "SensorType": 1, "Enabled": false },
+        "Lidar": {
+          "SensorType": 6,
+          "Enabled": true,
+          "NumberOfChannels": 16,
+          "RotationsPerSecond": 10,
+          "PointsPerSecond": 10000,
+          "X": 0,
+          "Y": 0,
+          "Z": -1.2,
+          "Roll": 0,
+          "Pitch": 0,
+          "Yaw": 0,
+          "VerticalFOVUpper": 52,
+          "VerticalFOVLower": -7,
+          "HorizontalFOVStart": -180,
+          "HorizontalFOVEnd": 180,
+          "DrawDebugPoints": false,
+          "DataFrame": "SensorLocalFrame"
+        }
+      },
+      "Cameras": {
+        "front_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 1, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 5, "Width": 640, "Height": 480, "FOV_Degrees": 120 }
+          ],
+          "Pitch": 0.0,
+          "Roll": 0.0,
+          "X": 2.0,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": -1.2
+        },
+        "down_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 320, "Height": 240, "FOV_Degrees": 120 }
+          ],
+          "Pitch": -90.0,
+          "Roll": 0.0,
+          "X": 0.5,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": -1.0
+        }
+      }
+    },
+    "Car2": {
+      "VehicleType": "PhysXCar",
+      "X": 0,
+      "Y": -72,
+      "Z": 0,
+      "Yaw": 90,
+      "Sensors": {
+        "imu": { "SensorType": 2, "Enabled": true },
+        "gps": { "SensorType": 3, "Enabled": true },
+        "magnetometer": { "SensorType": 4, "Enabled": false },
+        "barometer": { "SensorType": 1, "Enabled": false },
+        "Lidar": {
+          "SensorType": 6,
+          "Enabled": true,
+          "NumberOfChannels": 16,
+          "RotationsPerSecond": 10,
+          "PointsPerSecond": 10000,
+          "X": 0,
+          "Y": 0,
+          "Z": -1.2,
+          "Roll": 0,
+          "Pitch": 0,
+          "Yaw": 0,
+          "VerticalFOVUpper": 52,
+          "VerticalFOVLower": -7,
+          "HorizontalFOVStart": -180,
+          "HorizontalFOVEnd": 180,
+          "DrawDebugPoints": false,
+          "DataFrame": "SensorLocalFrame"
+        }
+      },
+      "Cameras": {
+        "front_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 1, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 5, "Width": 640, "Height": 480, "FOV_Degrees": 120 }
+          ],
+          "Pitch": 0.0,
+          "Roll": 0.0,
+          "X": 2.0,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": -1.2
+        },
+        "down_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 320, "Height": 240, "FOV_Degrees": 120 }
+          ],
+          "Pitch": -90.0,
+          "Roll": 0.0,
+          "X": 0.5,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": -1.0
+        }
+      }
+    },
+    "Car3": {
+      "VehicleType": "PhysXCar",
+      "X": 0,
+      "Y": -84,
+      "Z": 0,
+      "Yaw": 90,
+      "Sensors": {
+        "imu": { "SensorType": 2, "Enabled": true },
+        "gps": { "SensorType": 3, "Enabled": true },
+        "magnetometer": { "SensorType": 4, "Enabled": false },
+        "barometer": { "SensorType": 1, "Enabled": false },
+        "Lidar": {
+          "SensorType": 6,
+          "Enabled": true,
+          "NumberOfChannels": 16,
+          "RotationsPerSecond": 10,
+          "PointsPerSecond": 10000,
+          "X": 0,
+          "Y": 0,
+          "Z": -1.2,
+          "Roll": 0,
+          "Pitch": 0,
+          "Yaw": 0,
+          "VerticalFOVUpper": 52,
+          "VerticalFOVLower": -7,
+          "HorizontalFOVStart": -180,
+          "HorizontalFOVEnd": 180,
+          "DrawDebugPoints": false,
+          "DataFrame": "SensorLocalFrame"
+        }
+      },
+      "Cameras": {
+        "front_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 1, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 5, "Width": 640, "Height": 480, "FOV_Degrees": 120 }
+          ],
+          "Pitch": 0.0,
+          "Roll": 0.0,
+          "X": 2.0,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": -1.2
+        },
+        "down_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 320, "Height": 240, "FOV_Degrees": 120 }
+          ],
+          "Pitch": -90.0,
+          "Roll": 0.0,
+          "X": 0.5,
+          "Y": 0.0,
+          "Yaw": 0.0,
+          "Z": -1.0
+        }
+      }
+    }
+  },
+  "SubWindows": [
+    { "WindowID": 0, "ImageType": 0, "CameraName": "front_center_scene", "VehicleName": "UAV" },
+    { "WindowID": 1, "ImageType": 0, "CameraName": "front_center_scene", "VehicleName": "UAV2" },
+    { "WindowID": 2, "ImageType": 0, "CameraName": "front_center_scene", "VehicleName": "Car" }
+  ]
+}
