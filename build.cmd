@@ -177,21 +177,28 @@ IF EXIST Unreal\Assets\Boat\Models\Boat (
 
 REM //---------- get Eigen library ----------
 IF NOT EXIST AirLib\deps mkdir AirLib\deps
-IF NOT EXIST AirLib\deps\eigen3 (
+IF NOT EXIST AirLib\deps\eigen3\Eigen\Dense (
+    IF EXIST AirLib\deps\eigen3 rmdir /S /Q AirLib\deps\eigen3
+    IF EXIST AirLib\deps\del_eigen rmdir /S /Q AirLib\deps\del_eigen
+    IF EXIST eigen3.zip del eigen3.zip /q
     if "%PWSHV7%" == "" (
         %powershell% -command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; iwr https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip -OutFile eigen3.zip }"
     ) else (
         %powershell% -command "iwr https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.zip -OutFile eigen3.zip"
     )
+    if ERRORLEVEL 1 goto :buildfailed
+    IF NOT EXIST eigen3.zip goto :buildfailed
     %powershell% -command "Expand-Archive -Path eigen3.zip -DestinationPath AirLib\deps"
-    %powershell% -command "Move-Item -Path AirLib\deps\eigen* -Destination AirLib\deps\del_eigen"
-    REM move AirLib\deps\eigen* AirLib\deps\del_eigen
+    if ERRORLEVEL 1 goto :buildfailed
+    %powershell% -command "$dir = Get-ChildItem -Path 'AirLib\deps' -Directory -Filter 'eigen-*' | Select-Object -First 1; if ($null -eq $dir) { exit 1 }; Move-Item -LiteralPath $dir.FullName -Destination 'AirLib\deps\del_eigen'"
+    if ERRORLEVEL 1 goto :buildfailed
     mkdir AirLib\deps\eigen3
     move AirLib\deps\del_eigen\Eigen AirLib\deps\eigen3\Eigen
+    if ERRORLEVEL 1 goto :buildfailed
     rmdir /S /Q AirLib\deps\del_eigen
     del eigen3.zip
 )
-IF NOT EXIST AirLib\deps\eigen3 goto :buildfailed
+IF NOT EXIST AirLib\deps\eigen3\Eigen\Dense goto :buildfailed
 
 
 REM //---------- now we have all dependencies to compile AirSim.sln which will also compile MavLinkCom ----------
@@ -235,5 +242,4 @@ echo #### Build failed - see messages above. 1>&2
 :buildfailed_nomsg
 chdir /d %ROOT_DIR% 
 exit /b 1
-
 

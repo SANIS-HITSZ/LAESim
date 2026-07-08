@@ -227,7 +227,34 @@ bash src/example/connect_ue_ros.sh
 - `41471`：Multirotor
 - `41481`：Boat
 
-## 9. 当前已经验证过什么
+## 9. 常见编译问题
+
+### 9.1 找不到 Eigen/Dense
+
+如果 Windows 编译时报：
+
+```text
+AirLib\include\common\VectorMath.hpp(14,10): error C1083: 无法打开包括文件: "Eigen/Dense": No such file or directory
+```
+
+说明 `AirLib\deps\eigen3` 目录存在但不完整，通常是上一次下载 / 解压 Eigen 中断后留下了空目录。旧版 `build.cmd` 只判断 `AirLib\deps\eigen3` 是否存在，会误以为依赖已经准备好。
+
+当前版本已经修复为检查真正的头文件：
+
+```text
+AirLib\deps\eigen3\Eigen\Dense
+```
+
+如果遇到这个问题，可以先删除残缺目录，再重新运行编译：
+
+```powershell
+Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force
+.\BuildAirSimRelease.bat
+```
+
+也可以直接重新运行新版 `BuildAirSimRelease.bat`，脚本会在发现 `Eigen\Dense` 缺失时自动清理并重新下载 Eigen。
+
+## 10. 当前已经验证过什么
 
 到目前为止，已经验证过的链路包括：
 
@@ -239,7 +266,7 @@ bash src/example/connect_ue_ros.sh
 - WSL + ROS Noetic 连接 UE
 - ROS 侧状态查看、键盘控制、相机 / 雷达录制
 
-## 10. 建议先看哪些文档
+## 11. 建议先看哪些文档
 
 如果第一次接触这套工程，建议按这个顺序阅读：
 
