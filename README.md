@@ -271,6 +271,29 @@ Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force
 
 也可以直接重新运行新版 `BuildAirSimRelease.bat`，脚本会在发现 `Eigen\Dense` 缺失时自动清理并重新下载 Eigen。
 
+### 9.2 Invoke-WebRequest 下载中断或 zip 损坏
+
+如果编译过程中出现：
+
+```text
+iwr : 从传输流收到意外的 EOF 或 0 个字节
+New-Object : 找不到中央目录结尾记录
+iwr : 基础连接已经关闭: 发送时发生错误
+```
+
+通常是网络或代理导致依赖 zip 没下载完整。`car_assets.zip` 下载失败时只会回退到默认车模型，一般不影响继续编译；`eigen-3.3.7.zip` 下载失败会导致 AirLib 编译失败。
+
+处理办法：
+
+```powershell
+Remove-Item -LiteralPath .\eigen3.zip -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath .\suv_download_tmp -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force -ErrorAction SilentlyContinue
+.\BuildAirSimRelease.bat
+```
+
+如果仍然失败，先确认代理端口可用，或者换一个网络后重新运行同一条编译命令。
+
 ## 10. 当前已经验证过什么
 
 到目前为止，已经验证过的链路包括：

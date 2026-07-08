@@ -287,3 +287,12 @@ Boat 默认模型会在 `BuildAirSimRelease.bat` 调用的 `build.cmd` 中从 `U
 ```
 
 不需要写 Boat 模型路径。
+
+## 8. 这次已留档的问题
+
+这次从工作工程整理 GitHub 干净版时，实际遇到并已经记录的问题包括：
+
+- 新 clone 缺少 `Unreal/Plugins/AirSim/Content` 基础资源时，UE 会在 `ACarPawn` 构造阶段因为加载默认资源失败而崩溃。解决方式是 GitHub 版保留插件基础 Content。
+- 去掉 `StarterContent` 时，UE 会弹 `P_Explosion`、`M_Tech_Hex_Tile_Pulse` 等默认属性警告。解决方式是保留 `Unreal/Plugins/AirSim/Content/StarterContent`。
+- `AirLib\deps\eigen3` 目录残缺但存在时，旧脚本会跳过 Eigen 下载并报 `Eigen/Dense` 找不到。解决方式是让 `build.cmd` 检查 `AirLib\deps\eigen3\Eigen\Dense`。
+- 网络或代理不稳定时，`Invoke-WebRequest` 可能报 EOF / 基础连接关闭，`Expand-Archive` 可能报找不到中央目录结尾记录。解决方式是删除残缺 zip 或临时目录后重跑 `BuildAirSimRelease.bat`；如果是 `car_assets.zip` 失败，会回退默认车模型，如果是 Eigen 失败，需要等网络恢复后重新下载。
