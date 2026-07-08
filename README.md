@@ -2,6 +2,20 @@
 
 这份文档面向接手 `AirSim_Multi` 的使用者，重点说明源码仓库如何编译、如何接入 UE、如何继续使用 Windows API 和 ROS。当前这套工程已经不是只在单机环境里可运行的临时目录，而是一套可以继续编译、继续接入 UE 4.27、继续在 WSL / ROS Noetic 中联调的源码工程。
 
+## 当前版本要点
+
+- 支持 `AirGround` 混合多载具仿真：多无人机、多车、多船可以同时在同一个 `settings.json` 中配置。
+- 新增 `SimpleBoat` / `PhysXBoat` 船载具类型，默认 API 端口为 `41481`。
+- 船具备 Python API、ROS topic、示例脚本、settings 模板和传感器配置链路。
+- 默认船模型为 052B Boat，源码资产放在 `Unreal\Assets\Boat\Models\Boat`，构建时自动复制到 AirSim 插件 Content。
+- GitHub 上传版采用精简源码结构，不上传编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries。
+
+更多细节：
+
+- `如何加入新的载具类型.md`
+- `如何将工程简化上传github.md`
+- `how_to_use_settings\README_zh.md`
+
 ## 1. 交付
 
 仓库根目录自带：
@@ -69,6 +83,22 @@ BuildAirSimRelease.bat
 如果是在普通 PowerShell 里遇到执行策略或 `profile.ps1` 相关提示，优先改用 `cmd` 或 `x64 Native Tools Command Prompt`，通常更省事。
 
 编译结束碰到Unreal\Environments\Blocks的“文件未找到”之类的问题不用管，用不到的。
+
+### 3.3 Boat 默认模型资源
+
+Boat 的 052B 默认模型不需要在 `settings.json` 里指定。源码仓库里保留的是资产源目录：
+
+```text
+<AirSim_Multi根目录>\Unreal\Assets\Boat\Models\Boat
+```
+
+运行 `build.cmd --Release` 或 `BuildAirSimRelease.bat` 时，脚本会把它复制到插件内容目录：
+
+```text
+<AirSim_Multi根目录>\Unreal\Plugins\AirSim\Content\Models\Boat
+```
+
+`BoatPawn.cpp` 运行时加载的是 `/AirSim/Models/Boat/Type_052B_Destroyer_Combined`。所以 GitHub 源码版应保留 `Unreal\Assets\Boat`，不需要把构建后生成的 `Unreal\Plugins\AirSim\Content\Models\Boat` 当成源码目录单独上传。
 
 ## 4. 编完后如何接入 UE 项目
 
