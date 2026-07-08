@@ -233,8 +233,7 @@ bash src/example/connect_ue_ros.sh
 
 - `AirSim_Multi` 本体 Windows 编译
 - 插件接入 UE 4.27
-- `AirGround` 多无人机 + 多汽车
-- 船类型源码编译链路（`AirLib` / Python API / settings 模板 / ROS 消息与 wrapper）
+- 多无人机 + 多汽车 + 多船
 - Windows 侧 API-only 控制
 - 相机 / 雷达数据抓取
 - WSL + ROS Noetic 连接 UE

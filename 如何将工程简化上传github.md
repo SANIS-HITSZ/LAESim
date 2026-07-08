@@ -10,10 +10,10 @@
 E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min
 ```
 
-当前大小约为：
+当前修正版大小约为：
 
 ```text
-218.34 MB
+284.71 MB
 ```
 
 对比：
@@ -24,7 +24,7 @@ E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min
 旧的偏臃肿版 AirSim_Multi_upload_clean：676.38 MB
 ```
 
-`gitclean_min` 比旧基线大约多 24 MB，主要来自 052B Boat 默认模型源资产。这是为了让 GitHub 仓库中保留 Boat 默认模型，而不是只保留代码。
+`gitclean_min` 早期曾尝试做到约 218 MB，但实践证明从 GitHub 新 clone 后进入 UE 会因为缺少 AirSim 插件基础 Content 而崩溃。现在修正版保留了必要的插件基础 Content，并继续排除高模 SUV、Boat 构建产物和编译产物。
 
 ## 2. 为什么不用工作目录直接上传
 
@@ -62,15 +62,43 @@ AirSim 默认无人机和车使用插件内容路径：
 Unreal\Plugins\AirSim\Content
 ```
 
-所以本次 `gitclean_min` 也采用旧仓库风格，不上传整包插件 Content。这样可以少约 66 MB。
+早期 `gitclean_min` 曾采用旧仓库风格，不上传整包插件 Content。这样虽然可以少约 66 MB，但从 GitHub 新下载后会缺少默认无人机 / 车 / 相机 / HUD / 物理材质等资源。
 
-需要注意：这是一种最小源码上传策略。它适合以下情况：
+实际验证中，进入 UE 项目时出现过类似崩溃：
 
-- 目标机器已有完整 AirSim 插件内容，或可以从原始 AirSim / 本地构建结果补齐。
-- GitHub 仓库主要保存本工程的修改源码、Boat 支持代码、settings、Python 示例、ROS 接口和 Boat 模型源资产。
-- 接收者知道需要先运行 `BuildAirSimRelease.bat`，再把生成后的插件复制到 UE 项目。
+```text
+UE4Editor_AirSim!UAirBlueprintLib::LoadObject()
+UE4Editor_AirSim!ACarPawn::ACarPawn()
+```
 
-如果希望仓库从零 clone 后就尽量完整自包含，可以使用 `AirSim_Multi_upload_gitclean`，它保留了 `Unreal/Plugins/AirSim/Content` 中的默认蓝图、HUD、Weather、基础 Vehicle 资源，但体积约 284.71 MB。
+原因是 `CarPawn` 会加载这些资源：
+
+```text
+/AirSim/Blueprints/BP_PIPCamera
+/AirSim/VehicleAdv/PhysicsMaterials/Slippery
+/AirSim/VehicleAdv/PhysicsMaterials/NonSlippery
+/AirSim/VehicleAdv/Sound/Engine_Loop_Cue
+```
+
+因此 GitHub 版必须保留 `Unreal/Plugins/AirSim/Content` 中的基础资源。当前保留：
+
+```text
+Unreal/Plugins/AirSim/Content/Blueprints
+Unreal/Plugins/AirSim/Content/HUDAssets
+Unreal/Plugins/AirSim/Content/Models
+Unreal/Plugins/AirSim/Content/VehicleAdv
+Unreal/Plugins/AirSim/Content/Weather
+```
+
+同时继续排除：
+
+```text
+Unreal/Plugins/AirSim/Content/VehicleAdv/SUV
+Unreal/Plugins/AirSim/Content/Models/Boat
+Unreal/Plugins/AirSim/Content/StarterContent
+```
+
+其中 `VehicleAdv/SUV` 由 `build.cmd` 下载，`Models/Boat` 由 `Unreal/Assets/Boat` 构建时复制，`StarterContent` 不是 AirSim 插件运行所必需。
 
 ## 4. Boat 模型如何保留
 
@@ -150,20 +178,25 @@ robocopy "$src\Unreal\Plugins\AirSim\Source" "$out\Unreal\Plugins\AirSim\Source"
       "$src\Unreal\Plugins\AirSim\Source\Saved"
 ```
 
-最小版不要复制：
-
-```text
-Unreal/Plugins/AirSim/Content
-```
-
-如果已经复制过完整干净版，也可以从完整干净版同步出最小版：
+修正版需要复制插件基础 Content，但排除高模 SUV、Boat 构建产物和 StarterContent：
 
 ```powershell
-$src = 'E:\AAA_project\CETC\AirSim_Multi_upload_gitclean'
+robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Content" /E /MT:16 `
+  /XD "$src\Unreal\Plugins\AirSim\Content\Models\Boat" `
+      "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV" `
+      "$src\Unreal\Plugins\AirSim\Content\StarterContent"
+```
+
+如果已经复制过一个缺少 Content 的最小版，可以从工作工程补回：
+
+```powershell
+$src = 'E:\AAA_project\CETC\AirSim_Multi'
 $out = 'E:\AAA_project\CETC\AirSim_Multi_upload_gitclean_min'
 
-robocopy $src $out /MIR /MT:16 `
-  /XD "$src\Unreal\Plugins\AirSim\Content"
+robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Content" /E /MT:16 `
+  /XD "$src\Unreal\Plugins\AirSim\Content\Models\Boat" `
+      "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV" `
+      "$src\Unreal\Plugins\AirSim\Content\StarterContent"
 ```
 
 ## 6. 上传前检查清单
@@ -179,7 +212,6 @@ external\rpclib
 ros\build
 ros\devel
 Unreal\Plugins\AirSim\Source\AirLib
-Unreal\Plugins\AirSim\Content
 Unreal\Environments\Blocks\Plugins\AirSim
 Binaries
 Intermediate
@@ -201,6 +233,10 @@ ros\src\airsim_ros_pkgs\msg\BoatControls.msg
 ros\src\airsim_ros_pkgs\msg\BoatState.msg
 ros\src\example\keyboard_boat_ros.py
 Unreal\Assets\Boat\Models\Boat\Type_052B_Destroyer_Combined.uasset
+Unreal\Plugins\AirSim\Content\Blueprints\BP_PIPCamera.uasset
+Unreal\Plugins\AirSim\Content\VehicleAdv\PhysicsMaterials\Slippery.uasset
+Unreal\Plugins\AirSim\Content\VehicleAdv\PhysicsMaterials\NonSlippery.uasset
+Unreal\Plugins\AirSim\Content\VehicleAdv\Sound\Engine_Loop_Cue.uasset
 Unreal\Plugins\AirSim\Source\Vehicles\Boat\BoatPawn.cpp
 Unreal\Plugins\AirSim\Source\Vehicles\AirGround\SimModeAirGround.cpp
 how_to_use_settings\settings_airground_2uav_1car_1boat_with_sensors.json
@@ -242,4 +278,3 @@ Boat 默认模型会在 `BuildAirSimRelease.bat` 调用的 `build.cmd` 中从 `U
 ```
 
 不需要写 Boat 模型路径。
-
