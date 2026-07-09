@@ -16,6 +16,7 @@ STRICT_MODE_OFF
 #include "vehicles/multirotor/api/MultirotorRpcLibClient.hpp"
 #include "vehicles/car/api/CarRpcLibClient.hpp"
 #include "vehicles/boat/api/BoatRpcLibClient.hpp"
+#include "vehicles/satellite/api/SatelliteRpcLibClient.hpp"
 #include "yaml-cpp/yaml.h"
 #include <airsim_ros_pkgs/GimbalAngleEulerCmd.h>
 #include <airsim_ros_pkgs/GimbalAngleQuatCmd.h>
@@ -31,6 +32,8 @@ STRICT_MODE_OFF
 #include <airsim_ros_pkgs/CarState.h>
 #include <airsim_ros_pkgs/BoatControls.h>
 #include <airsim_ros_pkgs/BoatState.h>
+#include <airsim_ros_pkgs/SatelliteControls.h>
+#include <airsim_ros_pkgs/SatelliteState.h>
 #include <airsim_ros_pkgs/Environment.h>
 #include <airsim_ros_pkgs/SceneMapInfo.h>
 #include <airsim_ros_pkgs/LoadSceneMap.h>
@@ -187,6 +190,16 @@ private:
         bool has_boat_cmd = false;
         msr::airlib::BoatApiBase::BoatControls boat_cmd;
     };
+    class SatelliteROS : public VehicleROS
+    {
+    public:
+        msr::airlib::SatelliteApiBase::SatelliteState curr_satellite_state;
+        ros::Subscriber satellite_cmd_sub;
+        ros::Publisher satellite_state_pub;
+        airsim_ros_pkgs::SatelliteState satellite_state_msg;
+        bool has_satellite_cmd = false;
+        msr::airlib::SatelliteApiBase::SatelliteControls satellite_cmd;
+    };
     class MultiRotorROS : public VehicleROS
     {
     public:
@@ -220,6 +233,7 @@ private:
     // commands
     void car_cmd_cb(const airsim_ros_pkgs::CarControls::ConstPtr& msg, const std::string& vehicle_name);
     void boat_cmd_cb(const airsim_ros_pkgs::BoatControls::ConstPtr& msg, const std::string& vehicle_name);
+    void satellite_cmd_cb(const airsim_ros_pkgs::SatelliteControls::ConstPtr& msg, const std::string& vehicle_name);
     void update_commands();
     // state, returns the simulation timestamp best guess based on drone state timestamp, airsim needs to return timestap for environment
     ros::Time update_state();
@@ -257,8 +271,10 @@ private:
     nav_msgs::Odometry get_odom_msg_from_multirotor_state(const msr::airlib::MultirotorState& drone_state) const;
     nav_msgs::Odometry get_odom_msg_from_car_state(const msr::airlib::CarApiBase::CarState& car_state) const;
     nav_msgs::Odometry get_odom_msg_from_boat_state(const msr::airlib::BoatApiBase::BoatState& boat_state) const;
+    nav_msgs::Odometry get_odom_msg_from_satellite_state(const msr::airlib::SatelliteApiBase::SatelliteState& satellite_state) const;
     airsim_ros_pkgs::CarState get_roscarstate_msg_from_car_state(const msr::airlib::CarApiBase::CarState& car_state) const;
     airsim_ros_pkgs::BoatState get_rosboatstate_msg_from_boat_state(const msr::airlib::BoatApiBase::BoatState& boat_state) const;
+    airsim_ros_pkgs::SatelliteState get_rossatellitestate_msg_from_satellite_state(const msr::airlib::SatelliteApiBase::SatelliteState& satellite_state) const;
     msr::airlib::Pose get_airlib_pose(const float& x, const float& y, const float& z, const msr::airlib::Quaternionr& airlib_quat) const;
     airsim_ros_pkgs::GPSYaw get_gps_msg_from_airsim_geo_point(const msr::airlib::GeoPoint& geo_point) const;
     sensor_msgs::NavSatFix get_gps_sensor_msg_from_airsim_geo_point(const msr::airlib::GeoPoint& geo_point) const;
@@ -280,6 +296,7 @@ private:
     msr::airlib::MultirotorRpcLibClient* get_multirotor_client();
     msr::airlib::CarRpcLibClient* get_car_client();
     msr::airlib::BoatRpcLibClient* get_boat_client();
+    msr::airlib::SatelliteRpcLibClient* get_satellite_client();
     msr::airlib::RpcLibClientBase* get_world_client();
     msr::airlib::RpcLibClientBase* get_client(const std::string& vehicle_type);
     airsim_ros_pkgs::SceneMapInfo get_scene_map_info_msg_from_airsim(const msr::airlib::WorldSimApiBase::SceneMapInfo& info) const;
@@ -313,6 +330,7 @@ private:
     std::unique_ptr<msr::airlib::MultirotorRpcLibClient> airsim_multirotor_client_;
     std::unique_ptr<msr::airlib::CarRpcLibClient> airsim_car_client_;
     std::unique_ptr<msr::airlib::BoatRpcLibClient> airsim_boat_client_;
+    std::unique_ptr<msr::airlib::SatelliteRpcLibClient> airsim_satellite_client_;
     std::unique_ptr<msr::airlib::RpcLibClientBase> airsim_world_client_;
     ros::Publisher scene_map_info_pub_;
     ros::ServiceServer load_scene_map_srvr_;

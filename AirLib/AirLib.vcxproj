@@ -102,6 +102,12 @@
     <ClInclude Include="include\vehicles\boat\api\BoatRpcLibServer.hpp" />
     <ClInclude Include="include\vehicles\boat\BoatApiFactory.hpp" />
     <ClInclude Include="include\vehicles\boat\firmwares\simple_boat\SimpleBoatApi.hpp" />
+    <ClInclude Include="include\vehicles\satellite\api\SatelliteApiBase.hpp" />
+    <ClInclude Include="include\vehicles\satellite\api\SatelliteRpcLibAdaptors.hpp" />
+    <ClInclude Include="include\vehicles\satellite\api\SatelliteRpcLibClient.hpp" />
+    <ClInclude Include="include\vehicles\satellite\api\SatelliteRpcLibServer.hpp" />
+    <ClInclude Include="include\vehicles\satellite\SatelliteApiFactory.hpp" />
+    <ClInclude Include="include\vehicles\satellite\firmwares\simple_satellite\SimpleSatelliteApi.hpp" />
     <ClInclude Include="include\vehicles\car\api\CarApiBase.hpp" />
     <ClInclude Include="include\vehicles\multirotor\api\MultirotorCommon.hpp" />
     <ClInclude Include="include\vehicles\multirotor\api\MultirotorRpcLibAdaptors.hpp" />
@@ -199,6 +205,8 @@
     <ClCompile Include="src\common\common_utils\FileSystem.cpp" />
     <ClCompile Include="src\vehicles\boat\api\BoatRpcLibClient.cpp" />
     <ClCompile Include="src\vehicles\boat\api\BoatRpcLibServer.cpp" />
+    <ClCompile Include="src\vehicles\satellite\api\SatelliteRpcLibClient.cpp" />
+    <ClCompile Include="src\vehicles\satellite\api\SatelliteRpcLibServer.cpp" />
     <ClCompile Include="src\vehicles\car\api\CarRpcLibClient.cpp" />
     <ClCompile Include="src\vehicles\car\api\CarRpcLibServer.cpp" />
     <ClCompile Include="src\vehicles\multirotor\api\MultirotorRpcLibClient.cpp" />

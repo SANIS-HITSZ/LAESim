@@ -4,12 +4,14 @@
 
 ## 当前版本要点
 
-- 支持 `AirGround` 混合多载具仿真：多无人机、多车、多船可以同时在同一个 `settings.json` 中配置。
+- 支持 `AirGround` 混合多载具仿真：多无人机、多车、多船、多卫星可以同时在同一个 `settings.json` 中配置。
 - 新增 `SimpleBoat` / `PhysXBoat` 船载具类型，默认 API 端口为 `41481`。
 - 船具备 Python API、ROS topic、示例脚本、settings 模板和传感器配置链路。
 - 默认船模型为 052B Boat，源码资产放在 `Unreal\Assets\Boat\Models\Boat`，构建时自动复制到 AirSim 插件 Content。
+- 新增 `SimpleSatellite` 卫星载具类型，默认 API 端口为 `41491`。卫星运动模型是三维空间理想质点：按 NED 速度 `vx/vy/vz` 和 `yaw_rate` 移动，无持续移动指令时静止悬停。
+- 默认卫星模型源码资产放在 `Unreal\Assets\Satellite\Models\Satellite`，构建时自动复制到 `Unreal\Plugins\AirSim\Content\Models\Satellite`，`settings.json` 不需要指定模型路径。
 - 新增 `SceneMap` 图片地图功能：可在 `settings.json` 启动加载图片为可碰撞平面地图，支持任意长宽比卫星图、`GeoReference` GPS 配准和按 GPS / 像素 / 米制坐标出生，也可通过 Python / ROS 在运行时切换、查询和做坐标转换。
-- GitHub 上传版保留 AirSim 插件基础 Content 和 StarterContent，排除编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries、高模 SUV 和 Boat 构建产物。
+- GitHub 上传版保留 AirSim 插件基础 Content 和 StarterContent，排除编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries、高模 SUV、Boat 和 Satellite 构建产物。
 
 更多细节：
 
@@ -102,6 +104,22 @@ Boat 的 052B 默认模型不需要在 `settings.json` 里指定。源码仓库�
 
 `BoatPawn.cpp` 运行时加载的是 `/AirSim/Models/Boat/Type_052B_Destroyer_Combined`。所以 GitHub 源码版应保留 `Unreal\Assets\Boat`，不需要把构建后生成的 `Unreal\Plugins\AirSim\Content\Models\Boat` 当成源码目录单独上传。
 
+### 3.4 Satellite 默认模型资源
+
+Satellite 的默认模型也不需要在 `settings.json` 里指定。源码仓库里保留的是资产源目录：
+
+```text
+<LAESim根目录>\Unreal\Assets\Satellite\Models\Satellite
+```
+
+运行 `build.cmd --Release` 或 `BuildAirSimRelease.bat` 时，脚本会把它复制到插件内容目录：
+
+```text
+<LAESim根目录>\Unreal\Plugins\AirSim\Content\Models\Satellite
+```
+
+`SatellitePawn.cpp` 运行时加载的是 `/AirSim/Models/Satellite/10477_Satellite_v1_L3`。如果 `.uasset` 缺失，`SatellitePawn` 会回退到 C++ 生成的简化卫星外观，API、ROS 和传感器链路仍可用于排查。
+
 ## 4. 编完后如何接入 UE 项目
 
 运行完 `build.cmd --Release` 或 `BuildAirSimRelease.bat` 后，可以把下面这个插件目录复制到 UE 项目里：
@@ -162,10 +180,11 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 - `how_to_use_settings\settings_single_car_with_sensors.json`
 - `how_to_use_settings\settings_airground_3uav_3car_with_sensors.json`
 - `how_to_use_settings\settings_airground_2uav_1car_1boat_with_sensors.json`
+- `how_to_use_settings\settings_airground_2uav_1car_1boat_1satellite_with_sensors.json`
 - `how_to_use_settings\settings_scene_map_1uav_1car_1boat.json`
 - `how_to_use_settings\settings_satellite_map_gps_start.json`
 
-这些模板已经把常用相机、雷达、ROS 发布项写好，并且对车和船的 `magnetometer/barometer` 做了显式规避。
+这些模板已经把常用相机、雷达、ROS 发布项写好，并且对车、船和卫星的 `magnetometer/barometer` 做了显式规避。
 
 如果要做纯视觉 VIO + 2D 地图匹配定位仿真，可以使用 `SceneMap` 配置在启动时把一张干净卫星图变成 UE 里的可碰撞平面地图，并用 `StartOnSceneMap` 指定载具在地图像素坐标、地图局部米制坐标或 GPS 经纬度上的出生位置。卫星图可以通过 `GeoReference` 做 GPS 配准。详见：
 
@@ -220,10 +239,13 @@ Multi_use
 - `keyboard_control.py`：无人机 `pygame` 控制
 - `car_keyboard_control.py`：汽车 `pygame` 控制
 - `boat_keyboard_control.py`：船 / 水面载具 `pygame` 控制
+- `satellite_keyboard_control.py`：卫星三维速度 `pygame` 控制
 - `scene_map_tools.py`：加载、查询和坐标转换图片地图
 - `sensor_probe.py`：按 `settings.json` 抓取相机和雷达数据
 
 船的运动模型是地面平面上的简化船舶三自由度模型：纵向速度 `u`、横向漂移速度 `v`、艏向角速度 `r`。它不要求 UE 关卡里有真实水面，也不模拟波浪、水流、浮力，只适合把蓝色地面区域当作水域来跑船舶运动和传感器链路。
+
+卫星的运动模型是三维空间理想质点：`SatelliteControls` 直接给 NED 速度 `vx/vy/vz` 和 `yaw_rate`，单位分别是 m/s 和 rad/s。没有持续移动指令时控制量归零，卫星会静止悬停在当前位置，不模拟轨道摄动、重力、姿态动力学或推进器细节。
 
 ## 7. ROS 示例代码在哪里
 
@@ -243,6 +265,7 @@ ros\src\example
 - `keyboard_uav_ros.py`：ROS + `pygame` 控无人机
 - `keyboard_car_ros.py`：ROS + `pygame` 控汽车
 - `keyboard_boat_ros.py`：ROS + `pygame` 控船
+- `keyboard_satellite_ros.py`：ROS + `pygame` 控卫星
 - `vehicle_state_monitor_ros.py`：查看各实例状态
 - `sensor_config_report_ros.py`：读取 `settings.json` 并核对 ROS 话题
 - `camera_record_ros.py`：保存 ROS 相机数据
@@ -290,6 +313,7 @@ bash src/example/connect_ue_ros.sh
 - `41461`：Car
 - `41471`：Multirotor
 - `41481`：Boat
+- `41491`：Satellite
 
 ## 9. 常见编译问题
 

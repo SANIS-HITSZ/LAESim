@@ -434,6 +434,18 @@ class BoatControls(MsgpackMixin):
         self.brake = brake
         self.anchor = anchor
 
+class SatelliteControls(MsgpackMixin):
+    vx = 0.0
+    vy = 0.0
+    vz = 0.0
+    yaw_rate = 0.0
+
+    def __init__(self, vx = 0, vy = 0, vz = 0, yaw_rate = 0):
+        self.vx = vx
+        self.vy = vy
+        self.vz = vz
+        self.yaw_rate = yaw_rate
+
 class KinematicsState(MsgpackMixin):
     position = Vector3r()
     orientation = Quaternionr()
@@ -469,6 +481,16 @@ class BoatState(MsgpackMixin):
     steering = 0.0
     brake = 0.0
     anchor = False
+    collision = CollisionInfo()
+    kinematics_estimated = KinematicsState()
+    timestamp = np.uint64(0)
+
+class SatelliteState(MsgpackMixin):
+    speed = 0.0
+    vx = 0.0
+    vy = 0.0
+    vz = 0.0
+    yaw_rate = 0.0
     collision = CollisionInfo()
     kinematics_estimated = KinematicsState()
     timestamp = np.uint64(0)

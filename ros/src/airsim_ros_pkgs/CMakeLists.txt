@@ -55,6 +55,8 @@ add_message_files(
   CarState.msg
   BoatControls.msg
   BoatState.msg
+  SatelliteControls.msg
+  SatelliteState.msg
   Altimeter.msg
   Environment.msg
   SceneMapInfo.msg

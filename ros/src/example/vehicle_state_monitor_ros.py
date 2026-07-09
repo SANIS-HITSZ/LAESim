@@ -6,7 +6,7 @@ import rospy
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import NavSatFix
 
-from airsim_ros_pkgs.msg import BoatState, CarState, Environment
+from airsim_ros_pkgs.msg import BoatState, CarState, Environment, SatelliteState
 
 from _ros_example_common import detect_settings_path, infer_vehicle_kind, load_settings, selected_vehicles, state_topics
 
@@ -23,6 +23,7 @@ class VehicleStateMonitor:
                 "gps": None,
                 "car_state": None,
                 "boat_state": None,
+                "satellite_state": None,
             }
 
             topics = state_topics(vehicle_name, vehicle_kind, namespace)
@@ -33,6 +34,8 @@ class VehicleStateMonitor:
                 rospy.Subscriber(topics["car_state"], CarState, self._car_state_cb, callback_args=vehicle_name, queue_size=1)
             elif vehicle_kind == "boat":
                 rospy.Subscriber(topics["boat_state"], BoatState, self._boat_state_cb, callback_args=vehicle_name, queue_size=1)
+            elif vehicle_kind == "satellite":
+                rospy.Subscriber(topics["satellite_state"], SatelliteState, self._satellite_state_cb, callback_args=vehicle_name, queue_size=1)
 
     def _odom_cb(self, msg, vehicle_name):
         self.snapshots[vehicle_name]["odom"] = msg
@@ -49,6 +52,9 @@ class VehicleStateMonitor:
     def _boat_state_cb(self, msg, vehicle_name):
         self.snapshots[vehicle_name]["boat_state"] = msg
 
+    def _satellite_state_cb(self, msg, vehicle_name):
+        self.snapshots[vehicle_name]["satellite_state"] = msg
+
     def print_summary(self, event):
         print("\n=== Vehicle State Snapshot ===")
         for vehicle_name, snapshot in self.snapshots.items():
@@ -57,6 +63,7 @@ class VehicleStateMonitor:
             env = snapshot["env"]
             car_state = snapshot["car_state"]
             boat_state = snapshot["boat_state"]
+            satellite_state = snapshot["satellite_state"]
 
             if odom is None:
                 print(f"{vehicle_name}: waiting for odom")
@@ -79,6 +86,12 @@ class VehicleStateMonitor:
                 text += (
                     f" speed={boat_state.speed:.2f} u={boat_state.forward_speed:.2f} "
                     f"v={boat_state.lateral_speed:.2f} r={boat_state.yaw_rate:.3f}"
+                )
+            if satellite_state is not None:
+                text += (
+                    f" speed={satellite_state.speed:.2f} "
+                    f"v=({satellite_state.vx:.2f}, {satellite_state.vy:.2f}, {satellite_state.vz:.2f}) "
+                    f"yaw_rate={satellite_state.yaw_rate:.3f}"
                 )
             print(text)
 

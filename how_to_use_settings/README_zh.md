@@ -1,11 +1,12 @@
 # how_to_use_settings 使用说明
 
-这个目录里放了 6 份可直接起步的 `settings.json` 模板：
+这个目录里放了 7 份可直接起步的 `settings.json` 模板：
 
 - `settings_single_uav_with_sensors.json`
 - `settings_single_car_with_sensors.json`
 - `settings_airground_3uav_3car_with_sensors.json`
 - `settings_airground_2uav_1car_1boat_with_sensors.json`
+- `settings_airground_2uav_1car_1boat_1satellite_with_sensors.json`
 - `settings_scene_map_1uav_1car_1boat.json`
 - `settings_satellite_map_gps_start.json`
 
@@ -20,7 +21,7 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 
 3. 重开 UE 或至少重新 `Play`。
 
-## 1. 四份模板分别适合什么场景
+## 1. 模板分别适合什么场景
 
 ### 1.1 单无人机
 
@@ -99,6 +100,27 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 - 船显式关闭 `magnetometer / barometer`
 - 船在地面平面运动，不要求关卡里真的有水体；可以把地面材质涂成蓝色表示水域
 
+### 1.4.1 AirGround + UAV / Car / Boat / Satellite
+
+`settings_airground_2uav_1car_1boat_1satellite_with_sensors.json`
+
+适合：
+
+- 验证“空天地海”混合载具链路
+- 同时跑无人机、汽车、船和卫星
+- 验证卫星 Python API、ROS topic、传感器和默认模型
+
+特点：
+
+- `SimMode = AirGround`
+- `41451 / 41461 / 41471 / 41481 / 41491` 五端口分离
+- 1 个卫星实例：`Satellite`
+- 卫星使用 `VehicleType = SimpleSatellite`
+- 卫星默认使用插件内置的 `10477_Satellite_v1_L3` 静态网格，不需要在 `settings.json` 里指定模型路径
+- 卫星传感器配置仿照车 / 船：相机、GPS、IMU、lidar 可用，`magnetometer / barometer` 默认关闭
+- 卫星运动是三维空间理想质点，API / ROS 直接给 `vx / vy / vz / yaw_rate`
+- 没有持续移动指令时，卫星控制量归零，会静止悬停
+
 ### 1.5 图片地图 + UAV / Car / Boat
 
 `settings_scene_map_1uav_1car_1boat.json`
@@ -132,7 +154,7 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 - `GeoReference`：用一个已知经纬度的参考点把图片配准到 GPS
 - `StartOnSceneMap.CoordinateType = GPS`：载具按 `Latitude / Longitude / Altitude` 出生
 
-## 2. 车和船的传感器 bug 要怎么规避
+## 2. 车、船和卫星的传感器 bug 要怎么规避
 
 当前这套工程已经在源码里修过一层默认传感器逻辑，但为了让使用者拿到模板就尽量少踩坑，仍然建议在车的 `Sensors` 里显式写：
 
@@ -166,6 +188,7 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 - `ApiServerPortCar`：汽车 API 端口，通常 `41461`
 - `ApiServerPortMultirotor`：无人机 API 端口，通常 `41471`
 - `ApiServerPortBoat`：船 API 端口，通常 `41481`
+- `ApiServerPortSatellite`：卫星 API 端口，通常 `41491`
 - `Vehicles`：具体实例定义
 - `SubWindows`：UE 右下角 3 个小窗口显示哪个实例的哪个相机
 
@@ -458,7 +481,59 @@ API / ROS 状态里会同时给出 `speed`、`forward_speed`、`lateral_speed`�
 
 注意：当前 `AirGround` 的 Boat 链路会把 Pawn 转成 `ABoatPawn` 来取相机和碰撞事件，所以自定义 `BP_MyBoatPawn` 应该继承自 `ABoatPawn`。如果只是想换外观模型，优先用前两种方式。
 
-## 8. 想给实例加相机怎么加
+## 8. Satellite / 卫星怎么写
+
+最小实例：
+
+```json
+"Satellite": {
+  "VehicleType": "SimpleSatellite",
+  "X": 0,
+  "Y": 0,
+  "Z": -80,
+  "Yaw": 0,
+  "Sensors": {
+    "imu": { "SensorType": 2, "Enabled": true },
+    "gps": { "SensorType": 3, "Enabled": true },
+    "magnetometer": { "SensorType": 4, "Enabled": false },
+    "barometer": { "SensorType": 1, "Enabled": false },
+    "Lidar": {
+      "SensorType": 6,
+      "Enabled": true,
+      "NumberOfChannels": 16,
+      "RotationsPerSecond": 10,
+      "PointsPerSecond": 10000,
+      "X": 0,
+      "Y": 0,
+      "Z": 0,
+      "VerticalFOVUpper": 52,
+      "VerticalFOVLower": -52,
+      "HorizontalFOVStart": -180,
+      "HorizontalFOVEnd": 180,
+      "DataFrame": "SensorLocalFrame"
+    }
+  },
+  "Cameras": {
+    "...": "可以直接复制模板里的 Satellite Cameras"
+  }
+}
+```
+
+新增卫星时要注意：
+
+- `VehicleType` 推荐用 `SimpleSatellite`
+- 默认卫星模型是插件内容目录里的 `StaticMesh'/AirSim/Models/Satellite/10477_Satellite_v1_L3.10477_Satellite_v1_L3'`
+- 这个模型由 `SatellitePawn.cpp` 固定加载，不需要在单个卫星配置里写 `PawnPath` 或 StaticMesh 路径
+- 源码资产放在 `Unreal/Assets/Satellite/Models/Satellite`，`build.cmd` 会复制到 `Unreal/Plugins/AirSim/Content/Models/Satellite`
+- 控制接口是理想质点速度：`vx / vy / vz` 单位 m/s，使用 AirSim NED 坐标；`yaw_rate` 单位 rad/s
+- `Z` 是 AirSim NED 坐标，负数表示在 UE 里更高；例如 `Z = -80` 表示初始挂在空中
+- Python 控制脚本：`python .\Multi_use\satellite_keyboard_control.py --vehicle Satellite`
+- ROS 控制 topic：`/airsim_node/Satellite/satellite_cmd`
+- ROS 状态 topic：`/airsim_node/Satellite/satellite_state`
+
+如果要替换卫星模型，推荐和 Boat 一样走默认资源替换：导入新模型到 `/AirSim/Models/Satellite`，同步 `.uasset` 到 `Unreal/Assets/Satellite/Models/Satellite`，再在 `SatellitePawn.cpp` 中修改 `FObjectFinder<UStaticMesh>` 的资源路径。只有某一个卫星实例要换整套 Pawn 时，才使用 `PawnPaths / PawnPath`，并让蓝图继承自 `ASatellitePawn`。
+
+## 9. 想给实例加相机怎么加
 
 相机统一写在该实例的 `Cameras` 里。一个常用的前视相机写法是：
 
@@ -503,7 +578,7 @@ API / ROS 状态里会同时给出 `speed`、`forward_speed`、`lateral_speed`�
 - `ImageType 5`：`Segmentation`
 - `PublishToRos = 1` 才会让 ROS 示例期待对应图像话题
 
-## 9. 想加 lidar 怎么加
+## 10. 想加 lidar 怎么加
 
 常用 lidar 写法：
 
@@ -534,7 +609,7 @@ API / ROS 状态里会同时给出 `speed`、`forward_speed`、`lateral_speed`�
 - `VerticalFOVUpper = 52`
 - `VerticalFOVLower = -7`
 
-## 10. SensorType 速查表
+## 11. SensorType 速查表
 
 - `1`：Barometer
 - `2`：Imu
@@ -543,7 +618,7 @@ API / ROS 状态里会同时给出 `speed`、`forward_speed`、`lateral_speed`�
 - `5`：Distance
 - `6`：Lidar
 
-## 11. 改完 settings 后别忘了什么
+## 12. 改完 settings 后别忘了什么
 
 每次改完 `settings.json`，都建议：
 

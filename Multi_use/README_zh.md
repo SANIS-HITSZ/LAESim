@@ -142,7 +142,42 @@ python .\Multi_use\boat_keyboard_control.py --throttle 0.5 --steering 0.3
 - `Space`：抛锚 / 减速
 - `ESC`：退出并停船
 
-## 4. sensor_probe.py
+## 4. satellite_keyboard_control.py
+
+这个脚本可以：
+
+- 用 `pygame` 控制 `SimpleSatellite`
+- 直接发送三维 NED 速度 `vx / vy / vz`
+- 发送 `yaw_rate` 控制偏航角速度
+- 松开按键时发送零速度，使卫星静止悬停
+
+默认连接：
+
+- 端口：`41491`
+- 默认实例名：`Satellite`
+
+最常用命令：
+
+```powershell
+python .\Multi_use\satellite_keyboard_control.py
+```
+
+常见变体：
+
+```powershell
+python .\Multi_use\satellite_keyboard_control.py --vehicle Satellite2
+python .\Multi_use\satellite_keyboard_control.py --speed 50 --yaw-rate 1.0
+```
+
+按键：
+
+- `W/S`：NED X 正 / 负方向
+- `A/D`：NED Y 负 / 正方向
+- `R/F`：上升 / 下降，其中 `vz` 为 NED 速度，正数表示向下
+- `Q/E`：左 / 右偏航
+- `ESC`：退出并发送零速度
+
+## 5. sensor_probe.py
 
 这个脚本可以：
 
@@ -188,7 +223,7 @@ python .\Multi_use\sensor_probe.py --vehicle UAV --vehicle Car
 - 确认相机名字、雷达名字、图像类型是否能正确读取
 - 在不引入 ROS 的前提下验证传感器链路
 
-## 5. scene_map_tools.py
+## 6. scene_map_tools.py
 
 这个脚本用于测试“图片地图平面”功能，不依赖 ROS，走 `41451` 这个 CV / 世界级 RPC 端口。它可以加载地图、卸载地图、查询地图尺寸与位姿，也可以做像素坐标和 AirSim 世界坐标的转换。
 
@@ -222,7 +257,7 @@ python .\Multi_use\scene_map_tools.py to-pixel --x 10 --y 0
 python .\Multi_use\scene_map_tools.py unload
 ```
 
-## 6. 建议的使用顺序
+## 7. 建议的使用顺序
 
 如果第一次拿到工程，建议按这个顺序试：
 
@@ -231,4 +266,5 @@ python .\Multi_use\scene_map_tools.py unload
 3. 然后用 `keyboard_control.py` 验证无人机。
 4. 再用 `car_keyboard_control.py` 验证汽车。
 5. 再用 `boat_keyboard_control.py` 验证船。
-6. 如果要测试 2D 地图场景，用 `scene_map_tools.py info` 或 `scene_map_tools.py load ...` 验证 SceneMap。
+6. 再用 `satellite_keyboard_control.py` 验证卫星。
+7. 如果要测试 2D 地图场景，用 `scene_map_tools.py info` 或 `scene_map_tools.py load ...` 验证 SceneMap。

@@ -37,6 +37,7 @@ namespace airlib
         static constexpr char const* kVehicleTypeArduRover = "ardurover";
         static constexpr char const* kVehicleTypeSimpleBoat = "simpleboat";
         static constexpr char const* kVehicleTypePhysXBoat = "physxboat";
+        static constexpr char const* kVehicleTypeSimpleSatellite = "simplesatellite";
         static constexpr char const* kVehicleTypeComputerVision = "computervision";
 
         static constexpr char const* kVehicleInertialFrame = "VehicleInertialFrame";
@@ -481,6 +482,7 @@ namespace airlib
         int api_port_car = RpcLibPortCar;
         int api_port_multirotor = RpcLibPortMultirotor;
         int api_port_boat = RpcLibPortBoat;
+        int api_port_satellite = RpcLibPortSatellite;
         std::string physics_engine_name = "";
 
         std::string clock_type = "";
@@ -617,6 +619,11 @@ namespace airlib
             return vehicle_type == kVehicleTypeSimpleBoat || vehicle_type == kVehicleTypePhysXBoat;
         }
 
+        static bool isSatellite(const std::string& vehicle_type)
+        {
+            return vehicle_type == kVehicleTypeSimpleSatellite;
+        }
+
         static bool isComputerVision(const std::string& vehicle_type)
         {
             return vehicle_type == kVehicleTypeComputerVision;
@@ -634,6 +641,7 @@ namespace airlib
             bool has_multirotor = false;
             bool has_car = false;
             bool has_boat = false;
+            bool has_satellite = false;
             bool has_computer_vision = false;
 
             for (const auto& key : keys) {
@@ -645,16 +653,19 @@ namespace airlib
                 has_multirotor = has_multirotor || isMultirotor(vehicle_type);
                 has_car = has_car || isCar(vehicle_type);
                 has_boat = has_boat || isBoat(vehicle_type);
+                has_satellite = has_satellite || isSatellite(vehicle_type);
                 has_computer_vision = has_computer_vision || isComputerVision(vehicle_type);
             }
 
-            if ((has_multirotor ? 1 : 0) + (has_car ? 1 : 0) + (has_boat ? 1 : 0) > 1)
+            if ((has_multirotor ? 1 : 0) + (has_car ? 1 : 0) + (has_boat ? 1 : 0) + (has_satellite ? 1 : 0) > 1)
                 return kSimModeTypeAirGround;
             if (has_multirotor)
                 return kSimModeTypeMultirotor;
             if (has_car)
                 return kSimModeTypeCar;
             if (has_boat)
+                return kSimModeTypeAirGround;
+            if (has_satellite)
                 return kSimModeTypeAirGround;
             if (has_computer_vision)
                 return kSimModeTypeComputerVision;
@@ -963,7 +974,7 @@ namespace airlib
             // sensor pack for every vehicle injects multirotor-only defaults like barometer and
             // magnetometer into surface vehicles, which is both semantically wrong and has caused runtime
             // instability in mixed scenes.
-            if (simmode_name == kSimModeTypeAirGround && (isCar(vehicle_type) || isBoat(vehicle_type))) {
+            if (simmode_name == kSimModeTypeAirGround && (isCar(vehicle_type) || isBoat(vehicle_type) || isSatellite(vehicle_type))) {
                 vehicle_sensor_defaults.clear();
                 for (const auto& sensor_pair : sensor_defaults) {
                     const auto sensor_type = sensor_pair.second->sensor_type;
@@ -1092,6 +1103,8 @@ namespace airlib
                                PawnPath("Class'/AirSim/Blueprints/BP_FlyingPawn.BP_FlyingPawn_C'"));
             pawn_paths.emplace("DefaultBoat",
                                PawnPath("Class'/Script/AirSim.BoatPawn'"));
+            pawn_paths.emplace("DefaultSatellite",
+                               PawnPath("Class'/Script/AirSim.SatellitePawn'"));
             pawn_paths.emplace("DefaultComputerVision",
                                PawnPath("Class'/AirSim/Blueprints/BP_ComputerVisionPawn.BP_ComputerVisionPawn_C'"));
         }
@@ -1338,6 +1351,7 @@ namespace airlib
             api_port_car = settings_json.getInt("ApiServerPortCar", RpcLibPortCar);
             api_port_multirotor = settings_json.getInt("ApiServerPortMultirotor", api_port);
             api_port_boat = settings_json.getInt("ApiServerPortBoat", RpcLibPortBoat);
+            api_port_satellite = settings_json.getInt("ApiServerPortSatellite", RpcLibPortSatellite);
             is_record_ui_visible = settings_json.getBool("RecordUIVisible", true);
             engine_sound = settings_json.getBool("EngineSound", false);
             enable_rpc = settings_json.getBool("EnableRpc", enable_rpc);

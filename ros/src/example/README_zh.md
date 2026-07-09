@@ -175,7 +175,60 @@ python3 src/example/keyboard_boat_ros.py --vehicle Boat
 - `pose`
 - `twist`
 
-## 5. vehicle_state_monitor_ros.py
+## 5. keyboard_satellite_ros.py
+
+这个脚本可以：
+
+- 基于 ROS 话题控制 `SimpleSatellite`
+- 使用 `pygame` 窗口
+- 直接发送三维 NED 速度 `vx / vy / vz`
+- 发送 `yaw_rate` 控制偏航角速度
+- 松开按键时发送零速度，使卫星静止悬停
+
+命令：
+
+```bash
+python3 src/example/keyboard_satellite_ros.py --vehicle Satellite
+```
+
+常用参数：
+
+- `--vehicle`：控制哪个卫星实例
+- `--rate`：发布频率
+- `--speed`：单轴速度，单位 m/s
+- `--yaw-rate`：偏航角速度，单位 rad/s
+
+按键：
+
+- `W/S`：NED X 正 / 负方向
+- `A/D`：NED Y 负 / 正方向
+- `R/F`：上升 / 下降，其中 `vz` 为 NED 速度，正数表示向下
+- `Q/E`：左 / 右偏航
+- `ESC`：退出
+
+它对应的 ROS 接口是：
+
+- 发布：`/airsim_node/<vehicle>/satellite_cmd`
+- 订阅：`/airsim_node/<vehicle>/satellite_state`
+
+`satellite_cmd` 使用 `airsim_ros_pkgs/SatelliteControls`：
+
+- `vx`
+- `vy`
+- `vz`
+- `yaw_rate`
+
+`satellite_state` 使用 `airsim_ros_pkgs/SatelliteState`，核心字段是：
+
+- `speed`
+- `vx`
+- `vy`
+- `vz`
+- `yaw_rate`
+- `pose`
+- `twist`
+
+## 6. vehicle_state_monitor_ros.py
 
 这个脚本可以：
 
@@ -202,8 +255,9 @@ python3 src/example/vehicle_state_monitor_ros.py
 - `/airsim_node/<vehicle>/global_gps`
 - `/airsim_node/<vehicle>/car_state`（仅汽车）
 - `/airsim_node/<vehicle>/boat_state`（仅船）
+- `/airsim_node/<vehicle>/satellite_state`（仅卫星）
 
-## 6. sensor_config_report_ros.py
+## 7. sensor_config_report_ros.py
 
 这个脚本可以：
 
@@ -231,7 +285,7 @@ python3 src/example/sensor_config_report_ros.py
 - 看 `PublishToRos` 是否开了
 - 看话题命名是否和预期一致
 
-## 7. camera_record_ros.py
+## 8. camera_record_ros.py
 
 这个脚本可以：
 
@@ -264,7 +318,7 @@ python3 src/example/camera_record_ros.py
 - 快速验证 ROS 相机图像是否正常发布
 - 对照 Windows 侧 `sensor_probe.py` 的结果
 
-## 8. lidar_record_ros.py
+## 9. lidar_record_ros.py
 
 这个脚本可以：
 
@@ -292,7 +346,7 @@ python3 src/example/lidar_record_ros.py
 ./lidar_record_ros_outputs/lidar_record_<timestamp>/
 ```
 
-## 9. _ros_example_common.py
+## 10. _ros_example_common.py
 
 这是内部公共模块，不是给别人直接运行的脚本。它负责：
 
@@ -302,7 +356,7 @@ python3 src/example/lidar_record_ros.py
 - 从 `settings.json` 里枚举相机和传感器
 - 保存 ASCII `pcd`
 
-## 9. 建议的联调顺序
+## 11. 建议的联调顺序
 
 如果第一次联调，建议按下面顺序走：
 
@@ -313,4 +367,4 @@ python3 src/example/lidar_record_ros.py
 5. 运行 `python3 src/example/vehicle_state_monitor_ros.py`
 6. 运行 `python3 src/example/camera_record_ros.py`
 7. 运行 `python3 src/example/lidar_record_ros.py`
-8. 最后再用 `keyboard_uav_ros.py` 和 `keyboard_car_ros.py` 做控制联调
+8. 最后再用 `keyboard_uav_ros.py`、`keyboard_car_ros.py`、`keyboard_boat_ros.py` 和 `keyboard_satellite_ros.py` 做控制联调

@@ -29,6 +29,7 @@ namespace airlib
     static constexpr uint16_t RpcLibPortCar = 41461;
     static constexpr uint16_t RpcLibPortMultirotor = 41471;
     static constexpr uint16_t RpcLibPortBoat = 41481;
+    static constexpr uint16_t RpcLibPortSatellite = 41491;
 
     //numericals
     typedef float real_T;
