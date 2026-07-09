@@ -2,6 +2,22 @@
 
 这份文档面向接手 `LAESim` 的使用者，重点说明源码仓库如何编译、如何接入 UE、如何继续使用 Windows API 和 ROS。当前这套工程已经不是只在单机环境里可运行的临时目录，而是一套可以继续编译、继续接入 UE 4.27、继续在 WSL / ROS Noetic 中联调的源码工程。
 
+## 当前版本要点
+
+- 支持 `AirGround` 混合多载具仿真：多无人机、多车、多船可以同时在同一个 `settings.json` 中配置。
+- 新增 `SimpleBoat` / `PhysXBoat` 船载具类型，默认 API 端口为 `41481`。
+- 船具备 Python API、ROS topic、示例脚本、settings 模板和传感器配置链路。
+- 默认船模型为 052B Boat，源码资产放在 `Unreal\Assets\Boat\Models\Boat`，构建时自动复制到 AirSim 插件 Content。
+- 新增 `SceneMap` 图片地图功能：可在 `settings.json` 启动加载图片为可碰撞平面地图，支持任意长宽比卫星图、`GeoReference` GPS 配准和按 GPS / 像素 / 米制坐标出生，也可通过 Python / ROS 在运行时切换、查询和做坐标转换。
+- GitHub 上传版保留 AirSim 插件基础 Content 和 StarterContent，排除编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries、高模 SUV 和 Boat 构建产物。
+
+更多细节：
+
+- `如何加入新的载具类型.md`
+- `如何加入图片场景地图功能.md`
+- `如何将工程简化上传github.md`
+- `how_to_use_settings\README_zh.md`
+
 ## 1. 交付
 
 仓库根目录自带：
@@ -146,8 +162,46 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 - `how_to_use_settings\settings_single_car_with_sensors.json`
 - `how_to_use_settings\settings_airground_3uav_3car_with_sensors.json`
 - `how_to_use_settings\settings_airground_2uav_1car_1boat_with_sensors.json`
+- `how_to_use_settings\settings_scene_map_1uav_1car_1boat.json`
+- `how_to_use_settings\settings_satellite_map_gps_start.json`
 
 这些模板已经把常用相机、雷达、ROS 发布项写好，并且对车和船的 `magnetometer/barometer` 做了显式规避。
+
+如果要做纯视觉 VIO + 2D 地图匹配定位仿真，可以使用 `SceneMap` 配置在启动时把一张干净卫星图变成 UE 里的可碰撞平面地图，并用 `StartOnSceneMap` 指定载具在地图像素坐标、地图局部米制坐标或 GPS 经纬度上的出生位置。卫星图可以通过 `GeoReference` 做 GPS 配准。详见：
+
+- `如何加入图片场景地图功能.md`
+- `how_to_use_settings\settings_scene_map_1uav_1car_1boat.json`
+- `how_to_use_settings\settings_satellite_map_gps_start.json`
+
+### 5.1 图片地图 SceneMap 快速导入
+
+最小流程：
+
+1. 准备一张 Windows 能访问的图片，例如 `C:/Users/32749/Documents/AirSim/maps/test1.png`。
+2. 在 `settings.json` 顶层增加 `SceneMap`，填写 `ImagePath`、`MetersPerPixel`、`PixelCoordinateFrame`、`CollisionEnabled`。
+3. 如果要按 GPS 出生，继续填写 `GeoReference`，把一个已知参考点的经纬度和图片像素坐标写进去。
+4. 在每个载具里用 `StartOnSceneMap` 写出生位置；如果不写，仍然使用旧的 `X/Y/Z/Yaw`。
+
+关键参数：
+
+- `ImagePath`：图片绝对路径。UE 在 Windows 上运行，所以不要写 WSL 的 `/home/...`。
+- `MetersPerPixel`：每个像素代表多少米，是 2D 地图匹配的比例尺。
+- `PixelCoordinateFrame`：卫星图 / Google Earth 推荐 `NorthUp`；旧测试图可用 `NED`。
+- `CollisionEnabled`：是否给地图平面碰撞。车、船要站在图上时保持 `true`。
+- `ReferenceLatitude / ReferenceLongitude`：GPS 参考点经纬度，决定 GPS 如何配准到图片。
+- `ReferenceU / ReferenceV`：参考点在图片中的像素坐标，左上角为 `(0, 0)`。
+- `ReferenceAltitude`：参考点海拔；对二维平面定位不重要，不影响水平出生位置，可以写 Google Earth 海拔、场地平均海拔或 `0`。
+- `Height`：载具离地图平面的高度，只影响垂直方向。无人机常写 `5` 或 `10`，车和船通常写 `0`。
+
+出生方式：
+
+- 旧方式 `X/Y/Z/Yaw`：直接写 AirSim NED 世界坐标，不依赖图片地图。
+- 新方式 `StartOnSceneMap`：按地图出生，会覆盖同一载具里的旧 `X/Y/Z/Yaw`。
+- `CoordinateType = Pixel`：用图片像素 `U/V` 出生。
+- `CoordinateType = Meters`：用地图中心为原点的米制 `MapX/MapY` 出生。
+- `CoordinateType = GPS`：用 `Latitude/Longitude/Altitude` 出生，需要 `GeoReference.Enabled = true`。
+
+`NorthUp` 卫星图的 GPS 出生已按当前 UE 显示补偿修正：内部使用 `local_x=east, local_y=-north`。同经度时纬度减小会沿图面右方移动，对应像素 `U` 增大。
 
 ## 6. Windows API 示例代码在哪里
 
@@ -166,6 +220,7 @@ Multi_use
 - `keyboard_control.py`：无人机 `pygame` 控制
 - `car_keyboard_control.py`：汽车 `pygame` 控制
 - `boat_keyboard_control.py`：船 / 水面载具 `pygame` 控制
+- `scene_map_tools.py`：加载、查询和坐标转换图片地图
 - `sensor_probe.py`：按 `settings.json` 抓取相机和雷达数据
 
 船的运动模型是地面平面上的简化船舶三自由度模型：纵向速度 `u`、横向漂移速度 `v`、艏向角速度 `r`。它不要求 UE 关卡里有真实水面，也不模拟波浪、水流、浮力，只适合把蓝色地面区域当作水域来跑船舶运动和传感器链路。
@@ -192,6 +247,15 @@ ros\src\example
 - `sensor_config_report_ros.py`：读取 `settings.json` 并核对 ROS 话题
 - `camera_record_ros.py`：保存 ROS 相机数据
 - `lidar_record_ros.py`：保存 ROS 雷达点云
+
+图片地图功能的 ROS 入口是：
+
+- 话题：`/airsim_node/scene_map/info`
+- 服务：`/airsim_node/scene_map/load`
+- 服务：`/airsim_node/scene_map/unload`
+- 服务：`/airsim_node/scene_map/get_info`
+- 服务：`/airsim_node/scene_map/scene_map_to_world`
+- 服务：`/airsim_node/scene_map/world_to_scene_map`
 
 ## 8. WSL / ROS 部署要点
 

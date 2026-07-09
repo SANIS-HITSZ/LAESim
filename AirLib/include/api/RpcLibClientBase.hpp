@@ -58,6 +58,12 @@ namespace airlib
 
         void simEnableWeather(bool enable);
         void simSetWeatherParameter(WorldSimApiBase::WeatherParameter param, float val);
+        bool simLoadSceneMap(const string& image_path, float meters_per_pixel, float center_x = 0, float center_y = 0, float z = 0,
+                             float yaw = 0, bool collision_enabled = true, const string& object_name = "LAESimSceneMap");
+        bool simUnloadSceneMap();
+        WorldSimApiBase::SceneMapInfo simGetSceneMapInfo() const;
+        Vector3r simSceneMapToWorld(float u, float v, float z = 0) const;
+        Vector2r simWorldToSceneMap(float x, float y) const;
 
         vector<string> simListSceneObjects(const string& name_regex = string(".*")) const;
         Pose simGetObjectPose(const std::string& object_name) const;

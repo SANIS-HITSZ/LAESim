@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "common/AirSimSettings.hpp"
 #include "common/CommonStructs.hpp"
 #include "common/GeodeticConverter.hpp"
 #include "api/WorldSimApiBase.hpp"
@@ -38,6 +39,13 @@ public:
 
     virtual void enableWeather(bool enable);
     virtual void setWeatherParameter(WeatherParameter param, float val);
+    virtual bool simLoadSceneMap(const std::string& image_path, float meters_per_pixel, float center_x, float center_y, float z,
+                                 float yaw, bool collision_enabled, const std::string& object_name) override;
+    bool simLoadSceneMapFromSettings(const msr::airlib::AirSimSettings::SceneMapSetting& scene_map_setting);
+    virtual bool simUnloadSceneMap() override;
+    virtual msr::airlib::WorldSimApiBase::SceneMapInfo simGetSceneMapInfo() const override;
+    virtual Vector3r simSceneMapToWorld(float u, float v, float z) const override;
+    virtual msr::airlib::Vector2r simWorldToSceneMap(float x, float y) const override;
 
     virtual bool setSegmentationObjectID(const std::string& mesh_name, int object_id, bool is_name_regex = false) override;
     virtual int getSegmentationObjectID(const std::string& mesh_name) const override;
@@ -122,8 +130,13 @@ private:
     AActor* createNewStaticMeshActor(const FActorSpawnParameters& spawn_params, const FTransform& actor_transform, const Vector3r& scale, UStaticMesh* static_mesh);
     AActor* createNewBPActor(const FActorSpawnParameters& spawn_params, const FTransform& actor_transform, const Vector3r& scale, UBlueprint* blueprint);
     void spawnPlayer();
+    Vector3r sceneMapLocalToWorld(float local_x, float local_y, float z) const;
+    msr::airlib::Vector2r sceneMapWorldToLocal(float x, float y) const;
+    bool simLoadSceneMapInternal(const msr::airlib::AirSimSettings::SceneMapSetting& scene_map_setting);
 
 private:
     ASimModeBase* simmode_;
     std::vector<bool> voxel_grid_;
+    msr::airlib::WorldSimApiBase::SceneMapInfo scene_map_info_;
+    AActor* scene_map_actor_ = nullptr;
 };

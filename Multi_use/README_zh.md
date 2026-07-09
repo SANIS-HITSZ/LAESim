@@ -188,7 +188,41 @@ python .\Multi_use\sensor_probe.py --vehicle UAV --vehicle Car
 - 确认相机名字、雷达名字、图像类型是否能正确读取
 - 在不引入 ROS 的前提下验证传感器链路
 
-## 5. 建议的使用顺序
+## 5. scene_map_tools.py
+
+这个脚本用于测试“图片地图平面”功能，不依赖 ROS，走 `41451` 这个 CV / 世界级 RPC 端口。它可以加载地图、卸载地图、查询地图尺寸与位姿，也可以做像素坐标和 AirSim 世界坐标的转换。
+
+加载一张图片作为带碰撞的平面地图：
+
+```powershell
+python .\Multi_use\scene_map_tools.py load C:\Users\32749\Documents\AirSim\maps\demo_map.png --meters-per-pixel 0.05 --center-x 0 --center-y 0 --z 0 --yaw 0
+```
+
+查询当前地图：
+
+```powershell
+python .\Multi_use\scene_map_tools.py info
+```
+
+像素坐标转世界坐标：
+
+```powershell
+python .\Multi_use\scene_map_tools.py to-world --u 800 --v 600 --z 0
+```
+
+世界坐标转像素坐标：
+
+```powershell
+python .\Multi_use\scene_map_tools.py to-pixel --x 10 --y 0
+```
+
+卸载当前地图：
+
+```powershell
+python .\Multi_use\scene_map_tools.py unload
+```
+
+## 6. 建议的使用顺序
 
 如果第一次拿到工程，建议按这个顺序试：
 
@@ -196,4 +230,5 @@ python .\Multi_use\sensor_probe.py --vehicle UAV --vehicle Car
 2. 再用 `sensor_probe.py` 抓一帧图像和点云。
 3. 然后用 `keyboard_control.py` 验证无人机。
 4. 再用 `car_keyboard_control.py` 验证汽车。
-5. 最后用 `boat_keyboard_control.py` 验证船。
+5. 再用 `boat_keyboard_control.py` 验证船。
+6. 如果要测试 2D 地图场景，用 `scene_map_tools.py info` 或 `scene_map_tools.py load ...` 验证 SceneMap。

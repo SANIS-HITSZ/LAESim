@@ -477,6 +477,32 @@ __pragma(warning(disable : 4239))
             pimpl_->client.call("simSetWeatherParameter", param, val);
         }
 
+        bool RpcLibClientBase::simLoadSceneMap(const string& image_path, float meters_per_pixel, float center_x, float center_y, float z,
+                                               float yaw, bool collision_enabled, const string& object_name)
+        {
+            return pimpl_->client.call("simLoadSceneMap", image_path, meters_per_pixel, center_x, center_y, z, yaw, collision_enabled, object_name).as<bool>();
+        }
+
+        bool RpcLibClientBase::simUnloadSceneMap()
+        {
+            return pimpl_->client.call("simUnloadSceneMap").as<bool>();
+        }
+
+        WorldSimApiBase::SceneMapInfo RpcLibClientBase::simGetSceneMapInfo() const
+        {
+            return pimpl_->client.call("simGetSceneMapInfo").as<RpcLibAdaptorsBase::SceneMapInfo>().to();
+        }
+
+        Vector3r RpcLibClientBase::simSceneMapToWorld(float u, float v, float z) const
+        {
+            return pimpl_->client.call("simSceneMapToWorld", u, v, z).as<RpcLibAdaptorsBase::Vector3r>().to();
+        }
+
+        Vector2r RpcLibClientBase::simWorldToSceneMap(float x, float y) const
+        {
+            return pimpl_->client.call("simWorldToSceneMap", x, y).as<RpcLibAdaptorsBase::Vector2r>().to();
+        }
+
         void RpcLibClientBase::simSetTimeOfDay(bool is_enabled, const string& start_datetime, bool is_start_datetime_dst,
                                                float celestial_clock_speed, float update_interval_secs, bool move_sun)
         {

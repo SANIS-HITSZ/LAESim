@@ -9,9 +9,12 @@
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 #include "Misc/OutputDeviceNull.h"
 #include "ImageUtils.h"
+#include "Engine/Texture2D.h"
 #include <cstdlib>
 #include <ctime>
 #include <algorithm>
+#include <cmath>
+#include <limits>
 
 WorldSimApi::WorldSimApi(ASimModeBase* simmode)
     : simmode_(simmode) {}
@@ -430,6 +433,216 @@ void WorldSimApi::setWeatherParameter(WeatherParameter param, float val)
         UWeatherLib::setWeatherParamScalar(simmode_->GetWorld(), param_e, val);
     },
                                              true);
+}
+
+bool WorldSimApi::simLoadSceneMap(const std::string& image_path, float meters_per_pixel, float center_x, float center_y, float z,
+                                  float yaw, bool collision_enabled, const std::string& object_name)
+{
+    msr::airlib::AirSimSettings::SceneMapSetting scene_map_setting;
+    scene_map_setting.enabled = true;
+    scene_map_setting.image_path = image_path;
+    scene_map_setting.meters_per_pixel = meters_per_pixel;
+    scene_map_setting.center_x = center_x;
+    scene_map_setting.center_y = center_y;
+    scene_map_setting.z = z;
+    scene_map_setting.yaw = yaw;
+    scene_map_setting.collision_enabled = collision_enabled;
+    scene_map_setting.object_name = object_name;
+    return simLoadSceneMapInternal(scene_map_setting);
+}
+
+bool WorldSimApi::simLoadSceneMapFromSettings(const msr::airlib::AirSimSettings::SceneMapSetting& scene_map_setting)
+{
+    return simLoadSceneMapInternal(scene_map_setting);
+}
+
+bool WorldSimApi::simLoadSceneMapInternal(const msr::airlib::AirSimSettings::SceneMapSetting& scene_map_setting)
+{
+    if (scene_map_setting.image_path.empty() || scene_map_setting.meters_per_pixel <= 0) {
+        UAirBlueprintLib::LogMessageString("SceneMap requires ImagePath and positive MetersPerPixel", "", LogDebugLevel::Failure);
+        return false;
+    }
+
+    bool success = false;
+    UAirBlueprintLib::RunCommandOnGameThread([this, scene_map_setting, &success]() {
+        if (IsValid(scene_map_actor_)) {
+            simmode_->scene_object_map.Remove(FString(scene_map_info_.object_name.c_str()));
+            scene_map_actor_->Destroy();
+            scene_map_actor_ = nullptr;
+            scene_map_info_ = msr::airlib::WorldSimApiBase::SceneMapInfo();
+        }
+
+        UTexture2D* texture = FImageUtils::ImportFileAsTexture2D(FString(scene_map_setting.image_path.c_str()));
+        if (!IsValid(texture)) {
+            UAirBlueprintLib::LogMessageString("SceneMap failed to load image: ", scene_map_setting.image_path, LogDebugLevel::Failure);
+            return;
+        }
+
+        UStaticMesh* plane_mesh = Cast<UStaticMesh>(StaticLoadObject(UStaticMesh::StaticClass(), nullptr, TEXT("/Engine/BasicShapes/Plane.Plane")));
+        if (!IsValid(plane_mesh)) {
+            UAirBlueprintLib::LogMessageString("SceneMap failed to load /Engine/BasicShapes/Plane", "", LogDebugLevel::Failure);
+            return;
+        }
+
+        if (!IsValid(simmode_->domain_rand_material_)) {
+            UAirBlueprintLib::LogMessageString("SceneMap cannot find texture material", "", LogDebugLevel::Failure);
+            return;
+        }
+
+        const int image_width_px = texture->GetSizeX();
+        const int image_height_px = texture->GetSizeY();
+        const int width_px = image_width_px;
+        const int height_px = image_height_px;
+        const float width_m = width_px * scene_map_setting.meters_per_pixel;
+        const float height_m = height_px * scene_map_setting.meters_per_pixel;
+
+        FActorSpawnParameters spawn_params;
+        spawn_params.Name = FName(scene_map_setting.object_name.c_str());
+        spawn_params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+        const auto pixel_frame = msr::airlib::Utils::toLower(scene_map_setting.pixel_coordinate_frame);
+        const bool north_up = pixel_frame == "northup" || pixel_frame == "north_up" || pixel_frame == "googleearth" || pixel_frame == "google_earth" || pixel_frame == "satellite";
+        const float visual_yaw = scene_map_setting.yaw + (north_up ? -90.0f : 0.0f);
+        const FVector actor_location = simmode_->getGlobalNedTransform().fromGlobalNed(Vector3r(scene_map_setting.center_x, scene_map_setting.center_y, scene_map_setting.z));
+        const FQuat actor_rotation = FRotator(0.0f, visual_yaw, 0.0f).Quaternion();
+        UAirBlueprintLib::LogMessageString("SceneMap PixelFrame/VisualYaw: ",
+                                           msr::airlib::Utils::stringf("%s / %.1f", scene_map_setting.pixel_coordinate_frame.c_str(), visual_yaw),
+                                           LogDebugLevel::Informational);
+
+        AActor* actor = simmode_->GetWorld()->SpawnActor<AActor>(AActor::StaticClass(), actor_location, actor_rotation.Rotator(), spawn_params);
+        if (!IsValid(actor)) {
+            UAirBlueprintLib::LogMessageString("SceneMap failed to spawn actor", "", LogDebugLevel::Failure);
+            return;
+        }
+
+        UStaticMeshComponent* mesh_component = NewObject<UStaticMeshComponent>(actor);
+        mesh_component->SetStaticMesh(plane_mesh);
+        mesh_component->SetRelativeLocation(FVector::ZeroVector);
+        mesh_component->SetWorldScale3D(FVector(width_m, height_m, 1.0f));
+        mesh_component->SetHiddenInGame(false, true);
+        mesh_component->SetMobility(EComponentMobility::Static);
+        mesh_component->SetCollisionEnabled(scene_map_setting.collision_enabled ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+        mesh_component->SetCollisionObjectType(ECC_WorldStatic);
+        mesh_component->SetCollisionResponseToAllChannels(scene_map_setting.collision_enabled ? ECR_Block : ECR_Ignore);
+
+        UMaterialInstanceDynamic* material = UMaterialInstanceDynamic::Create(simmode_->domain_rand_material_, mesh_component);
+        material->SetTextureParameterValue("TextureParameter", texture);
+        mesh_component->SetMaterial(0, material);
+
+        actor->SetRootComponent(mesh_component);
+        mesh_component->RegisterComponent();
+
+        scene_map_actor_ = actor;
+        scene_map_info_.enabled = true;
+        scene_map_info_.object_name = scene_map_setting.object_name;
+        scene_map_info_.image_path = scene_map_setting.image_path;
+        scene_map_info_.meters_per_pixel = scene_map_setting.meters_per_pixel;
+        scene_map_info_.pixel_coordinate_frame = scene_map_setting.pixel_coordinate_frame;
+        scene_map_info_.image_width_px = image_width_px;
+        scene_map_info_.image_height_px = image_height_px;
+        scene_map_info_.width_px = width_px;
+        scene_map_info_.height_px = height_px;
+        scene_map_info_.width_meters = width_m;
+        scene_map_info_.height_meters = height_m;
+        scene_map_info_.center_x = scene_map_setting.center_x;
+        scene_map_info_.center_y = scene_map_setting.center_y;
+        scene_map_info_.z = scene_map_setting.z;
+        scene_map_info_.yaw = scene_map_setting.yaw;
+        scene_map_info_.collision_enabled = scene_map_setting.collision_enabled;
+        scene_map_info_.geo_reference_enabled = scene_map_setting.geo_reference_enabled;
+        scene_map_info_.reference_latitude = scene_map_setting.reference_latitude;
+        scene_map_info_.reference_longitude = scene_map_setting.reference_longitude;
+        scene_map_info_.reference_altitude = scene_map_setting.reference_altitude;
+        scene_map_info_.reference_u = scene_map_setting.has_reference_pixel ? scene_map_setting.reference_u : width_px * 0.5f;
+        scene_map_info_.reference_v = scene_map_setting.has_reference_pixel ? scene_map_setting.reference_v : height_px * 0.5f;
+
+        simmode_->scene_object_map.Add(FString(scene_map_setting.object_name.c_str()), actor);
+        success = true;
+    },
+                                             true);
+
+    return success;
+}
+
+bool WorldSimApi::simUnloadSceneMap()
+{
+    bool success = false;
+    UAirBlueprintLib::RunCommandOnGameThread([this, &success]() {
+        if (IsValid(scene_map_actor_)) {
+            simmode_->scene_object_map.Remove(FString(scene_map_info_.object_name.c_str()));
+            scene_map_actor_->Destroy();
+            scene_map_actor_ = nullptr;
+            GEngine->ForceGarbageCollection(true);
+            success = true;
+        }
+        scene_map_info_ = msr::airlib::WorldSimApiBase::SceneMapInfo();
+    },
+                                             true);
+    return success;
+}
+
+msr::airlib::WorldSimApiBase::SceneMapInfo WorldSimApi::simGetSceneMapInfo() const
+{
+    return scene_map_info_;
+}
+
+Vector3r WorldSimApi::sceneMapLocalToWorld(float local_x, float local_y, float z) const
+{
+    const float yaw_rad = scene_map_info_.yaw * 3.14159265358979323846f / 180.0f;
+    const float cos_yaw = std::cos(yaw_rad);
+    const float sin_yaw = std::sin(yaw_rad);
+    return Vector3r(
+        scene_map_info_.center_x + cos_yaw * local_x - sin_yaw * local_y,
+        scene_map_info_.center_y + sin_yaw * local_x + cos_yaw * local_y,
+        z);
+}
+
+msr::airlib::Vector2r WorldSimApi::sceneMapWorldToLocal(float x, float y) const
+{
+    const float yaw_rad = scene_map_info_.yaw * 3.14159265358979323846f / 180.0f;
+    const float cos_yaw = std::cos(yaw_rad);
+    const float sin_yaw = std::sin(yaw_rad);
+    const float dx = x - scene_map_info_.center_x;
+    const float dy = y - scene_map_info_.center_y;
+    return msr::airlib::Vector2r(cos_yaw * dx + sin_yaw * dy, -sin_yaw * dx + cos_yaw * dy);
+}
+
+Vector3r WorldSimApi::simSceneMapToWorld(float u, float v, float z) const
+{
+    if (!scene_map_info_.enabled) {
+        const float nan = std::numeric_limits<float>::quiet_NaN();
+        return Vector3r(nan, nan, nan);
+    }
+
+    const auto frame = msr::airlib::Utils::toLower(scene_map_info_.pixel_coordinate_frame);
+    const bool north_up = frame == "northup" || frame == "north_up" || frame == "googleearth" || frame == "google_earth" || frame == "satellite";
+    const float local_x = north_up
+                              ? -(v - scene_map_info_.height_px * 0.5f) * scene_map_info_.meters_per_pixel
+                              : (u - scene_map_info_.width_px * 0.5f) * scene_map_info_.meters_per_pixel;
+    const float local_y = north_up
+                              ? (u - scene_map_info_.width_px * 0.5f) * scene_map_info_.meters_per_pixel
+                              : (v - scene_map_info_.height_px * 0.5f) * scene_map_info_.meters_per_pixel;
+    return sceneMapLocalToWorld(local_x, local_y, z);
+}
+
+msr::airlib::Vector2r WorldSimApi::simWorldToSceneMap(float x, float y) const
+{
+    if (!scene_map_info_.enabled) {
+        const float nan = std::numeric_limits<float>::quiet_NaN();
+        return msr::airlib::Vector2r(nan, nan);
+    }
+
+    const auto local = sceneMapWorldToLocal(x, y);
+    const auto frame = msr::airlib::Utils::toLower(scene_map_info_.pixel_coordinate_frame);
+    const bool north_up = frame == "northup" || frame == "north_up" || frame == "googleearth" || frame == "google_earth" || frame == "satellite";
+    if (north_up) {
+        return msr::airlib::Vector2r(
+            local.y() / scene_map_info_.meters_per_pixel + scene_map_info_.width_px * 0.5f,
+            -local.x() / scene_map_info_.meters_per_pixel + scene_map_info_.height_px * 0.5f);
+    }
+    return msr::airlib::Vector2r(
+        local.x() / scene_map_info_.meters_per_pixel + scene_map_info_.width_px * 0.5f,
+        local.y() / scene_map_info_.meters_per_pixel + scene_map_info_.height_px * 0.5f);
 }
 
 std::unique_ptr<std::vector<std::string>> WorldSimApi::swapTextures(const std::string& tag, int tex_id, int component_id, int material_id)

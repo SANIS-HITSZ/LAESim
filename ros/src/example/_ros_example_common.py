@@ -8,6 +8,7 @@ from pathlib import Path
 
 MULTIROTOR_TYPES = {"simpleflight", "px4multirotor", "arducopter", "arducoptersolo"}
 CAR_TYPES = {"physxcar", "ardurover"}
+BOAT_TYPES = {"simpleboat", "physxboat"}
 
 SENSOR_TYPE_TO_TOPIC = {
     1: "altimeter/{sensor_name}",
@@ -81,6 +82,8 @@ def infer_vehicle_kind(vehicle_config):
         return "multirotor"
     if vehicle_type in CAR_TYPES:
         return "car"
+    if vehicle_type in BOAT_TYPES:
+        return "boat"
     return "unknown"
 
 
@@ -155,6 +158,8 @@ def state_topics(vehicle_name, vehicle_kind, namespace):
     }
     if vehicle_kind == "car":
         topics["car_state"] = topic_name(namespace, vehicle_name, "car_state")
+    elif vehicle_kind == "boat":
+        topics["boat_state"] = topic_name(namespace, vehicle_name, "boat_state")
     return topics
 
 

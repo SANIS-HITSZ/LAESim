@@ -1,0 +1,11 @@
+string image_path
+float32 meters_per_pixel
+float32 center_x
+float32 center_y
+float32 z
+float32 yaw
+bool collision_enabled
+string object_name
+---
+bool success
+SceneMapInfo info

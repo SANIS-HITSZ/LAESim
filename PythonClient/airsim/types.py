@@ -86,6 +86,63 @@ class Vector2r(MsgpackMixin):
         self.x_val = x_val
         self.y_val = y_val
 
+class SceneMapInfo(MsgpackMixin):
+    enabled = False
+    object_name = ""
+    image_path = ""
+    meters_per_pixel = 1.0
+    pixel_coordinate_frame = "NED"
+    image_width_px = 0
+    image_height_px = 0
+    width_px = 0
+    height_px = 0
+    width_meters = 0.0
+    height_meters = 0.0
+    center_x = 0.0
+    center_y = 0.0
+    z = 0.0
+    z_val = 0.0
+    yaw = 0.0
+    collision_enabled = True
+    geo_reference_enabled = False
+    reference_latitude = 0.0
+    reference_longitude = 0.0
+    reference_altitude = 0.0
+    reference_u = 0.0
+    reference_v = 0.0
+
+    def __init__(self):
+        self.enabled = False
+        self.object_name = ""
+        self.image_path = ""
+        self.meters_per_pixel = 1.0
+        self.pixel_coordinate_frame = "NED"
+        self.image_width_px = 0
+        self.image_height_px = 0
+        self.width_px = 0
+        self.height_px = 0
+        self.width_meters = 0.0
+        self.height_meters = 0.0
+        self.center_x = 0.0
+        self.center_y = 0.0
+        self.z = 0.0
+        self.z_val = 0.0
+        self.yaw = 0.0
+        self.collision_enabled = True
+        self.geo_reference_enabled = False
+        self.reference_latitude = 0.0
+        self.reference_longitude = 0.0
+        self.reference_altitude = 0.0
+        self.reference_u = 0.0
+        self.reference_v = 0.0
+
+    @classmethod
+    def from_msgpack(cls, encoded):
+        obj = super(SceneMapInfo, cls).from_msgpack(encoded)
+        if hasattr(obj, "z_val"):
+            obj.z = obj.z_val
+        return obj
+
 class Vector3r(MsgpackMixin):
     x_val = 0.0
     y_val = 0.0

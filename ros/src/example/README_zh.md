@@ -9,6 +9,8 @@
 - `ros/` 已经 `catkin_make`
 - 当前终端已经 `source /opt/ros/noetic/setup.bash` 和 `source devel/setup.bash`
 
+如果机器上没有 `/usr/bin/g++-8`，可以先用默认 `catkin_make` 编译；当前船相关 ROS 消息和 wrapper 已经按默认 g++ 通过过一次构建。
+
 ROS 示例默认读取 `/mnt/c/Users/.../Documents/AirSim/settings.json` 这份 Windows 侧配置在 WSL 中的挂载路径，不需要再单独维护一份 WSL 本地副本。
 
 ## 1. connect_ue_ros.sh
@@ -117,7 +119,63 @@ python3 src/example/keyboard_car_ros.py --vehicle Car
 - 发布：`/airsim_node/<vehicle>/car_cmd`
 - 订阅：`/airsim_node/<vehicle>/car_state`
 
-## 4. vehicle_state_monitor_ros.py
+## 4. keyboard_boat_ros.py
+
+这个脚本可以：
+
+- 基于 ROS 话题控制船 / 水面载具
+- 使用 `pygame` 窗口
+- 支持推进、倒退、舵角、刹车、抛锚
+- 显示船的 `speed / forward_speed / lateral_speed / yaw_rate`
+
+船在 UE 地面平面上运动，不要求场景里有真实水体。运动模型按简化船舶平面三自由度来做，保留转向惯性和横向漂移，不做波浪、水流、浮力等水相互作用。
+
+命令：
+
+```bash
+python3 src/example/keyboard_boat_ros.py --vehicle Boat
+```
+
+常用参数：
+
+- `--vehicle`：控制哪艘船
+- `--rate`：发布频率
+- `--throttle`：前进推进量
+- `--reverse-throttle`：倒退推进量
+- `--steering`：舵角 / 转向量
+- `--idle-brake`：空挡时轻微刹车
+
+按键：
+
+- `W`：前进
+- `S`：倒退
+- `A/D`：左 / 右舵
+- `Space`：抛锚
+- `B`：刹车
+- `ESC/Q`：退出
+
+它对应的 ROS 接口是：
+
+- 发布：`/airsim_node/<vehicle>/boat_cmd`
+- 订阅：`/airsim_node/<vehicle>/boat_state`
+
+`boat_cmd` 使用 `airsim_ros_pkgs/BoatControls`：
+
+- `throttle`
+- `steering`
+- `brake`
+- `anchor`
+
+`boat_state` 使用 `airsim_ros_pkgs/BoatState`，核心字段是：
+
+- `speed`
+- `forward_speed`
+- `lateral_speed`
+- `yaw_rate`
+- `pose`
+- `twist`
+
+## 5. vehicle_state_monitor_ros.py
 
 这个脚本可以：
 
@@ -143,8 +201,9 @@ python3 src/example/vehicle_state_monitor_ros.py
 - `/airsim_node/<vehicle>/environment`
 - `/airsim_node/<vehicle>/global_gps`
 - `/airsim_node/<vehicle>/car_state`（仅汽车）
+- `/airsim_node/<vehicle>/boat_state`（仅船）
 
-## 5. sensor_config_report_ros.py
+## 6. sensor_config_report_ros.py
 
 这个脚本可以：
 
@@ -172,7 +231,7 @@ python3 src/example/sensor_config_report_ros.py
 - 看 `PublishToRos` 是否开了
 - 看话题命名是否和预期一致
 
-## 6. camera_record_ros.py
+## 7. camera_record_ros.py
 
 这个脚本可以：
 
@@ -205,7 +264,7 @@ python3 src/example/camera_record_ros.py
 - 快速验证 ROS 相机图像是否正常发布
 - 对照 Windows 侧 `sensor_probe.py` 的结果
 
-## 7. lidar_record_ros.py
+## 8. lidar_record_ros.py
 
 这个脚本可以：
 
@@ -233,7 +292,7 @@ python3 src/example/lidar_record_ros.py
 ./lidar_record_ros_outputs/lidar_record_<timestamp>/
 ```
 
-## 8. _ros_example_common.py
+## 9. _ros_example_common.py
 
 这是内部公共模块，不是给别人直接运行的脚本。它负责：
 

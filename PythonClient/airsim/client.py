@@ -207,6 +207,41 @@ class VehicleClient:
             val (float): Intensity of the effect, Range 0-1
         """
         self.client.call('simSetWeatherParameter', param, val)
+#scene map
+    def simLoadSceneMap(self, image_path, meters_per_pixel, center_x = 0, center_y = 0, z = 0, yaw = 0, collision_enabled = True, object_name = "LAESimSceneMap"):
+        """
+        Load an image as a physically scaled ground map plane in the Unreal scene.
+
+        Args:
+            image_path (str): Absolute path to png/jpg/bmp image on the Unreal host.
+            meters_per_pixel (float): Physical resolution of the image.
+            center_x, center_y, z (float): Map center in AirSim NED meters.
+            yaw (float): Map yaw in degrees.
+            collision_enabled (bool): Whether the plane blocks vehicles.
+            object_name (str): Actor name for the generated map.
+        """
+        return self.client.call('simLoadSceneMap', image_path, meters_per_pixel, center_x, center_y, z, yaw, collision_enabled, object_name)
+    def simUnloadSceneMap(self):
+        """
+        Remove the current generated scene map plane.
+        """
+        return self.client.call('simUnloadSceneMap')
+    def simGetSceneMapInfo(self):
+        """
+        Returns:
+            SceneMapInfo: Current scene map metadata.
+        """
+        return SceneMapInfo.from_msgpack(self.client.call('simGetSceneMapInfo'))
+    def simSceneMapToWorld(self, u, v, z = 0):
+        """
+        Convert image pixel coordinate (u, v) to AirSim NED world coordinate.
+        """
+        return Vector3r.from_msgpack(self.client.call('simSceneMapToWorld', u, v, z))
+    def simWorldToSceneMap(self, x, y):
+        """
+        Convert AirSim NED world x/y coordinate to image pixel coordinate.
+        """
+        return Vector2r.from_msgpack(self.client.call('simWorldToSceneMap', x, y))
 #camera control
 #simGetImage returns compressed png in array of bytes
 #image_type uses one of the ImageType members
@@ -1313,13 +1348,30 @@ class MultiVehicleClient(object):
     def __init__(self, ip="", timeout_value=3600):
         if ip == "":
             ip = "127.0.0.1"
+        self._world = VehicleClient(ip=ip, port=RPCLIB_PORT_CV, timeout_value=timeout_value)
         self._multirotor = MultirotorClient(ip=ip, port=RPCLIB_PORT_MULTIROTOR, timeout_value=timeout_value)
         self._car = CarClient(ip=ip, port=RPCLIB_PORT_CAR, timeout_value=timeout_value)
         self._boat = BoatClient(ip=ip, port=RPCLIB_PORT_BOAT, timeout_value=timeout_value)
     def confirmConnection(self):
+        self._world.confirmConnection()
         self._multirotor.confirmConnection()
         self._car.confirmConnection()
         self._boat.confirmConnection()
+    def simLoadSceneMap(self, image_path, meters_per_pixel, center_x=0, center_y=0, z=0, yaw=0, collision_enabled=True, object_name="LAESimSceneMap"):
+        """Load an image map through the CV/world RPC port."""
+        return self._world.simLoadSceneMap(image_path, meters_per_pixel, center_x, center_y, z, yaw, collision_enabled, object_name)
+    def simUnloadSceneMap(self):
+        """Remove the current generated scene map plane."""
+        return self._world.simUnloadSceneMap()
+    def simGetSceneMapInfo(self):
+        """Get current generated scene map metadata."""
+        return self._world.simGetSceneMapInfo()
+    def simSceneMapToWorld(self, u, v, z=0):
+        """Convert image pixel coordinate to AirSim NED world coordinate."""
+        return self._world.simSceneMapToWorld(u, v, z)
+    def simWorldToSceneMap(self, x, y):
+        """Convert AirSim NED world x/y coordinate to image pixel coordinate."""
+        return self._world.simWorldToSceneMap(x, y)
     def _try_multirotor_then_car(self, fn_multirotor, fn_car, vehicle_name, *args, **kwargs):
         """Try multirotor client first, then car client if vehicle not found."""
         try:

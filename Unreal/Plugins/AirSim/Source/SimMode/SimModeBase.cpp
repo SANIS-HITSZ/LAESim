@@ -140,6 +140,17 @@ void ASimModeBase::BeginPlay()
 
     UAirBlueprintLib::LogMessage(TEXT("Press F1 to see help"), TEXT(""), LogDebugLevel::Informational);
 
+    const auto& scene_map_setting = getSettings().scene_map_setting;
+    if (scene_map_setting.enabled) {
+        const bool scene_map_loaded = static_cast<WorldSimApi*>(world_sim_api_.get())->simLoadSceneMapFromSettings(scene_map_setting);
+        if (scene_map_loaded) {
+            const auto scene_map_info = world_sim_api_->simGetSceneMapInfo();
+            AirSimSettings::singleton().applySceneMapVehicleStartSettings(scene_map_info.width_px, scene_map_info.height_px);
+            if (scene_map_setting.segmentation_id >= 0)
+                world_sim_api_->setSegmentationObjectID(scene_map_setting.object_name, scene_map_setting.segmentation_id, false);
+        }
+    }
+
     setupVehiclesAndCamera();
     FRecordingThread::init();
 
