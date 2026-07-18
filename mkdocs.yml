@@ -4,15 +4,27 @@ site_author: SANIS-HITSZ
 site_dir: build_docs
 repo_url: https://github.com/SANIS-HITSZ/LAESim
 edit_uri: edit/main/docs/
-site_description: '支持 ROS 与可选 ns-3 自组网的空地协同多机仿真平台'
+site_description: '支持空地海混合载具与可选 ns-3 自组网的多机仿真平台'
 
 markdown_extensions:
-    - toc:
-        permalink: "#"
-    - pymdownx.arithmatex:
-        generic: true
-    - pymdownx.extra:
-    - admonition
+  - toc:
+      permalink: "#"
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.extra
+  - admonition
+
+# The repository retains upstream AirSim documents for source compatibility,
+# but the LAESim site publishes only the curated product documentation below.
+exclude_docs: |
+  *
+  !index.md
+  !laesim_features.md
+  !laesim_build.md
+  !laesim_use.md
+  !laesim_wsl_ros_ns3.md
+  !stylesheets/
+  !stylesheets/laesim.css
 
 remote_branch: gh-pages
 
@@ -38,109 +50,20 @@ extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
-copyright: LAESim contributors; AirSim copyright Microsoft Corporation
+copyright: LAESim contributors; based on Microsoft AirSim
 
 nav:
-  - "首页":
-    - "LAESim 文档": 'index.md'
-    - "WSL2、ROS 与 ns-3": 'laesim_wsl_ros_ns3.md'
-  - "更新记录": 'CHANGELOG.md'
-  - "构建 AirSim":
-    - "下载预编译版本": 'use_precompiled.md'
-    - "在 Windows 上构建": 'build_windows.md'
-    - "在 Linux 上构建": 'build_linux.md'
-    - "在 macOS 上构建": 'build_macos.md'
-    - "在 Linux 上使用 Docker": 'docker_ubuntu.md'
-    - "在 Azure 上运行": 'azure.md'
-    - "自定义 Unreal 环境": 'unreal_custenv.md'
-    - "在 Unity 中使用 AirSim": "Unity.md"
-    - "自定义 Unity 环境": "custom_unity_environments.md"
-    - "Unity API": "unity_api_support.md"
-    - "FAQ": 'build_faq.md'
-  - "使用 AirSim":
-    - "核心 API": 'apis.md'
-    - "图像 API": 'image_apis.md'
-    - "C++ APIs": 'apis_cpp.md'
-    - "Python API 参考": 'api_docs/html/index.html'
-    - "开发工作流": 'dev_workflow.md'
-    - "配置文件": 'settings.md'
-    - "相机视图": 'camera_views.md'
-    - "车辆模式": 'using_car.md'
-    - "遥控器": 'remote_control.md'
-    - "Xbox 控制器": 'xbox_controller.md'
-    - "方向盘": 'steering_wheel_installation.md'
-    - "多载具": 'multi_vehicle.md'
-    - "传感器":
-      - "传感器概览": 'sensors.md'
-      - "LIDAR": 'lidar.md'
-      - "距离传感器": 'distance_sensor.md'
-      - "红外相机": "InfraredCamera.md"
-    - "ROS：AirSim ROS Wrapper": "airsim_ros_pkgs.md"
-    - "ROS：AirSim 教程包": "airsim_tutorial_pkgs.md"
-    - "导入 Gazebo 模型": "gazebo_drone.md"
-    - "域随机化": "retexturing.md"
-    - "网格顶点缓冲": "meshes.md"
-    - "日志回放": 'playback.md'
-    - "体素网格生成器": "voxel_grid.md"
-    - "事件相机": "event_sim.md"
-  - "总体设计":
-    - "系统架构": 'design.md'
-    - "代码结构": 'code_structure.md'
-    - "添加新 API": 'adding_new_apis.md'
-    - "修改记录数据": 'modify_recording_data.md'
-    - "编码规范": 'coding_guidelines.md'
-    - "飞行控制器": 'flight_controller.md'
-    - "简单飞行": 'simple_flight.md'
-    - "无人机入门": 'hello_drone.md'
-  - "外部飞行控制器":
-    - "MavLink and PX4":
-      - "PX4 Setup for AirSim": 'px4_setup.md'
-      - "PX4 in SITL": 'px4_sitl.md'
-      - "PX4 SITL with WSL 2": 'px4_sitl_wsl2.md'
-      - "PX4 Lockstep": 'px4_lockstep.md'
-      - "PX4 Multi-vehicle in SITL": 'px4_multi_vehicle.md'
-      - "AirSim with Pixhawk": 'https://youtu.be/1oY8Qu5maQQ'
-      - "PX4 Setup with AirSim": 'https://youtu.be/HNWdYrtw3f0'
-      - "Debugging Attitude Estimation": 'https://www.youtube.com/watch?v=d_FyjKDWQfc&feature=youtu.be'
-      - "Intercepting MavLink Messages": 'https://github.com/Microsoft/AirSim/wiki/Intercepting-MavLink-messages'
-      - "Rapid Descent on PX4 Drones": 'https://github.com/Microsoft/AirSim/wiki/Rapid-Descent-on-PX4-drones'
-      - "Building PX4": "px4_build.md"
-      - "PX4/MavLink Logging": 'px4_logging.md'
-      - "MavLink LogViewer": "log_viewer.md"
-      - "MavLinkCom": 'mavlinkcom.md'
-      - "MavLink MoCap": 'mavlinkcom_mocap.md'
-    - "ArduPilot":
-      - "ArduPilot SITL Setup": "https://ardupilot.org/dev/docs/building-the-code.html"
-      - "AirSim & ArduPilot": "https://ardupilot.org/dev/docs/sitl-with-airsim.html"
-  - "升级":
-    - "升级 Unreal": 'unreal_upgrade.md'
-    - "升级 API": 'upgrade_apis.md'
-    - "升级配置": 'upgrade_settings.md'
-  - "贡献教程":
-    - "强化学习": 'reinforcement_learning.md'
-    - "Using Environments from Marketplace": 'https://www.youtube.com/watch?v=y09VbdQWvQY'
-    - "Simple Collision Avoidance": 'https://github.com/simondlevy/AirSimTensorFlow'
-    - "Autonomous Driving on Azure": 'https://aka.ms/AutonomousDrivingCookbook'
-    - "Building Hexacopter": 'https://github.com/Microsoft/AirSim/wiki/hexacopter'
-    - "Moving on Path Demo": 'https://github.com/Microsoft/AirSim/wiki/moveOnPath-demo'
-    - "构建点云": 'point_clouds.md'
-    - "无人机测绘": 'drone_survey.md'
-    - "环绕轨迹": "orbit.md"
-    - "Importing a custom multirotor mesh": 'https://youtu.be/Bp86WiLUC80'
-    - "目标检测": "object_detection.md"
-    - "AirSim with MAVROS and PX4": 'https://youtu.be/ZonkdMcwXH4'
-  - "其他":
-    - "在真实无人机上使用 AirSim": 'custom_drone.md'
-    - "在 Linux 上安装 CMake": 'cmake_linux.md'
-    - "机械硬盘使用建议": 'hard_drive.md'
-    - "PFM 格式": 'pfm.md'
-    - "设置 Unreal 环境": 'unreal_proj.md'
-    - "Blocks 环境": 'unreal_blocks.md'
-    - "谁在使用 AirSim": 'who_is_using.md'
-    - "使用 UE 插件内容": 'working_with_plugin_contents.md'
-    - "Formula Student Technion Self-drive": 'https://github.com/Microsoft/AirSim/wiki/technion'
-  - "支持":
-    - "FAQ": 'faq.md'
-    - "支持说明": 'SUPPORT.md'
-    - "创建 Issue": 'create_issue.md'
-    - "参与贡献": 'CONTRIBUTING.md'
+  - "首页": index.md
+  - "认识 LAESim":
+      - "核心特色": laesim_features.md
+      - "构建 LAESim": laesim_build.md
+      - "使用 LAESim": laesim_use.md
+  - "自组织网络":
+      - "WSL2、ROS 与 ns-3": laesim_wsl_ros_ns3.md
+  - "上游参考":
+      - "AirSim 官方文档": https://microsoft.github.io/AirSim/
+      - "AirSim API 文档": https://microsoft.github.io/AirSim/apis/
+  - "项目":
+      - "GitHub 仓库": https://github.com/SANIS-HITSZ/LAESim
+      - "提交问题": https://github.com/SANIS-HITSZ/LAESim/issues
+      - "更新记录": https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md
