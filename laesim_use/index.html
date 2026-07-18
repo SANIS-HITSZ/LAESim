@@ -67,6 +67,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#boat">Boat 使用边界</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#satellite-scenemap">Satellite 与 SceneMap</a>
+    </li>
     </ul>
                   </li>
               </ul>
@@ -128,12 +130,15 @@
 <h2 id="_1">选择配置模板<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
 <p>运行时配置固定放在：</p>
 <pre class="highlight"><code class="language-text">%USERPROFILE%\Documents\AirSim\settings.json</code></pre>
-<p>仓库提供四套模板：</p>
+<p>仓库提供以下常用模板：</p>
 <ul>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_uav_with_sensors.json">单无人机与传感器</a></li>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_car_with_sensors.json">单汽车与传感器</a></li>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_3uav_3car_with_sensors.json">3 架无人机 + 3 辆汽车</a></li>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_2uav_1car_1boat_with_sensors.json">2 架无人机 + 1 辆汽车 + 1 艘船</a></li>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_2uav_1car_1boat_1satellite_with_sensors.json">空天地海混合载具</a></li>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_scene_map_1uav_1car_1boat.json">SceneMap 空地海场景</a></li>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_satellite_map_gps_start.json">卫星与 GPS 配准地图</a></li>
 </ul>
 <p>混合载具场景必须使用：</p>
 <pre class="highlight"><code class="language-json">"SimMode": "AirGround"</code></pre>
@@ -152,6 +157,8 @@
 <pre class="highlight"><code class="language-powershell">python .\Multi_use\keyboard_control.py --vehicle UAV
 python .\Multi_use\car_keyboard_control.py --vehicle Car
 python .\Multi_use\boat_keyboard_control.py --vehicle Boat
+python .\Multi_use\satellite_keyboard_control.py --vehicle Satellite
+python .\Multi_use\scene_map_tools.py info
 python .\Multi_use\sensor_probe.py</code></pre>
 <p>默认端口分别是：</p>
 <table>
@@ -178,6 +185,10 @@ python .\Multi_use\sensor_probe.py</code></pre>
 <td>Boat</td>
 <td><code>41481</code></td>
 </tr>
+<tr>
+<td>Satellite</td>
+<td><code>41491</code></td>
+</tr>
 </tbody>
 </table>
 <p>完整参数见仓库中的 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/Multi_use/README_zh.md">Multi_use 使用说明</a>。</p>
@@ -195,6 +206,7 @@ source devel/setup.bash</code></pre>
 <pre class="highlight"><code class="language-bash">python3 src/example/keyboard_uav_ros.py --vehicle UAV
 python3 src/example/keyboard_car_ros.py --vehicle Car
 python3 src/example/keyboard_boat_ros.py --vehicle Boat
+python3 src/example/keyboard_satellite_ros.py --vehicle Satellite
 python3 src/example/vehicle_state_monitor_ros.py</code></pre>
 <p>详细参数和 topic/service 见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/ros/src/example/README_zh.md">LAESim ROS 示例说明</a>。</p>
 <h2 id="ns-3">启用或关闭 ns-3<a class="headerlink" href="#ns-3" title="Permanent link">#</a></h2>
@@ -209,6 +221,8 @@ python3 src/example/vehicle_state_monitor_ros.py</code></pre>
 <p>并启动 ROS 网络桥接器。完整配置和验证命令见<a href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>。</p>
 <h2 id="boat">Boat 使用边界<a class="headerlink" href="#boat" title="Permanent link">#</a></h2>
 <p>Boat 在地面平面上使用简化三自由度模型运动，不要求 UE 水体，也不模拟波浪、水流和浮力。它适合任务规划、编队控制、感知与通信研究；需要高保真船舶水动力时，应接入专用水动力模型。</p>
+<h2 id="satellite-scenemap">Satellite 与 SceneMap<a class="headerlink" href="#satellite-scenemap" title="Permanent link">#</a></h2>
+<p>Satellite 使用三维理想质点模型，不等同于轨道动力学仿真。SceneMap 的 <code>ImagePath</code> 必须指向 Windows UE 进程能够读取的真实图片；模板中的 <code>C:/path/to/...</code> 是需要替换的占位路径。详细配置与 API 见仓库中的 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/%E5%A6%82%E4%BD%95%E5%8A%A0%E5%85%A5%E5%9B%BE%E7%89%87%E5%9C%BA%E6%99%AF%E5%9C%B0%E5%9B%BE%E5%8A%9F%E8%83%BD.md">图片场景地图说明</a>。</p>
               
             </div>
           </div><footer>

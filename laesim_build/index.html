@@ -65,6 +65,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#boat">Boat 模型资源</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#satellite">Satellite 模型资源</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#ue_1">接入自己的 UE 工程</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_3">构建验证</a>
@@ -162,6 +164,8 @@ BuildAirSimRelease.bat</code></pre>
 <p>构建脚本会将其复制到：</p>
 <pre class="highlight"><code class="language-text">Unreal\Plugins\AirSim\Content\Models\Boat</code></pre>
 <p>默认 Pawn 会加载 <code>/AirSim/Models/Boat/Type_052B_Destroyer_Combined</code>，因此普通使用者不需要在 <code>settings.json</code> 中配置模型路径。若资源没有复制成功，Boat 会回退到代码生成的简化外形。</p>
+<h2 id="satellite">Satellite 模型资源<a class="headerlink" href="#satellite" title="Permanent link">#</a></h2>
+<p>Satellite 源码资产位于 <code>Unreal\Assets\Satellite\Models\Satellite</code>。构建脚本会将其复制到 <code>Unreal\Plugins\AirSim\Content\Models\Satellite</code>，默认 Pawn 加载 <code>/AirSim/Models/Satellite/10477_Satellite_v1_L3</code>；资源缺失时会回退到代码生成的简化卫星外形。</p>
 <h2 id="ue_1">接入自己的 UE 工程<a class="headerlink" href="#ue_1" title="Permanent link">#</a></h2>
 <ol>
 <li>创建或打开一个 UE 4.27 C++ 项目。</li>
@@ -179,8 +183,8 @@ BuildAirSimRelease.bat</code></pre>
 <ul>
 <li><code>Unreal\Plugins\AirSim\Binaries</code> 已生成插件二进制</li>
 <li>UE 能加载 AirSim/LAESim 插件并进入 Play</li>
-<li><code>settings.json</code> 使用 <code>AirGround</code> 时能同时生成无人机、汽车和船</li>
-<li>本机端口 <code>41451</code>、<code>41461</code>、<code>41471</code>、<code>41481</code> 按配置监听</li>
+<li><code>settings.json</code> 使用 <code>AirGround</code> 时能同时生成无人机、汽车、船和卫星</li>
+<li>本机端口 <code>41451</code>、<code>41461</code>、<code>41471</code>、<code>41481</code>、<code>41491</code> 按配置监听</li>
 </ul>
 <p>构建完成后继续阅读<a href="../laesim_use/">使用 LAESim</a>。</p>
               
