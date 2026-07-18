@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh_CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_use/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>使用 LAESim - LAESim 中文文档</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../stylesheets/laesim.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u4f7f\u7528 LAESim";
+        var mkdocs_page_input_path = "laesim_use.md";
+        var mkdocs_page_url = "/LAESim/laesim_use/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> LAESim 中文文档
+        </a>
+        <div class="version">
+          main
+        </div><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">认识 LAESim</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_features/">核心特色</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_build/">构建 LAESim</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">使用 LAESim</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">选择配置模板</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">启动场景</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#windows-python-api">Windows Python API</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ros-noetic">ROS Noetic</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ns-3">启用或关闭 ns-3</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#boat">Boat 使用边界</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">自组织网络</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">上游参考</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/apis/">AirSim API 文档</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">LAESim 中文文档</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">认识 LAESim</li>
+      <li class="breadcrumb-item active">使用 LAESim</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/laesim_use.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="laesim">使用 LAESim<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
+<p>LAESim 的主要使用入口是 Windows 侧 <code>settings.json</code>、UE 场景，以及仓库提供的 Python/ROS 示例。</p>
+<h2 id="_1">选择配置模板<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<p>运行时配置固定放在：</p>
+<pre class="highlight"><code class="language-text">C:\Users\&lt;用户名&gt;\Documents\AirSim\settings.json</code></pre>
+<p>仓库提供四套模板：</p>
+<ul>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_uav_with_sensors.json">单无人机与传感器</a></li>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_car_with_sensors.json">单汽车与传感器</a></li>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_3uav_3car_with_sensors.json">3 架无人机 + 3 辆汽车</a></li>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_2uav_1car_1boat_with_sensors.json">2 架无人机 + 1 辆汽车 + 1 艘船</a></li>
+</ul>
+<p>混合载具场景必须使用：</p>
+<pre class="highlight"><code class="language-json">"SimMode": "AirGround"</code></pre>
+<p>建议从模板复制完整配置，再修改载具名称、初始位置和传感器，不要从空 JSON 手工拼接。</p>
+<h2 id="_2">启动场景<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
+<ol>
+<li>把选定模板复制为用户目录中的 <code>settings.json</code>。</li>
+<li>用 UE 4.27 打开已接入 LAESim 插件的工程。</li>
+<li>点击 Play。</li>
+<li>检查场景中载具数量、类型和初始位置。</li>
+<li>使用 Python API 或 ROS 示例验证控制与状态。</li>
+</ol>
+<p>修改 <code>settings.json</code> 后需要重新开始 Play，运行中的场景不会自动重载完整载具配置。</p>
+<h2 id="windows-python-api">Windows Python API<a class="headerlink" href="#windows-python-api" title="Permanent link">#</a></h2>
+<p><code>Multi_use</code> 目录提供不依赖 ROS 的控制和传感器工具：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\keyboard_control.py --vehicle UAV
+python .\Multi_use\car_keyboard_control.py --vehicle Car
+python .\Multi_use\boat_keyboard_control.py --vehicle Boat
+python .\Multi_use\sensor_probe.py</code></pre>
+<p>默认端口分别是：</p>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>端口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通用/CV</td>
+<td><code>41451</code></td>
+</tr>
+<tr>
+<td>Car</td>
+<td><code>41461</code></td>
+</tr>
+<tr>
+<td>Multirotor</td>
+<td><code>41471</code></td>
+</tr>
+<tr>
+<td>Boat</td>
+<td><code>41481</code></td>
+</tr>
+</tbody>
+</table>
+<p>完整参数见仓库中的 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/Multi_use/README_zh.md">Multi_use 使用说明</a>。</p>
+<h2 id="ros-noetic">ROS Noetic<a class="headerlink" href="#ros-noetic" title="Permanent link">#</a></h2>
+<p>ROS 工作空间位于 <code>ros/</code>。在 WSL2 中编译：</p>
+<pre class="highlight"><code class="language-bash">cd ~/LAESim/ros
+source /opt/ros/noetic/setup.bash
+catkin_make \
+  -DCMAKE_C_COMPILER=/usr/bin/gcc-8 \
+  -DCMAKE_CXX_COMPILER=/usr/bin/g++-8
+source devel/setup.bash</code></pre>
+<p>Windows UE 已进入 Play 后连接：</p>
+<pre class="highlight"><code class="language-bash">bash src/example/connect_ue_ros.sh</code></pre>
+<p>常用示例：</p>
+<pre class="highlight"><code class="language-bash">python3 src/example/keyboard_uav_ros.py --vehicle UAV
+python3 src/example/keyboard_car_ros.py --vehicle Car
+python3 src/example/keyboard_boat_ros.py --vehicle Boat
+python3 src/example/vehicle_state_monitor_ros.py</code></pre>
+<p>详细参数和 topic/service 见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/ros/src/example/README_zh.md">LAESim ROS 示例说明</a>。</p>
+<h2 id="ns-3">启用或关闭 ns-3<a class="headerlink" href="#ns-3" title="Permanent link">#</a></h2>
+<p>默认保持理想通信：</p>
+<pre class="highlight"><code class="language-json">"NetworkSimulation": {
+  "Backend": "none"
+}</code></pre>
+<p>完成 WSL2/ns-3 安装后，可以改为：</p>
+<pre class="highlight"><code class="language-json">"NetworkSimulation": {
+  "Backend": "ns3"
+}</code></pre>
+<p>并启动 ROS 网络桥接器。完整配置和验证命令见<a href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>。</p>
+<h2 id="boat">Boat 使用边界<a class="headerlink" href="#boat" title="Permanent link">#</a></h2>
+<p>Boat 在地面平面上使用简化三自由度模型运动，不要求 UE 水体，也不模拟波浪、水流和浮力。它适合任务规划、编队控制、感知与通信研究；需要高保真船舶水动力时，应接入专用水动力模型。</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../laesim_build/" class="btn btn-neutral float-left" title="构建 LAESim"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../laesim_wsl_ros_ns3/" class="btn btn-neutral float-right" title="WSL2、ROS 与 ns-3">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>LAESim contributors; based on Microsoft AirSim</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/SANIS-HITSZ/LAESim" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../laesim_build/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../laesim_wsl_ros_ns3/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

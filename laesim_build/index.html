@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh_CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_build/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>构建 LAESim - LAESim 中文文档</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../stylesheets/laesim.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u6784\u5efa LAESim";
+        var mkdocs_page_input_path = "laesim_build.md";
+        var mkdocs_page_url = "/LAESim/laesim_build/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> LAESim 中文文档
+        </a>
+        <div class="version">
+          main
+        </div><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">认识 LAESim</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_features/">核心特色</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">构建 LAESim</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">环境要求</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">获取源码</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#laesim_1">编译 LAESim 插件</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#ue">UE 安装在非标准目录</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#boat">Boat 模型资源</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ue_1">接入自己的 UE 工程</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">构建验证</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_use/">使用 LAESim</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">自组织网络</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">上游参考</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/apis/">AirSim API 文档</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">LAESim 中文文档</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">认识 LAESim</li>
+      <li class="breadcrumb-item active">构建 LAESim</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/laesim_build.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="laesim">构建 LAESim<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
+<p>本页只说明 LAESim 的 Windows/UE 4.27 构建流程。Visual Studio 工作负载、Unreal 基础环境和 AirSim 通用依赖可先参考 <a href="https://microsoft.github.io/AirSim/build_windows/">AirSim 官方 Windows 构建文档</a>。</p>
+<h2 id="_1">环境要求<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<ul>
+<li>Windows 10/11</li>
+<li>Unreal Engine 4.27</li>
+<li>Visual Studio 2019 或 2022</li>
+<li>使用 C++ 的桌面开发工作负载</li>
+<li>Windows 10 SDK，推荐 <code>10.0.19041.0</code></li>
+<li>Git 和 PowerShell</li>
+</ul>
+<p>需要 ROS 或 ns-3 时，再准备 WSL2；它们不是 Windows 插件编译的前置条件。</p>
+<h2 id="_2">获取源码<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
+<pre class="highlight"><code class="language-powershell">git clone https://github.com/SANIS-HITSZ/LAESim.git H:\LAESim
+Set-Location H:\LAESim</code></pre>
+<p>若 PowerShell 禁止运行本地脚本，可仅为当前用户启用签名策略：</p>
+<pre class="highlight"><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
+<h2 id="laesim_1">编译 LAESim 插件<a class="headerlink" href="#laesim_1" title="Permanent link">#</a></h2>
+<p>推荐入口：</p>
+<pre class="highlight"><code class="language-powershell">.\BuildAirSimRelease.bat</code></pre>
+<p>该脚本会查找 Visual Studio 开发环境，然后调用：</p>
+<pre class="highlight"><code class="language-cmd">build.cmd --Release</code></pre>
+<p>构建结束后，LAESim 插件位于：</p>
+<pre class="highlight"><code class="language-text">H:\LAESim\Unreal\Plugins\AirSim</code></pre>
+<h3 id="ue">UE 安装在非标准目录<a class="headerlink" href="#ue" title="Permanent link">#</a></h3>
+<p>自动探测失败时指定 UE 根目录：</p>
+<pre class="highlight"><code class="language-cmd">set UNREAL_ENGINE_ROOT=E:\epgame\UE_4.27
+BuildAirSimRelease.bat</code></pre>
+<h2 id="boat">Boat 模型资源<a class="headerlink" href="#boat" title="Permanent link">#</a></h2>
+<p>Boat 的源码资产位于：</p>
+<pre class="highlight"><code class="language-text">Unreal\Assets\Boat\Models\Boat</code></pre>
+<p>构建脚本会将其复制到：</p>
+<pre class="highlight"><code class="language-text">Unreal\Plugins\AirSim\Content\Models\Boat</code></pre>
+<p>默认 Pawn 会加载 <code>/AirSim/Models/Boat/Type_052B_Destroyer_Combined</code>，因此普通使用者不需要在 <code>settings.json</code> 中配置模型路径。若资源没有复制成功，Boat 会回退到代码生成的简化外形。</p>
+<h2 id="ue_1">接入自己的 UE 工程<a class="headerlink" href="#ue_1" title="Permanent link">#</a></h2>
+<ol>
+<li>创建或打开一个 UE 4.27 C++ 项目。</li>
+<li>将 <code>Unreal\Plugins\AirSim</code> 整体复制到目标项目的 <code>Plugins\AirSim</code>。</li>
+<li>重新生成并编译目标项目的 <code>Development Editor</code>。</li>
+<li>在关卡中配置 <code>PlayerStart</code> 和 <code>AirSimGameMode</code>。</li>
+<li>将 LAESim 配置放到 <code>C:\Users\&lt;用户名&gt;\Documents\AirSim\settings.json</code>。</li>
+<li>打开关卡并点击 Play。</li>
+</ol>
+<p>只验证仓库自带 Blocks 场景时，可以额外运行：</p>
+<pre class="highlight"><code class="language-powershell">.\Unreal\Environments\Blocks\BuildBlocksEditor.bat</code></pre>
+<p>该脚本只构建 Blocks 示例，不替代 LAESim 插件构建。</p>
+<h2 id="_3">构建验证<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<p>至少确认以下结果：</p>
+<ul>
+<li><code>Unreal\Plugins\AirSim\Binaries</code> 已生成插件二进制</li>
+<li>UE 能加载 AirSim/LAESim 插件并进入 Play</li>
+<li><code>settings.json</code> 使用 <code>AirGround</code> 时能同时生成无人机、汽车和船</li>
+<li>本机端口 <code>41451</code>、<code>41461</code>、<code>41471</code>、<code>41481</code> 按配置监听</li>
+</ul>
+<p>构建完成后继续阅读<a href="../laesim_use/">使用 LAESim</a>。</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../laesim_features/" class="btn btn-neutral float-left" title="核心特色"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../laesim_use/" class="btn btn-neutral float-right" title="使用 LAESim">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>LAESim contributors; based on Microsoft AirSim</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/SANIS-HITSZ/LAESim" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../laesim_features/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../laesim_use/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

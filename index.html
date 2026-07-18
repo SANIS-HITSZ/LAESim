@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="支持空地海混合载具与可选 ns-3 自组网的多机仿真平台" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/" />
       <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>LAESim 文档 - LAESim 中文文档</title>
+    <title>LAESim 中文文档</title>
     <link rel="stylesheet" href="css/theme.css" />
     <link rel="stylesheet" href="css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "LAESim \u6587\u6863";
+        var mkdocs_page_name = "\u9996\u9875";
         var mkdocs_page_input_path = "index.md";
         var mkdocs_page_url = "/LAESim/";
       </script>
@@ -43,237 +43,52 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption"><span class="caption-text">首页</span></p>
               <ul class="current">
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">LAESim 文档</a>
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">首页</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_1">快速入口</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_1">两项核心扩展</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">空地海混合载具</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_2">系统组成</a>
+    <li class="toctree-l3"><a class="reference internal" href="#ns-3">可选 ns-3 自组织网络</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">网络模式</a>
+        </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">相关项目</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">开始使用</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#airsim">与 AirSim 的关系</a>
     </li>
     </ul>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">认识 LAESim</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="laesim_features/">核心特色</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="laesim_build/">构建 LAESim</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="laesim_use/">使用 LAESim</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">自组织网络</span></p>
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
                   </li>
               </ul>
+              <p class="caption"><span class="caption-text">上游参考</span></p>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="CHANGELOG/">更新记录</a>
-                </li>
-              </ul>
-              <p class="caption"><span class="caption-text">构建 AirSim</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="use_precompiled/">下载预编译版本</a>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="build_windows/">在 Windows 上构建</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="build_linux/">在 Linux 上构建</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="build_macos/">在 macOS 上构建</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="docker_ubuntu/">在 Linux 上使用 Docker</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="azure/">在 Azure 上运行</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="unreal_custenv/">自定义 Unreal 环境</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="Unity/">在 Unity 中使用 AirSim</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="custom_unity_environments/">自定义 Unity 环境</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="unity_api_support/">Unity API</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="build_faq/">FAQ</a>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/apis/">AirSim API 文档</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">使用 AirSim</span></p>
+              <p class="caption"><span class="caption-text">项目</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="apis/">核心 API</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="image_apis/">图像 API</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="apis_cpp/">C++ APIs</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="api_docs/html/">Python API 参考</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="dev_workflow/">开发工作流</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="settings/">配置文件</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="camera_views/">相机视图</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="using_car/">车辆模式</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="remote_control/">遥控器</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="xbox_controller/">Xbox 控制器</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="steering_wheel_installation/">方向盘</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="multi_vehicle/">多载具</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" >传感器</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="sensors/">传感器概览</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="lidar/">LIDAR</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="distance_sensor/">距离传感器</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="InfraredCamera/">红外相机</a>
-                </li>
-    </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="airsim_ros_pkgs/">ROS：AirSim ROS Wrapper</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="airsim_tutorial_pkgs/">ROS：AirSim 教程包</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="gazebo_drone/">导入 Gazebo 模型</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="retexturing/">域随机化</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="meshes/">网格顶点缓冲</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="playback/">日志回放</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="voxel_grid/">体素网格生成器</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="event_sim/">事件相机</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">总体设计</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="design/">系统架构</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="code_structure/">代码结构</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="adding_new_apis/">添加新 API</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="modify_recording_data/">修改记录数据</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="coding_guidelines/">编码规范</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="flight_controller/">飞行控制器</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="simple_flight/">简单飞行</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="hello_drone/">无人机入门</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">外部飞行控制器</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" >MavLink and PX4</a>
-    <ul>
-                <li class="toctree-l2"><a class="reference internal" href="px4_setup/">PX4 Setup for AirSim</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="px4_sitl/">PX4 in SITL</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="px4_sitl_wsl2/">PX4 SITL with WSL 2</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="px4_lockstep/">PX4 Lockstep</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="px4_multi_vehicle/">PX4 Multi-vehicle in SITL</a>
-                </li>
-                <li class="toctree-l2"><a class="" href="https://youtu.be/1oY8Qu5maQQ">AirSim with Pixhawk</a>
-                </li>
-                <li class="toctree-l2"><a class="" href="https://youtu.be/HNWdYrtw3f0">PX4 Setup with AirSim</a>
-                </li>
-                <li class="toctree-l2"><a class="" href="https://www.youtube.com/watch?v=d_FyjKDWQfc&feature=youtu.be">Debugging Attitude Estimation</a>
-                </li>
-                <li class="toctree-l2"><a class="" href="https://github.com/Microsoft/AirSim/wiki/Intercepting-MavLink-messages">Intercepting MavLink Messages</a>
-                </li>
-                <li class="toctree-l2"><a class="" href="https://github.com/Microsoft/AirSim/wiki/Rapid-Descent-on-PX4-drones">Rapid Descent on PX4 Drones</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="px4_build/">Building PX4</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="px4_logging/">PX4/MavLink Logging</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="log_viewer/">MavLink LogViewer</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="mavlinkcom/">MavLinkCom</a>
-                </li>
-                <li class="toctree-l2"><a class="reference internal" href="mavlinkcom_mocap/">MavLink MoCap</a>
-                </li>
-    </ul>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" >ArduPilot</a>
-    <ul>
-                <li class="toctree-l2"><a class="" href="https://ardupilot.org/dev/docs/building-the-code.html">ArduPilot SITL Setup</a>
-                </li>
-                <li class="toctree-l2"><a class="" href="https://ardupilot.org/dev/docs/sitl-with-airsim.html">AirSim & ArduPilot</a>
-                </li>
-    </ul>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">升级</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="unreal_upgrade/">升级 Unreal</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="upgrade_apis/">升级 API</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="upgrade_settings/">升级配置</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">贡献教程</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="reinforcement_learning/">强化学习</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://www.youtube.com/watch?v=y09VbdQWvQY">Using Environments from Marketplace</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/simondlevy/AirSimTensorFlow">Simple Collision Avoidance</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://aka.ms/AutonomousDrivingCookbook">Autonomous Driving on Azure</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/hexacopter">Building Hexacopter</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/moveOnPath-demo">Moving on Path Demo</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="point_clouds/">构建点云</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="drone_survey/">无人机测绘</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="orbit/">环绕轨迹</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://youtu.be/Bp86WiLUC80">Importing a custom multirotor mesh</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="object_detection/">目标检测</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://youtu.be/ZonkdMcwXH4">AirSim with MAVROS and PX4</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">其他</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="custom_drone/">在真实无人机上使用 AirSim</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="cmake_linux/">在 Linux 上安装 CMake</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="hard_drive/">机械硬盘使用建议</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="pfm/">PFM 格式</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="unreal_proj/">设置 Unreal 环境</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="unreal_blocks/">Blocks 环境</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="who_is_using/">谁在使用 AirSim</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="working_with_plugin_contents/">使用 UE 插件内容</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/technion">Formula Student Technion Self-drive</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">支持</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="faq/">FAQ</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="SUPPORT/">支持说明</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="create_issue/">创建 Issue</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING/">参与贡献</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
                   </li>
               </ul>
       </div>
@@ -290,8 +105,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">首页</li>
-      <li class="breadcrumb-item active">LAESim 文档</li>
+      <li class="breadcrumb-item active">首页</li>
     <li class="wy-breadcrumbs-aside">
           <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/index.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
@@ -301,85 +115,44 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="laesim">LAESim 中文文档<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
-<p>LAESim 是面向空地协同研究的多载具仿真工程。Windows 端负责 UE 4.27 场景、物理和传感器仿真；WSL2 端可运行 ROS Noetic，并按配置选择理想通信或 ns-3 自组织网络。</p>
-<h2 id="_1">快速入口<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+                <h1 id="laesim">LAESim<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
+<p>LAESim 是面向空地海协同研究的多载具仿真平台。在同一个 UE 4.27 场景和同一份 <code>settings.json</code> 中，可以同时运行无人机、车辆和船，并通过 Python API 或 ROS 对不同类型载具进行控制和状态采集。</p>
+<p><img alt="LAESim 空地协同多机仿真场景" src="https://github.com/user-attachments/assets/b6abd8e5-756e-46b6-a82c-31d273962cd5" /></p>
+<h2 id="_1">两项核心扩展<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<h3 id="_2">空地海混合载具<a class="headerlink" href="#_2" title="Permanent link">#</a></h3>
+<p>原版 AirSim 的常用运行模式通常在 <code>Multirotor</code> 与 <code>Car</code> 之间选择。LAESim 新增 <code>AirGround</code> 混合模式和 Boat 载具链路，使以下对象能够出现在同一个仿真场景中：</p>
 <ul>
-<li><a href="build_windows/">在 Windows 上构建 AirSim</a></li>
-<li><a href="multi_vehicle/">多载具配置</a></li>
-<li><a href="airsim_ros_pkgs/">AirSim ROS Wrapper</a></li>
-<li><a href="laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3 完整复现流程</a></li>
-<li><a href="settings/">配置文件参考</a></li>
-<li><a href="api_docs/html/">Python API 参考</a></li>
+<li>多架 <code>SimpleFlight</code> 无人机</li>
+<li>多辆 <code>PhysXCar</code> 汽车</li>
+<li>多艘 <code>SimpleBoat</code> 或 <code>PhysXBoat</code> 船</li>
 </ul>
-<h2 id="_2">系统组成<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
-<p><img alt="AirSim 系统架构" src="images/overview.PNG" /></p>
-<table>
-<thead>
-<tr>
-<th>组件</th>
-<th>运行位置</th>
-<th>职责</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>UE 4.27 与 LAESim</td>
-<td>Windows</td>
-<td>空地载具、物理环境、相机和传感器</td>
-</tr>
-<tr>
-<td>AirSim RPC</td>
-<td>Windows</td>
-<td>向外部控制器提供载具状态和控制接口</td>
-</tr>
-<tr>
-<td>ROS Noetic</td>
-<td>WSL2</td>
-<td>多机状态、控制算法和消息接口</td>
-</tr>
-<tr>
-<td>ns-3.48</td>
-<td>WSL2</td>
-<td>可选的 Wi-Fi ad hoc、自组网路由、时延和丢包仿真</td>
-</tr>
-</tbody>
-</table>
-<h2 id="_3">网络模式<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
-<p><code>settings.json</code> 中的 <code>NetworkSimulation.Backend</code> 控制通信后端：</p>
-<table>
-<thead>
-<tr>
-<th>配置值</th>
-<th>行为</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>none</code></td>
-<td>保持原有理想通信，消息立即到达</td>
-</tr>
-<tr>
-<td><code>ns3</code></td>
-<td>消息经过 ns-3 Wi-Fi ad hoc 网络，计算时延、吞吐量和丢包</td>
-</tr>
-</tbody>
-</table>
-<p>当前工程已验证 Windows UE/AirSim 与 WSL2 ROS 的六载具联动，以及 <code>UAV -&gt; Car</code> 在 <code>none</code> 和 <code>ns3</code> 后端中的 ROS 消息往返。详细安装步骤、配置字段、测试结果和当前限制见<a href="laesim_wsl_ros_ns3/">网络仿真复现文档</a>。</p>
-<h2 id="_4">相关项目<a class="headerlink" href="#_4" title="Permanent link">#</a></h2>
-<p>LAESim 基于 Microsoft AirSim 扩展，保留其核心 API、载具模型、ROS Wrapper 和原始技术文档。项目源码与问题跟踪位于 <a href="https://github.com/SANIS-HITSZ/LAESim">SANIS-HITSZ/LAESim</a>。</p>
+<p>不同类型载具拥有独立 RPC 端口，并共享相机、IMU、GPS、Lidar、Python API 和 ROS 接口。参见<a href="laesim_features/">核心特色</a>。</p>
+<h3 id="ns-3">可选 ns-3 自组织网络<a class="headerlink" href="#ns-3" title="Permanent link">#</a></h3>
+<p>LAESim 可以保持原来的理想通信，也可以按配置启用 ns-3.48，对 Wi-Fi ad hoc、OLSR/AODV 路由、时延、吞吐量和丢包进行离散事件仿真：</p>
+<pre class="highlight"><code class="language-json">"NetworkSimulation": {
+  "Backend": "none"
+}</code></pre>
+<p>将 <code>Backend</code> 改为 <code>ns3</code> 并启动 ROS 网络桥接器后，应用消息会经过 ns-3。参见<a href="laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>。</p>
+<h2 id="_3">开始使用<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<ol>
+<li>按<a href="laesim_build/">构建 LAESim</a>准备 Windows、UE 4.27 和 Visual Studio，并编译 LAESim 插件。</li>
+<li>按<a href="laesim_use/">使用 LAESim</a>选择混合载具模板、启动场景并验证 Python API 或 ROS。</li>
+<li>需要研究通信网络时，再安装并启用<a href="laesim_wsl_ros_ns3/">可选 ns-3 后端</a>。</li>
+</ol>
+<h2 id="airsim">与 AirSim 的关系<a class="headerlink" href="#airsim" title="Permanent link">#</a></h2>
+<p>LAESim 基于 Microsoft AirSim 扩展，继承其仿真环境、传感器和 API 基础能力。通用 AirSim 功能不在本站重复维护，请直接查阅 <a href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>；本站只记录 LAESim 的构建、混合载具、Boat、ROS 联动和 ns-3 集成。</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="laesim_wsl_ros_ns3/" class="btn btn-neutral float-right" title="WSL2、ROS 与 ns-3">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="laesim_features/" class="btn btn-neutral float-right" title="核心特色">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>LAESim contributors; AirSim copyright Microsoft Corporation</p>
+      <p>LAESim contributors; based on Microsoft AirSim</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
@@ -401,7 +174,7 @@
     
     
     
-      <span><a href="laesim_wsl_ros_ns3/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="laesim_features/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
@@ -420,3 +193,8 @@
 
 </body>
 </html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2026-07-18 06:03:15.390292+00:00
+-->

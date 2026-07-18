@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh_CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_features/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>核心特色 - LAESim 中文文档</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../stylesheets/laesim.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u6838\u5fc3\u7279\u8272";
+        var mkdocs_page_input_path = "laesim_features.md";
+        var mkdocs_page_url = "/LAESim/laesim_features/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> LAESim 中文文档
+        </a>
+        <div class="version">
+          main
+        </div><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">认识 LAESim</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">核心特色</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">空地海混合载具</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#boat">Boat 载具链路</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ns-3">可选 ns-3 自组织网络</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#airsim">继承的 AirSim 能力</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_build/">构建 LAESim</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_use/">使用 LAESim</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">自组织网络</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">上游参考</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/apis/">AirSim API 文档</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">LAESim 中文文档</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">认识 LAESim</li>
+      <li class="breadcrumb-item active">核心特色</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/laesim_features.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="laesim">LAESim 核心特色<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
+<p>LAESim 的目标不是重新维护一份 AirSim 通用文档，而是在 AirSim 的仿真、传感器和 API 基础上，提供空地海混合载具与可选通信网络仿真。</p>
+<h2 id="_1">空地海混合载具<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<p>原版 AirSim 常用的 <code>SimMode</code> 会在 <code>Multirotor</code>、<code>Car</code> 等模式之间选择，同一个模式主要承载同类载具。LAESim 新增 <code>AirGround</code> 模式，使无人机、汽车和船能够在同一个 UE 场景中同时运行。</p>
+<table>
+<thead>
+<tr>
+<th>载具</th>
+<th><code>VehicleType</code></th>
+<th>默认 RPC 端口</th>
+<th>控制接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无人机</td>
+<td><code>SimpleFlight</code></td>
+<td><code>41471</code></td>
+<td>Python API、ROS 速度/起降接口</td>
+</tr>
+<tr>
+<td>汽车</td>
+<td><code>PhysXCar</code></td>
+<td><code>41461</code></td>
+<td>Python API、ROS <code>car_cmd</code></td>
+</tr>
+<tr>
+<td>船</td>
+<td><code>SimpleBoat</code> / <code>PhysXBoat</code></td>
+<td><code>41481</code></td>
+<td>Python API、ROS 船控制与状态接口</td>
+</tr>
+<tr>
+<td>通用/CV</td>
+<td>不限定</td>
+<td><code>41451</code></td>
+<td>相机和通用仿真接口</td>
+</tr>
+</tbody>
+</table>
+<p>不同类型载具可以共享以下能力：</p>
+<ul>
+<li>相机、IMU、GPS 和 Lidar</li>
+<li>载具位姿与碰撞状态</li>
+<li>多实例命名和独立初始位置</li>
+<li>Windows Python API</li>
+<li>WSL2 中的 ROS Noetic topic/service</li>
+</ul>
+<p>下面是一份经过验证的混合配置结构：</p>
+<pre class="highlight"><code class="language-json">{
+  "SettingsVersion": 1.2,
+  "SimMode": "AirGround",
+  "ApiServerPortCV": 41451,
+  "ApiServerPortCar": 41461,
+  "ApiServerPortMultirotor": 41471,
+  "ApiServerPortBoat": 41481,
+  "Vehicles": {
+    "UAV": { "VehicleType": "SimpleFlight" },
+    "Car": { "VehicleType": "PhysXCar" },
+    "Boat": { "VehicleType": "SimpleBoat" }
+  }
+}</code></pre>
+<h2 id="boat">Boat 载具链路<a class="headerlink" href="#boat" title="Permanent link">#</a></h2>
+<p>LAESim 增加了 AirSim 原版没有提供的 Boat 类型、Pawn、状态结构、Python API、ROS topic、控制示例和默认 052B 船模型。</p>
+<p>当前 Boat 使用简化的平面三自由度模型：</p>
+<ul>
+<li><code>u</code>：船体纵向速度</li>
+<li><code>v</code>：横向漂移速度</li>
+<li><code>r</code>：艏向角速度</li>
+</ul>
+<p>该模型保留转向惯性和横向漂移，适合验证 USV/舰船编队、任务规划、传感器和协同通信。它不是水动力仿真，不计算波浪、水流、浮力、横摇或纵摇；场景可以使用蓝色平面表示水域。</p>
+<h2 id="ns-3">可选 ns-3 自组织网络<a class="headerlink" href="#ns-3" title="Permanent link">#</a></h2>
+<p>LAESim 将通信后端做成可配置能力：</p>
+<table>
+<thead>
+<tr>
+<th>后端</th>
+<th>行为</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>消息立即到达，不考虑网络影响</td>
+<td>复用原有算法、调试控制与感知</td>
+</tr>
+<tr>
+<td><code>ns3</code></td>
+<td>经过 Wi-Fi ad hoc 和 OLSR/AODV</td>
+<td>研究时延、吞吐量、丢包和拓扑变化</td>
+</tr>
+</tbody>
+</table>
+<p>AirSim/UE 提供载具位置，ROS 网络桥接器把位置和应用消息交给 ns-3。这样可以研究网络状态对空地海协同算法的影响，同时不改变 UE 的物理和画面生成职责。</p>
+<p>当前已经完成：</p>
+<ul>
+<li><code>none</code> 与 <code>ns3</code> 后端切换</li>
+<li>AirSim odometry 到 ns-3 节点位置更新</li>
+<li>ROS <code>UAV -&gt; Car</code> 消息往返</li>
+<li>通信范围内正常交付与范围外超时丢包</li>
+<li>OLSR 两节点冒烟测试</li>
+</ul>
+<p>完整环境、接口和限制见<a href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>。</p>
+<h2 id="airsim">继承的 AirSim 能力<a class="headerlink" href="#airsim" title="Permanent link">#</a></h2>
+<p>相机类型、通用 API、坐标系、PX4、传感器参数等基础能力继续遵循 AirSim。相关内容直接查阅 <a href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>，本站只维护 LAESim 的差异和扩展。</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="首页"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../laesim_build/" class="btn btn-neutral float-right" title="构建 LAESim">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>LAESim contributors; based on Microsoft AirSim</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/SANIS-HITSZ/LAESim" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../laesim_build/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
