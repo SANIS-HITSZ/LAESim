@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="zh_CN" >
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/px4_sitl_wsl2/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>PX4 SITL with WSL 2 - LAESim</title>
+    <title>PX4 SITL with WSL 2 - LAESim 中文文档</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../stylesheets/laesim.css" rel="stylesheet" />
     
       <script>
         // Current page data
         var mkdocs_page_name = "PX4 SITL with WSL 2";
         var mkdocs_page_input_path = "px4_sitl_wsl2.md";
-        var mkdocs_page_url = null;
+        var mkdocs_page_url = "/LAESim/px4_sitl_wsl2/";
       </script>
     
     <!--[if lt IE 9]>
@@ -30,10 +31,10 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> LAESim
+          <a href=".." class="icon icon-home"> LAESim 中文文档
         </a>
         <div class="version">
-          master
+          main
         </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -42,117 +43,117 @@
       </div>
 
       <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption"><span class="caption-text">Home</span></p>
+              <p class="caption"><span class="caption-text">首页</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                  <li class="toctree-l1"><a class="reference internal" href="..">LAESim 文档</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../laesim_wsl_ros_ns3/">WSL2, ROS and ns-3</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
                   </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG/">Changelog</a>
+                <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG/">更新记录</a>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">Building AirSim</span></p>
+              <p class="caption"><span class="caption-text">构建 AirSim</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../use_precompiled/">Download Binaries</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../use_precompiled/">下载预编译版本</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../build_windows/">Build on Windows</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../build_windows/">在 Windows 上构建</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../build_linux/">Build on Linux</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../build_linux/">在 Linux 上构建</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../build_macos/">Build on macOS</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../build_macos/">在 macOS 上构建</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../docker_ubuntu/">Docker on Linux</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker_ubuntu/">在 Linux 上使用 Docker</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../azure/">AirSim on Azure</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../azure/">在 Azure 上运行</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../unreal_custenv/">Custom Unreal Environment</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_custenv/">自定义 Unreal 环境</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../Unity/">AirSim with Unity</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../Unity/">在 Unity 中使用 AirSim</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../custom_unity_environments/">Custom Unity Environment</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_unity_environments/">自定义 Unity 环境</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../unity_api_support/">Unity APIs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../unity_api_support/">Unity API</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../build_faq/">FAQ</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Using AirSim</span></p>
+              <p class="caption"><span class="caption-text">使用 AirSim</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../apis/">Core APIs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../apis/">核心 API</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../image_apis/">Image APIs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../image_apis/">图像 API</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../apis_cpp/">C++ APIs</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../api_docs/html/">API Reference Docs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../api_docs/html/">Python API 参考</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../dev_workflow/">Development Workflow</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../dev_workflow/">开发工作流</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../settings/">Settings</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../settings/">配置文件</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../camera_views/">Camera Views</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../camera_views/">相机视图</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../using_car/">Car Mode</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../using_car/">车辆模式</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../remote_control/">Remote Control</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../remote_control/">遥控器</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../xbox_controller/">XBox Controller</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../xbox_controller/">Xbox 控制器</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../steering_wheel_installation/">Steering Wheel</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../steering_wheel_installation/">方向盘</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../multi_vehicle/">Multiple Vehicles</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../multi_vehicle/">多载具</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" >Sensors</a>
+                  <li class="toctree-l1"><a class="reference internal" >传感器</a>
     <ul>
-                <li class="toctree-l2"><a class="reference internal" href="../sensors/">Sensors</a>
+                <li class="toctree-l2"><a class="reference internal" href="../sensors/">传感器概览</a>
                 </li>
                 <li class="toctree-l2"><a class="reference internal" href="../lidar/">LIDAR</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../distance_sensor/">Distance Sensor</a>
+                <li class="toctree-l2"><a class="reference internal" href="../distance_sensor/">距离传感器</a>
                 </li>
-                <li class="toctree-l2"><a class="reference internal" href="../InfraredCamera/">Infrared Camera</a>
+                <li class="toctree-l2"><a class="reference internal" href="../InfraredCamera/">红外相机</a>
                 </li>
     </ul>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../airsim_ros_pkgs/">ROS: AirSim ROS Wrapper</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../airsim_ros_pkgs/">ROS：AirSim ROS Wrapper</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../airsim_tutorial_pkgs/">ROS: AirSim Tutorial Packages</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../airsim_tutorial_pkgs/">ROS：AirSim 教程包</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../gazebo_drone/">Import Gazebo models</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../gazebo_drone/">导入 Gazebo 模型</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../retexturing/">Domain Randomization</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../retexturing/">域随机化</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../meshes/">Mesh Vertex Buffers</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../meshes/">网格顶点缓冲</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../playback/">Playing Logs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../playback/">日志回放</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../voxel_grid/">Voxel Grid Generator</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../voxel_grid/">体素网格生成器</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../event_sim/">Event camera</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../event_sim/">事件相机</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Design</span></p>
+              <p class="caption"><span class="caption-text">总体设计</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../design/">Architecture</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../design/">系统架构</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../code_structure/">Code Structure</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../code_structure/">代码结构</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../adding_new_apis/">Adding new APIs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../adding_new_apis/">添加新 API</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../modify_recording_data/">Modifying Recording Data</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../modify_recording_data/">修改记录数据</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../coding_guidelines/">Coding Guidelines</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../coding_guidelines/">编码规范</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../flight_controller/">Flight Controller</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../flight_controller/">飞行控制器</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../simple_flight/">Simple Flight</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../simple_flight/">简单飞行</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../hello_drone/">Hello Drone</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../hello_drone/">无人机入门</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">External Flight Controllers</span></p>
+              <p class="caption"><span class="caption-text">外部飞行控制器</span></p>
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" >MavLink and PX4</a>
     <ul class="current">
@@ -199,18 +200,18 @@
     </ul>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Upgrading</span></p>
+              <p class="caption"><span class="caption-text">升级</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../unreal_upgrade/">Upgrading Unreal</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_upgrade/">升级 Unreal</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../upgrade_apis/">Upgrading APIs</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../upgrade_apis/">升级 API</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../upgrade_settings/">Upgrading Settings</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../upgrade_settings/">升级配置</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Contributed Tutorials</span></p>
+              <p class="caption"><span class="caption-text">贡献教程</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/">Reinforcement Learning</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/">强化学习</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://www.youtube.com/watch?v=y09VbdQWvQY">Using Environments from Marketplace</a>
                   </li>
@@ -222,49 +223,49 @@
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/moveOnPath-demo">Moving on Path Demo</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../point_clouds/">Building Point Clouds</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_clouds/">构建点云</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../drone_survey/">Surveying Using Drone</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../drone_survey/">无人机测绘</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../orbit/">Orbit Trajectory</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../orbit/">环绕轨迹</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://youtu.be/Bp86WiLUC80">Importing a custom multirotor mesh</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../object_detection/">Object Detection</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../object_detection/">目标检测</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://youtu.be/ZonkdMcwXH4">AirSim with MAVROS and PX4</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Misc</span></p>
+              <p class="caption"><span class="caption-text">其他</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../custom_drone/">AirSim on Real Drones</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_drone/">在真实无人机上使用 AirSim</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../cmake_linux/">Installing cmake on Linux</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../cmake_linux/">在 Linux 上安装 CMake</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../hard_drive/">Tips for Busy HDD</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../hard_drive/">机械硬盘使用建议</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../pfm/">pfm format</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../pfm/">PFM 格式</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../unreal_proj/">Setting up Unreal Environment</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_proj/">设置 Unreal 环境</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../unreal_blocks/">Blocks Environment</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_blocks/">Blocks 环境</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../who_is_using/">Who is Using AirSim</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../who_is_using/">谁在使用 AirSim</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../working_with_plugin_contents/">Working with UE Plugin Contents</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../working_with_plugin_contents/">使用 UE 插件内容</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/technion">Formula Student Technion Self-drive</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Support</span></p>
+              <p class="caption"><span class="caption-text">支持</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../faq/">FAQ</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../SUPPORT/">Support</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../SUPPORT/">支持说明</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../create_issue/">Create Issue</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../create_issue/">创建 Issue</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING/">Contribute</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING/">参与贡献</a>
                   </li>
               </ul>
       </div>
@@ -274,18 +275,18 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">LAESim</a>
+          <a href="..">LAESim 中文文档</a>
         
       </nav>
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">External Flight Controllers</li>
+          <li class="breadcrumb-item">外部飞行控制器</li>
           <li class="breadcrumb-item">MavLink and PX4</li>
       <li class="breadcrumb-item active">PX4 SITL with WSL 2</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/master/docs/px4_sitl_wsl2.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/px4_sitl_wsl2.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
