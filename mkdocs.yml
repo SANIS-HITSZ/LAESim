@@ -1,7 +1,7 @@
-site_name: AirSim
+site_name: LAESim
 site_dir: build_docs
-repo_url: https://github.com/microsoft/airsim
-site_description: 'Open source simulator based on Unreal Engine for autonomous vehicles from Microsoft AI & Research'
+repo_url: https://github.com/SANIS-HITSZ/LAESim
+site_description: 'Air-ground collaborative multi-vehicle simulation with optional ROS and ns-3 networking'
 
 markdown_extensions:
     - toc:
@@ -24,20 +24,19 @@ extra:
       tabs: true
   palette:
   social:
-      - type: facebook
-        link: https://www.facebook.com/groups/1225832467530667/
       - type: github-alt
-        link: https://github.com/Microsoft/AirSim
+        link: https://github.com/SANIS-HITSZ/LAESim
 
 extra_javascript:
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
-copyright: Copyright &copy; 2021 Microsoft Research
+copyright: LAESim contributors; AirSim copyright Microsoft Corporation
 
 nav:
   - "Home":
     - "Home": 'README.md'
+    - "WSL2, ROS and ns-3": 'laesim_wsl_ros_ns3.md'
   - "Changelog": 'CHANGELOG.md'
   - "Building AirSim":
     - "Download Binaries": 'use_precompiled.md'
