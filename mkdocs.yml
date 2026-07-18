@@ -9,8 +9,6 @@ site_description: '支持空地海混合载具与可选 ns-3 自组网的多机�
 markdown_extensions:
   - toc:
       permalink: "#"
-  - pymdownx.arithmatex:
-      generic: true
   - pymdownx.extra
   - admonition
 
@@ -51,10 +49,6 @@ extra:
 
 extra_css:
   - stylesheets/laesim.css
-
-extra_javascript:
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 copyright: LAESim contributors; based on Microsoft AirSim
 
