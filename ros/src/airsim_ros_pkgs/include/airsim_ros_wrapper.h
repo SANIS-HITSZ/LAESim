@@ -10,10 +10,13 @@ STRICT_MODE_OFF
 #include "common/common_utils/FileSystem.hpp"
 #include "sensors/SensorBase.hpp"
 #include "sensors/lidar/LidarSimpleParams.hpp"
+#include "api/RpcLibClientBase.hpp"
 #include "ros/ros.h"
 #include "sensors/imu/ImuBase.hpp"
 #include "vehicles/multirotor/api/MultirotorRpcLibClient.hpp"
 #include "vehicles/car/api/CarRpcLibClient.hpp"
+#include "vehicles/boat/api/BoatRpcLibClient.hpp"
+#include "vehicles/satellite/api/SatelliteRpcLibClient.hpp"
 #include "yaml-cpp/yaml.h"
 #include <airsim_ros_pkgs/GimbalAngleEulerCmd.h>
 #include <airsim_ros_pkgs/GimbalAngleQuatCmd.h>
@@ -27,7 +30,18 @@ STRICT_MODE_OFF
 #include <airsim_ros_pkgs/VelCmdGroup.h>
 #include <airsim_ros_pkgs/CarControls.h>
 #include <airsim_ros_pkgs/CarState.h>
+#include <airsim_ros_pkgs/BoatControls.h>
+#include <airsim_ros_pkgs/BoatState.h>
+#include <airsim_ros_pkgs/SatelliteControls.h>
+#include <airsim_ros_pkgs/SatelliteState.h>
 #include <airsim_ros_pkgs/Environment.h>
+#include <airsim_ros_pkgs/SceneMapInfo.h>
+#include <airsim_ros_pkgs/LoadSceneMap.h>
+#include <airsim_ros_pkgs/GetSceneMapInfo.h>
+#include <airsim_ros_pkgs/SceneMapToWorld.h>
+#include <airsim_ros_pkgs/WorldToSceneMap.h>
+#include <airsim_ros_pkgs/UnloadSceneMap.h>
+#include <cmath>
 #include <chrono>
 #include <cv_bridge/cv_bridge.h>
 #include <geometry_msgs/PoseStamped.h>
@@ -163,8 +177,28 @@ private:
         ros::Subscriber car_cmd_sub;
         ros::Publisher car_state_pub;
         airsim_ros_pkgs::CarState car_state_msg;
-        bool has_car_cmd;
+        bool has_car_cmd = false;
         msr::airlib::CarApiBase::CarControls car_cmd;
+    };
+    class BoatROS : public VehicleROS
+    {
+    public:
+        msr::airlib::BoatApiBase::BoatState curr_boat_state;
+        ros::Subscriber boat_cmd_sub;
+        ros::Publisher boat_state_pub;
+        airsim_ros_pkgs::BoatState boat_state_msg;
+        bool has_boat_cmd = false;
+        msr::airlib::BoatApiBase::BoatControls boat_cmd;
+    };
+    class SatelliteROS : public VehicleROS
+    {
+    public:
+        msr::airlib::SatelliteApiBase::SatelliteState curr_satellite_state;
+        ros::Subscriber satellite_cmd_sub;
+        ros::Publisher satellite_state_pub;
+        airsim_ros_pkgs::SatelliteState satellite_state_msg;
+        bool has_satellite_cmd = false;
+        msr::airlib::SatelliteApiBase::SatelliteControls satellite_cmd;
     };
     class MultiRotorROS : public VehicleROS
     {
@@ -176,7 +210,7 @@ private:
         ros::Subscriber vel_cmd_world_frame_sub;
         ros::ServiceServer takeoff_srvr;
         ros::ServiceServer land_srvr;
-        bool has_vel_cmd;
+        bool has_vel_cmd = false;
         VelCmd vel_cmd;
         /// Status
         // bool in_air_;
@@ -198,6 +232,8 @@ private:
     void gimbal_angle_euler_cmd_cb(const airsim_ros_pkgs::GimbalAngleEulerCmd& gimbal_angle_euler_cmd_msg);
     // commands
     void car_cmd_cb(const airsim_ros_pkgs::CarControls::ConstPtr& msg, const std::string& vehicle_name);
+    void boat_cmd_cb(const airsim_ros_pkgs::BoatControls::ConstPtr& msg, const std::string& vehicle_name);
+    void satellite_cmd_cb(const airsim_ros_pkgs::SatelliteControls::ConstPtr& msg, const std::string& vehicle_name);
     void update_commands();
     // state, returns the simulation timestamp best guess based on drone state timestamp, airsim needs to return timestap for environment
     ros::Time update_state();
@@ -234,7 +270,11 @@ private:
     msr::airlib::Quaternionr get_airlib_quat(const tf2::Quaternion& tf2_quat) const;
     nav_msgs::Odometry get_odom_msg_from_multirotor_state(const msr::airlib::MultirotorState& drone_state) const;
     nav_msgs::Odometry get_odom_msg_from_car_state(const msr::airlib::CarApiBase::CarState& car_state) const;
+    nav_msgs::Odometry get_odom_msg_from_boat_state(const msr::airlib::BoatApiBase::BoatState& boat_state) const;
+    nav_msgs::Odometry get_odom_msg_from_satellite_state(const msr::airlib::SatelliteApiBase::SatelliteState& satellite_state) const;
     airsim_ros_pkgs::CarState get_roscarstate_msg_from_car_state(const msr::airlib::CarApiBase::CarState& car_state) const;
+    airsim_ros_pkgs::BoatState get_rosboatstate_msg_from_boat_state(const msr::airlib::BoatApiBase::BoatState& boat_state) const;
+    airsim_ros_pkgs::SatelliteState get_rossatellitestate_msg_from_satellite_state(const msr::airlib::SatelliteApiBase::SatelliteState& satellite_state) const;
     msr::airlib::Pose get_airlib_pose(const float& x, const float& y, const float& z, const msr::airlib::Quaternionr& airlib_quat) const;
     airsim_ros_pkgs::GPSYaw get_gps_msg_from_airsim_geo_point(const msr::airlib::GeoPoint& geo_point) const;
     sensor_msgs::NavSatFix get_gps_sensor_msg_from_airsim_geo_point(const msr::airlib::GeoPoint& geo_point) const;
@@ -255,7 +295,17 @@ private:
     // Utility methods to convert airsim_client_
     msr::airlib::MultirotorRpcLibClient* get_multirotor_client();
     msr::airlib::CarRpcLibClient* get_car_client();
+    msr::airlib::BoatRpcLibClient* get_boat_client();
+    msr::airlib::SatelliteRpcLibClient* get_satellite_client();
+    msr::airlib::RpcLibClientBase* get_world_client();
     msr::airlib::RpcLibClientBase* get_client(const std::string& vehicle_type);
+    airsim_ros_pkgs::SceneMapInfo get_scene_map_info_msg_from_airsim(const msr::airlib::WorldSimApiBase::SceneMapInfo& info) const;
+    void publish_scene_map_info();
+    bool load_scene_map_srv_cb(airsim_ros_pkgs::LoadSceneMap::Request& request, airsim_ros_pkgs::LoadSceneMap::Response& response);
+    bool unload_scene_map_srv_cb(airsim_ros_pkgs::UnloadSceneMap::Request& request, airsim_ros_pkgs::UnloadSceneMap::Response& response);
+    bool get_scene_map_info_srv_cb(airsim_ros_pkgs::GetSceneMapInfo::Request& request, airsim_ros_pkgs::GetSceneMapInfo::Response& response);
+    bool scene_map_to_world_srv_cb(airsim_ros_pkgs::SceneMapToWorld::Request& request, airsim_ros_pkgs::SceneMapToWorld::Response& response);
+    bool world_to_scene_map_srv_cb(airsim_ros_pkgs::WorldToSceneMap::Request& request, airsim_ros_pkgs::WorldToSceneMap::Response& response);
 private:
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
@@ -279,6 +329,15 @@ private:
     bool is_vulkan_; // rosparam obtained from launch file. If vulkan is being used, we BGR encoding instead of RGB
     std::unique_ptr<msr::airlib::MultirotorRpcLibClient> airsim_multirotor_client_;
     std::unique_ptr<msr::airlib::CarRpcLibClient> airsim_car_client_;
+    std::unique_ptr<msr::airlib::BoatRpcLibClient> airsim_boat_client_;
+    std::unique_ptr<msr::airlib::SatelliteRpcLibClient> airsim_satellite_client_;
+    std::unique_ptr<msr::airlib::RpcLibClientBase> airsim_world_client_;
+    ros::Publisher scene_map_info_pub_;
+    ros::ServiceServer load_scene_map_srvr_;
+    ros::ServiceServer unload_scene_map_srvr_;
+    ros::ServiceServer get_scene_map_info_srvr_;
+    ros::ServiceServer scene_map_to_world_srvr_;
+    ros::ServiceServer world_to_scene_map_srvr_;
     ros::CallbackQueue img_timer_cb_queue_;
     ros::CallbackQueue lidar_timer_cb_queue_;
     std::mutex drone_control_mutex_;

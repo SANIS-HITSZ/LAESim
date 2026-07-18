@@ -1,16 +1,17 @@
 # LAESim 核心特色
 
-LAESim 的目标不是重新维护一份 AirSim 通用文档，而是在 AirSim 的仿真、传感器和 API 基础上，提供空地海混合载具与可选通信网络仿真。
+LAESim 的目标不是重新维护一份 AirSim 通用文档，而是在 AirSim 的仿真、传感器和 API 基础上，提供空天地海混合载具、图片地图与可选通信网络仿真。
 
-## 空地海混合载具
+## 空天地海混合载具
 
-原版 AirSim 常用的 `SimMode` 会在 `Multirotor`、`Car` 等模式之间选择，同一个模式主要承载同类载具。LAESim 新增 `AirGround` 模式，使无人机、汽车和船能够在同一个 UE 场景中同时运行。
+原版 AirSim 常用的 `SimMode` 会在 `Multirotor`、`Car` 等模式之间选择，同一个模式主要承载同类载具。LAESim 新增 `AirGround` 模式，使无人机、汽车、船和卫星能够在同一个 UE 场景中同时运行。
 
 | 载具 | `VehicleType` | 默认 RPC 端口 | 控制接口 |
 | --- | --- | --- | --- |
 | 无人机 | `SimpleFlight` | `41471` | Python API、ROS 速度/起降接口 |
 | 汽车 | `PhysXCar` | `41461` | Python API、ROS `car_cmd` |
 | 船 | `SimpleBoat` / `PhysXBoat` | `41481` | Python API、ROS 船控制与状态接口 |
+| 卫星 | `SimpleSatellite` | `41491` | Python API、ROS 三维速度与状态接口 |
 | 通用/CV | 不限定 | `41451` | 相机和通用仿真接口 |
 
 不同类型载具可以共享以下能力：
@@ -31,10 +32,12 @@ LAESim 的目标不是重新维护一份 AirSim 通用文档，而是在 AirSim 
   "ApiServerPortCar": 41461,
   "ApiServerPortMultirotor": 41471,
   "ApiServerPortBoat": 41481,
+  "ApiServerPortSatellite": 41491,
   "Vehicles": {
     "UAV": { "VehicleType": "SimpleFlight" },
     "Car": { "VehicleType": "PhysXCar" },
-    "Boat": { "VehicleType": "SimpleBoat" }
+    "Boat": { "VehicleType": "SimpleBoat" },
+    "Satellite": { "VehicleType": "SimpleSatellite" }
   }
 }
 ```
@@ -50,6 +53,22 @@ LAESim 增加了 AirSim 原版没有提供的 Boat 类型、Pawn、状态结构�
 - `r`：艏向角速度
 
 该模型保留转向惯性和横向漂移，适合验证 USV/舰船编队、任务规划、传感器和协同通信。它不是水动力仿真，不计算波浪、水流、浮力、横摇或纵摇；场景可以使用蓝色平面表示水域。
+
+## Satellite 载具链路
+
+Satellite 提供独立 Pawn、状态结构、Python API、ROS topic、控制示例和默认模型。当前运动模型是三维空间理想质点，控制量为 NED 速度 `vx/vy/vz` 与 `yaw_rate`；停止发送持续移动指令后会静止悬停。该模型适合任务规划、空间协同、感知与通信研究，不模拟轨道摄动、重力或推进器动力学。
+
+## SceneMap 图片地图
+
+SceneMap 可以在启动时或运行时把图片加载为 UE 平面地图，支持：
+
+- 任意长宽比图片、米/像素比例尺和可选碰撞
+- `NorthUp`/`NED` 像素坐标约定
+- `GeoReference` 经纬度与图片像素配准
+- 按像素、地图局部米制坐标或 GPS 设置载具出生位置
+- Python API 与 ROS 服务进行加载、卸载、查询和坐标转换
+
+配置模板见仓库中的 `settings_scene_map_1uav_1car_1boat.json` 和 `settings_satellite_map_gps_start.json`。
 
 ## 可选 ns-3 自组织网络
 

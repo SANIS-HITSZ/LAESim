@@ -28,6 +28,32 @@ namespace airlib
             Enabled = 8
         };
 
+        struct SceneMapInfo
+        {
+            bool enabled = false;
+            std::string object_name = "";
+            std::string image_path = "";
+            float meters_per_pixel = 1.0f;
+            std::string pixel_coordinate_frame = "NED";
+            int image_width_px = 0;
+            int image_height_px = 0;
+            int width_px = 0;
+            int height_px = 0;
+            float width_meters = 0.0f;
+            float height_meters = 0.0f;
+            float center_x = 0.0f;
+            float center_y = 0.0f;
+            float z = 0.0f;
+            float yaw = 0.0f;
+            bool collision_enabled = true;
+            bool geo_reference_enabled = false;
+            double reference_latitude = 0.0;
+            double reference_longitude = 0.0;
+            float reference_altitude = 0.0f;
+            float reference_u = 0.0f;
+            float reference_v = 0.0f;
+        };
+
         virtual ~WorldSimApiBase() = default;
 
         // ------ Level setting apis ----- //
@@ -47,6 +73,13 @@ namespace airlib
 
         virtual void enableWeather(bool enable) = 0;
         virtual void setWeatherParameter(WeatherParameter param, float val) = 0;
+
+        virtual bool simLoadSceneMap(const std::string& image_path, float meters_per_pixel, float center_x, float center_y, float z,
+                                     float yaw, bool collision_enabled, const std::string& object_name) = 0;
+        virtual bool simUnloadSceneMap() = 0;
+        virtual SceneMapInfo simGetSceneMapInfo() const = 0;
+        virtual Vector3r simSceneMapToWorld(float u, float v, float z) const = 0;
+        virtual Vector2r simWorldToSceneMap(float x, float y) const = 0;
 
         virtual bool setSegmentationObjectID(const std::string& mesh_name, int object_id, bool is_name_regex = false) = 0;
         virtual int getSegmentationObjectID(const std::string& mesh_name) const = 0;

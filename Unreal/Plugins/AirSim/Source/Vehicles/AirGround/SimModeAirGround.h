@@ -5,6 +5,7 @@
 #include "Vehicles/Boat/BoatPawn.h"
 #include "Vehicles/Car/CarPawn.h"
 #include "Vehicles/Multirotor/FlyingPawn.h"
+#include "Vehicles/Satellite/SatellitePawn.h"
 #include "SimMode/SimModeWorldBase.h"
 #include "api/VehicleSimApiBase.hpp"
 #include "SimModeAirGround.generated.h"

@@ -33,6 +33,9 @@ AirsimROSWrapper::AirsimROSWrapper(const ros::NodeHandle& nh, const ros::NodeHan
     , airsim_settings_parser_(host_ip)
     , airsim_multirotor_client_(nullptr)
     , airsim_car_client_(nullptr)
+    , airsim_boat_client_(nullptr)
+    , airsim_satellite_client_(nullptr)
+    , airsim_world_client_(nullptr)
     , has_gimbal_cmd_(false)
     , tf_listener_(tf_buffer_)
 {
@@ -47,22 +50,35 @@ const msr::airlib::AirSimSettings& AirsimROSWrapper::get_settings() const
 void AirsimROSWrapper::initialize_airsim()
 {
     try {
+        const uint16_t world_port = static_cast<uint16_t>(get_settings().api_port_cv);
         const uint16_t multirotor_port = static_cast<uint16_t>(get_settings().api_port_multirotor);
         const uint16_t car_port = static_cast<uint16_t>(get_settings().api_port_car);
+        const uint16_t boat_port = static_cast<uint16_t>(get_settings().api_port_boat);
+        const uint16_t satellite_port = static_cast<uint16_t>(get_settings().api_port_satellite);
 
+        ROS_INFO_STREAM("Connecting world RPC -> " << host_ip_ << ":" << world_port);
         ROS_INFO_STREAM("Connecting multirotor RPC -> " << host_ip_ << ":" << multirotor_port);
         ROS_INFO_STREAM("Connecting car RPC -> " << host_ip_ << ":" << car_port);
+        ROS_INFO_STREAM("Connecting boat RPC -> " << host_ip_ << ":" << boat_port);
+        ROS_INFO_STREAM("Connecting satellite RPC -> " << host_ip_ << ":" << satellite_port);
 
+        airsim_world_client_ = std::make_unique<msr::airlib::RpcLibClientBase>(host_ip_, world_port);
         airsim_multirotor_client_ = std::make_unique<msr::airlib::MultirotorRpcLibClient>(host_ip_, multirotor_port);
         airsim_car_client_ = std::make_unique<msr::airlib::CarRpcLibClient>(host_ip_, car_port);
+        airsim_boat_client_ = std::make_unique<msr::airlib::BoatRpcLibClient>(host_ip_, boat_port);
+        airsim_satellite_client_ = std::make_unique<msr::airlib::SatelliteRpcLibClient>(host_ip_, satellite_port);
+        airsim_world_client_->confirmConnection();
         airsim_multirotor_client_->confirmConnection();
         airsim_car_client_->confirmConnection();
+        airsim_boat_client_->confirmConnection();
+        airsim_satellite_client_->confirmConnection();
         for (const auto& [name, vehicle_ros] : vehicle_name_ptr_map_) {
             get_client(vehicle_ros->vehicle_type_)->enableApiControl(true, name);
             get_client(vehicle_ros->vehicle_type_)->armDisarm(true, name);
         }
         origin_geo_point_ = get_origin_geo_point();
         origin_geo_point_msg_ = get_gps_msg_from_airsim_geo_point(origin_geo_point_);
+        publish_scene_map_info();
     }
     catch (rpc::rpc_error& e) {
         std::string msg = e.get_error().as<std::string>();
@@ -85,6 +101,12 @@ void AirsimROSWrapper::initialize_ros()
     vel_cmd_duration_ = 0.05;
     // nh_.getParam("max_vert_vel_", max_vert_vel_);
     // nh_.getParam("max_horz_vel", max_horz_vel_)
+    scene_map_info_pub_ = nh_private_.advertise<airsim_ros_pkgs::SceneMapInfo>("scene_map/info", 1, true);
+    load_scene_map_srvr_ = nh_private_.advertiseService("scene_map/load", &AirsimROSWrapper::load_scene_map_srv_cb, this);
+    unload_scene_map_srvr_ = nh_private_.advertiseService("scene_map/unload", &AirsimROSWrapper::unload_scene_map_srv_cb, this);
+    get_scene_map_info_srvr_ = nh_private_.advertiseService("scene_map/get_info", &AirsimROSWrapper::get_scene_map_info_srv_cb, this);
+    scene_map_to_world_srvr_ = nh_private_.advertiseService("scene_map/scene_map_to_world", &AirsimROSWrapper::scene_map_to_world_srv_cb, this);
+    world_to_scene_map_srvr_ = nh_private_.advertiseService("scene_map/world_to_scene_map", &AirsimROSWrapper::world_to_scene_map_srv_cb, this);
     create_ros_pubs_from_settings_json();
     airsim_control_update_timer_ = nh_private_.createTimer(ros::Duration(update_airsim_control_every_n_sec), &AirsimROSWrapper::drone_state_timer_cb, this);
 }
@@ -114,6 +136,12 @@ void AirsimROSWrapper::create_ros_pubs_from_settings_json()
         }
         else if (msr::airlib::AirSimSettings::isCar(vehicle_setting->vehicle_type)) {
             vehicle_ros = std::make_unique<CarROS>();
+        }
+        else if (msr::airlib::AirSimSettings::isBoat(vehicle_setting->vehicle_type)) {
+            vehicle_ros = std::make_unique<BoatROS>();
+        }
+        else if (msr::airlib::AirSimSettings::isSatellite(vehicle_setting->vehicle_type)) {
+            vehicle_ros = std::make_unique<SatelliteROS>();
         }
         vehicle_ros->vehicle_type_ = vehicle_setting->vehicle_type;
         vehicle_ros->odom_frame_id = vehicle_name + "/" + odom_frame_id_;
@@ -149,6 +177,22 @@ void AirsimROSWrapper::create_ros_pubs_from_settings_json()
                 1,
                 boost::bind(&AirsimROSWrapper::car_cmd_cb, this, _1, vehicle_ros->vehicle_name));
             car->car_state_pub = nh_private_.advertise<airsim_ros_pkgs::CarState>(vehicle_name + "/car_state", 10);
+        }
+        else if (msr::airlib::AirSimSettings::isBoat(vehicle_setting->vehicle_type)) {
+            auto boat = static_cast<BoatROS*>(vehicle_ros.get());
+            boat->boat_cmd_sub = nh_private_.subscribe<airsim_ros_pkgs::BoatControls>(
+                vehicle_name + "/boat_cmd",
+                1,
+                boost::bind(&AirsimROSWrapper::boat_cmd_cb, this, _1, vehicle_ros->vehicle_name));
+            boat->boat_state_pub = nh_private_.advertise<airsim_ros_pkgs::BoatState>(vehicle_name + "/boat_state", 10);
+        }
+        else if (msr::airlib::AirSimSettings::isSatellite(vehicle_setting->vehicle_type)) {
+            auto satellite = static_cast<SatelliteROS*>(vehicle_ros.get());
+            satellite->satellite_cmd_sub = nh_private_.subscribe<airsim_ros_pkgs::SatelliteControls>(
+                vehicle_name + "/satellite_cmd",
+                1,
+                boost::bind(&AirsimROSWrapper::satellite_cmd_cb, this, _1, vehicle_ros->vehicle_name));
+            satellite->satellite_state_pub = nh_private_.advertise<airsim_ros_pkgs::SatelliteState>(vehicle_name + "/satellite_state", 10);
         }
         // iterate over camera map std::map<std::string, CameraSetting> .cameras;
         for (auto& [camera_name, camera_setting] : vehicle_setting->cameras) {
@@ -360,6 +404,7 @@ bool AirsimROSWrapper::reset_srv_cb(airsim_ros_pkgs::Reset::Request& request, ai
     std::lock_guard<std::mutex> guard(drone_control_mutex_);
     get_multirotor_client()->reset();
     get_car_client()->reset();
+    get_boat_client()->reset();
     response.success = true;
     return response.success;
 }
@@ -392,6 +437,28 @@ void AirsimROSWrapper::car_cmd_cb(const airsim_ros_pkgs::CarControls::ConstPtr& 
     car->car_cmd.manual_gear = msg->manual_gear;
     car->car_cmd.gear_immediate = msg->gear_immediate;
     car->has_car_cmd = true;
+}
+
+void AirsimROSWrapper::boat_cmd_cb(const airsim_ros_pkgs::BoatControls::ConstPtr& msg, const std::string& vehicle_name)
+{
+    std::lock_guard<std::mutex> guard(drone_control_mutex_);
+    auto boat = static_cast<BoatROS*>(vehicle_name_ptr_map_[vehicle_name].get());
+    boat->boat_cmd.throttle = msg->throttle;
+    boat->boat_cmd.steering = msg->steering;
+    boat->boat_cmd.brake = msg->brake;
+    boat->boat_cmd.anchor = msg->anchor;
+    boat->has_boat_cmd = true;
+}
+
+void AirsimROSWrapper::satellite_cmd_cb(const airsim_ros_pkgs::SatelliteControls::ConstPtr& msg, const std::string& vehicle_name)
+{
+    std::lock_guard<std::mutex> guard(drone_control_mutex_);
+    auto satellite = static_cast<SatelliteROS*>(vehicle_name_ptr_map_[vehicle_name].get());
+    satellite->satellite_cmd.vx = msg->vx;
+    satellite->satellite_cmd.vy = msg->vy;
+    satellite->satellite_cmd.vz = msg->vz;
+    satellite->satellite_cmd.yaw_rate = msg->yaw_rate;
+    satellite->has_satellite_cmd = true;
 }
 msr::airlib::Pose AirsimROSWrapper::get_airlib_pose(const float& x, const float& y, const float& z, const msr::airlib::Quaternionr& airlib_quat) const
 {
@@ -538,6 +605,40 @@ airsim_ros_pkgs::CarState AirsimROSWrapper::get_roscarstate_msg_from_car_state(c
     state_msg.header.stamp = airsim_timestamp_to_ros(car_state.timestamp);
     return state_msg;
 }
+
+airsim_ros_pkgs::BoatState AirsimROSWrapper::get_rosboatstate_msg_from_boat_state(const msr::airlib::BoatApiBase::BoatState& boat_state) const
+{
+    airsim_ros_pkgs::BoatState state_msg;
+    const auto odo = get_odom_msg_from_boat_state(boat_state);
+    state_msg.pose = odo.pose;
+    state_msg.twist = odo.twist;
+    state_msg.speed = boat_state.speed;
+    state_msg.forward_speed = boat_state.forward_speed;
+    state_msg.lateral_speed = boat_state.lateral_speed;
+    state_msg.yaw_rate = boat_state.yaw_rate;
+    state_msg.throttle = boat_state.throttle;
+    state_msg.steering = boat_state.steering;
+    state_msg.brake = boat_state.brake;
+    state_msg.anchor = boat_state.anchor;
+    state_msg.header.stamp = airsim_timestamp_to_ros(boat_state.timestamp);
+    return state_msg;
+}
+
+airsim_ros_pkgs::SatelliteState AirsimROSWrapper::get_rossatellitestate_msg_from_satellite_state(const msr::airlib::SatelliteApiBase::SatelliteState& satellite_state) const
+{
+    airsim_ros_pkgs::SatelliteState state_msg;
+    const auto odo = get_odom_msg_from_satellite_state(satellite_state);
+    state_msg.pose = odo.pose;
+    state_msg.twist = odo.twist;
+    state_msg.speed = satellite_state.speed;
+    state_msg.vx = satellite_state.vx;
+    state_msg.vy = satellite_state.vy;
+    state_msg.vz = satellite_state.vz;
+    state_msg.yaw_rate = satellite_state.yaw_rate;
+    state_msg.header.stamp = airsim_timestamp_to_ros(satellite_state.timestamp);
+    return state_msg;
+}
+
 nav_msgs::Odometry AirsimROSWrapper::get_odom_msg_from_car_state(const msr::airlib::CarApiBase::CarState& car_state) const
 {
     nav_msgs::Odometry odom_msg;
@@ -566,6 +667,63 @@ nav_msgs::Odometry AirsimROSWrapper::get_odom_msg_from_car_state(const msr::airl
     }
     return odom_msg;
 }
+
+nav_msgs::Odometry AirsimROSWrapper::get_odom_msg_from_boat_state(const msr::airlib::BoatApiBase::BoatState& boat_state) const
+{
+    nav_msgs::Odometry odom_msg;
+    odom_msg.pose.pose.position.x = boat_state.getPosition().x();
+    odom_msg.pose.pose.position.y = boat_state.getPosition().y();
+    odom_msg.pose.pose.position.z = boat_state.getPosition().z();
+    odom_msg.pose.pose.orientation.x = boat_state.getOrientation().x();
+    odom_msg.pose.pose.orientation.y = boat_state.getOrientation().y();
+    odom_msg.pose.pose.orientation.z = boat_state.getOrientation().z();
+    odom_msg.pose.pose.orientation.w = boat_state.getOrientation().w();
+    odom_msg.twist.twist.linear.x = boat_state.kinematics_estimated.twist.linear.x();
+    odom_msg.twist.twist.linear.y = boat_state.kinematics_estimated.twist.linear.y();
+    odom_msg.twist.twist.linear.z = boat_state.kinematics_estimated.twist.linear.z();
+    odom_msg.twist.twist.angular.x = boat_state.kinematics_estimated.twist.angular.x();
+    odom_msg.twist.twist.angular.y = boat_state.kinematics_estimated.twist.angular.y();
+    odom_msg.twist.twist.angular.z = boat_state.kinematics_estimated.twist.angular.z();
+    if (isENU_) {
+        std::swap(odom_msg.pose.pose.position.x, odom_msg.pose.pose.position.y);
+        odom_msg.pose.pose.position.z = -odom_msg.pose.pose.position.z;
+        std::swap(odom_msg.pose.pose.orientation.x, odom_msg.pose.pose.orientation.y);
+        odom_msg.pose.pose.orientation.z = -odom_msg.pose.pose.orientation.z;
+        std::swap(odom_msg.twist.twist.linear.x, odom_msg.twist.twist.linear.y);
+        odom_msg.twist.twist.linear.z = -odom_msg.twist.twist.linear.z;
+        std::swap(odom_msg.twist.twist.angular.x, odom_msg.twist.twist.angular.y);
+        odom_msg.twist.twist.angular.z = -odom_msg.twist.twist.angular.z;
+    }
+    return odom_msg;
+}
+
+nav_msgs::Odometry AirsimROSWrapper::get_odom_msg_from_satellite_state(const msr::airlib::SatelliteApiBase::SatelliteState& satellite_state) const
+{
+    nav_msgs::Odometry odom_msg;
+    odom_msg.pose.pose.position.x = satellite_state.getPosition().x();
+    odom_msg.pose.pose.position.y = satellite_state.getPosition().y();
+    odom_msg.pose.pose.position.z = satellite_state.getPosition().z();
+    odom_msg.pose.pose.orientation.x = satellite_state.getOrientation().x();
+    odom_msg.pose.pose.orientation.y = satellite_state.getOrientation().y();
+    odom_msg.pose.pose.orientation.z = satellite_state.getOrientation().z();
+    odom_msg.pose.pose.orientation.w = satellite_state.getOrientation().w();
+    odom_msg.twist.twist.linear.x = satellite_state.vx;
+    odom_msg.twist.twist.linear.y = satellite_state.vy;
+    odom_msg.twist.twist.linear.z = satellite_state.vz;
+    odom_msg.twist.twist.angular.z = satellite_state.yaw_rate;
+    if (isENU_) {
+        std::swap(odom_msg.pose.pose.position.x, odom_msg.pose.pose.position.y);
+        odom_msg.pose.pose.position.z = -odom_msg.pose.pose.position.z;
+        std::swap(odom_msg.pose.pose.orientation.x, odom_msg.pose.pose.orientation.y);
+        odom_msg.pose.pose.orientation.z = -odom_msg.pose.pose.orientation.z;
+        std::swap(odom_msg.twist.twist.linear.x, odom_msg.twist.twist.linear.y);
+        odom_msg.twist.twist.linear.z = -odom_msg.twist.twist.linear.z;
+        std::swap(odom_msg.twist.twist.angular.x, odom_msg.twist.twist.angular.y);
+        odom_msg.twist.twist.angular.z = -odom_msg.twist.twist.angular.z;
+    }
+    return odom_msg;
+}
+
 nav_msgs::Odometry AirsimROSWrapper::get_odom_msg_from_multirotor_state(const msr::airlib::MultirotorState& drone_state) const
 {
     nav_msgs::Odometry odom_msg;
@@ -777,6 +935,142 @@ msr::airlib::CarRpcLibClient* AirsimROSWrapper::get_car_client()
 {
     return airsim_car_client_.get();
 }
+
+msr::airlib::BoatRpcLibClient* AirsimROSWrapper::get_boat_client()
+{
+    return airsim_boat_client_.get();
+}
+
+msr::airlib::SatelliteRpcLibClient* AirsimROSWrapper::get_satellite_client()
+{
+    return airsim_satellite_client_.get();
+}
+
+msr::airlib::RpcLibClientBase* AirsimROSWrapper::get_world_client()
+{
+    return airsim_world_client_.get();
+}
+
+airsim_ros_pkgs::SceneMapInfo AirsimROSWrapper::get_scene_map_info_msg_from_airsim(const msr::airlib::WorldSimApiBase::SceneMapInfo& info) const
+{
+    airsim_ros_pkgs::SceneMapInfo msg;
+    msg.header.stamp = ros::Time::now();
+    msg.header.frame_id = world_frame_id_;
+    msg.enabled = info.enabled;
+    msg.object_name = info.object_name;
+    msg.image_path = info.image_path;
+    msg.meters_per_pixel = info.meters_per_pixel;
+    msg.pixel_coordinate_frame = info.pixel_coordinate_frame;
+    msg.image_width_px = static_cast<uint32_t>(info.image_width_px);
+    msg.image_height_px = static_cast<uint32_t>(info.image_height_px);
+    msg.width_px = static_cast<uint32_t>(info.width_px);
+    msg.height_px = static_cast<uint32_t>(info.height_px);
+    msg.width_meters = info.width_meters;
+    msg.height_meters = info.height_meters;
+    msg.center_x = info.center_x;
+    msg.center_y = info.center_y;
+    msg.z = info.z;
+    msg.yaw = info.yaw;
+    msg.collision_enabled = info.collision_enabled;
+    msg.geo_reference_enabled = info.geo_reference_enabled;
+    msg.reference_latitude = info.reference_latitude;
+    msg.reference_longitude = info.reference_longitude;
+    msg.reference_altitude = info.reference_altitude;
+    msg.reference_u = info.reference_u;
+    msg.reference_v = info.reference_v;
+    return msg;
+}
+
+void AirsimROSWrapper::publish_scene_map_info()
+{
+    if (!get_world_client())
+        return;
+    scene_map_info_pub_.publish(get_scene_map_info_msg_from_airsim(get_world_client()->simGetSceneMapInfo()));
+}
+
+bool AirsimROSWrapper::load_scene_map_srv_cb(airsim_ros_pkgs::LoadSceneMap::Request& request, airsim_ros_pkgs::LoadSceneMap::Response& response)
+{
+    try {
+        const std::string object_name = request.object_name.empty() ? "LAESimSceneMap" : request.object_name;
+        response.success = get_world_client()->simLoadSceneMap(
+            request.image_path,
+            request.meters_per_pixel,
+            request.center_x,
+            request.center_y,
+            request.z,
+            request.yaw,
+            request.collision_enabled,
+            object_name);
+        response.info = get_scene_map_info_msg_from_airsim(get_world_client()->simGetSceneMapInfo());
+        scene_map_info_pub_.publish(response.info);
+    }
+    catch (rpc::rpc_error& e) {
+        response.success = false;
+        std::cout << "SceneMap load failed: " << e.get_error().as<std::string>() << std::endl;
+    }
+    return true;
+}
+
+bool AirsimROSWrapper::unload_scene_map_srv_cb(airsim_ros_pkgs::UnloadSceneMap::Request& request, airsim_ros_pkgs::UnloadSceneMap::Response& response)
+{
+    unused(request);
+    try {
+        response.success = get_world_client()->simUnloadSceneMap();
+        publish_scene_map_info();
+    }
+    catch (rpc::rpc_error& e) {
+        response.success = false;
+        std::cout << "SceneMap unload failed: " << e.get_error().as<std::string>() << std::endl;
+    }
+    return true;
+}
+
+bool AirsimROSWrapper::get_scene_map_info_srv_cb(airsim_ros_pkgs::GetSceneMapInfo::Request& request, airsim_ros_pkgs::GetSceneMapInfo::Response& response)
+{
+    unused(request);
+    try {
+        response.info = get_scene_map_info_msg_from_airsim(get_world_client()->simGetSceneMapInfo());
+        response.success = response.info.enabled;
+        scene_map_info_pub_.publish(response.info);
+    }
+    catch (rpc::rpc_error& e) {
+        response.success = false;
+        std::cout << "SceneMap get_info failed: " << e.get_error().as<std::string>() << std::endl;
+    }
+    return true;
+}
+
+bool AirsimROSWrapper::scene_map_to_world_srv_cb(airsim_ros_pkgs::SceneMapToWorld::Request& request, airsim_ros_pkgs::SceneMapToWorld::Response& response)
+{
+    try {
+        const auto world = get_world_client()->simSceneMapToWorld(request.u, request.v, request.z);
+        response.point.x = world.x();
+        response.point.y = world.y();
+        response.point.z = world.z();
+        response.success = !(std::isnan(response.point.x) || std::isnan(response.point.y) || std::isnan(response.point.z));
+    }
+    catch (rpc::rpc_error& e) {
+        response.success = false;
+        std::cout << "SceneMap scene_map_to_world failed: " << e.get_error().as<std::string>() << std::endl;
+    }
+    return true;
+}
+
+bool AirsimROSWrapper::world_to_scene_map_srv_cb(airsim_ros_pkgs::WorldToSceneMap::Request& request, airsim_ros_pkgs::WorldToSceneMap::Response& response)
+{
+    try {
+        const auto pixel = get_world_client()->simWorldToSceneMap(request.x, request.y);
+        response.u = pixel.x();
+        response.v = pixel.y();
+        response.success = !(std::isnan(response.u) || std::isnan(response.v));
+    }
+    catch (rpc::rpc_error& e) {
+        response.success = false;
+        std::cout << "SceneMap world_to_scene_map failed: " << e.get_error().as<std::string>() << std::endl;
+    }
+    return true;
+}
+
 void AirsimROSWrapper::drone_state_timer_cb(const ros::TimerEvent& event)
 {
     try {
@@ -856,6 +1150,38 @@ ros::Time AirsimROSWrapper::update_state()
             state_msg.header.frame_id = vehicle_ros->vehicle_name;
             car->car_state_msg = state_msg;
         }
+        else if (msr::airlib::AirSimSettings::isBoat(vehicle_name_ptr_pair.second->vehicle_type_)) {
+            env_data = get_boat_client()->simGetGroundTruthEnvironment(vehicle_ros->vehicle_name);
+            auto boat = static_cast<BoatROS*>(vehicle_ros.get());
+            boat->curr_boat_state = get_boat_client()->getBoatState(vehicle_ros->vehicle_name);
+            vehicle_time = airsim_timestamp_to_ros(boat->curr_boat_state.timestamp);
+            if (!got_sim_time) {
+                curr_ros_time = vehicle_time;
+                got_sim_time = true;
+            }
+            vehicle_ros->gps_sensor_msg = get_gps_sensor_msg_from_airsim_geo_point(env_data.geo_point);
+            vehicle_ros->gps_sensor_msg.header.stamp = vehicle_time;
+            vehicle_ros->curr_odom = get_odom_msg_from_boat_state(boat->curr_boat_state);
+            airsim_ros_pkgs::BoatState state_msg = get_rosboatstate_msg_from_boat_state(boat->curr_boat_state);
+            state_msg.header.frame_id = vehicle_ros->vehicle_name;
+            boat->boat_state_msg = state_msg;
+        }
+        else if (msr::airlib::AirSimSettings::isSatellite(vehicle_name_ptr_pair.second->vehicle_type_)) {
+            env_data = get_satellite_client()->simGetGroundTruthEnvironment(vehicle_ros->vehicle_name);
+            auto satellite = static_cast<SatelliteROS*>(vehicle_ros.get());
+            satellite->curr_satellite_state = get_satellite_client()->getSatelliteState(vehicle_ros->vehicle_name);
+            vehicle_time = airsim_timestamp_to_ros(satellite->curr_satellite_state.timestamp);
+            if (!got_sim_time) {
+                curr_ros_time = vehicle_time;
+                got_sim_time = true;
+            }
+            vehicle_ros->gps_sensor_msg = get_gps_sensor_msg_from_airsim_geo_point(env_data.geo_point);
+            vehicle_ros->gps_sensor_msg.header.stamp = vehicle_time;
+            vehicle_ros->curr_odom = get_odom_msg_from_satellite_state(satellite->curr_satellite_state);
+            airsim_ros_pkgs::SatelliteState state_msg = get_rossatellitestate_msg_from_satellite_state(satellite->curr_satellite_state);
+            state_msg.header.frame_id = vehicle_ros->vehicle_name;
+            satellite->satellite_state_msg = state_msg;
+        }
         vehicle_ros->stamp = vehicle_time;
         airsim_ros_pkgs::Environment env_msg = get_environment_msg_from_airsim(env_data);
         env_msg.header.frame_id = vehicle_ros->vehicle_name;
@@ -878,6 +1204,14 @@ void AirsimROSWrapper::publish_vehicle_state()
             // dashboard reading from car, RPM, gear, etc
             auto car = static_cast<CarROS*>(vehicle_ros.get());
             car->car_state_pub.publish(car->car_state_msg);
+        }
+        else if (msr::airlib::AirSimSettings::isBoat(vehicle_ros->vehicle_type_)) {
+            auto boat = static_cast<BoatROS*>(vehicle_ros.get());
+            boat->boat_state_pub.publish(boat->boat_state_msg);
+        }
+        else if (msr::airlib::AirSimSettings::isSatellite(vehicle_ros->vehicle_type_)) {
+            auto satellite = static_cast<SatelliteROS*>(vehicle_ros.get());
+            satellite->satellite_state_pub.publish(satellite->satellite_state_msg);
         }
         // odom and transforms
         vehicle_ros->odom_local_pub.publish(vehicle_ros->curr_odom);
@@ -935,6 +1269,12 @@ msr::airlib::RpcLibClientBase* AirsimROSWrapper::get_client(const std::string& v
     if (msr::airlib::AirSimSettings::isCar(vehicle_type)) {
         return get_car_client();
     }
+    else if (msr::airlib::AirSimSettings::isBoat(vehicle_type)) {
+        return get_boat_client();
+    }
+    else if (msr::airlib::AirSimSettings::isSatellite(vehicle_type)) {
+        return get_satellite_client();
+    }
     else if (msr::airlib::AirSimSettings::isMultirotor(vehicle_type)) {
         return get_multirotor_client();
     }
@@ -969,6 +1309,25 @@ void AirsimROSWrapper::update_commands()
                 get_car_client()->setCarControls(car->car_cmd, vehicle_ros->vehicle_name);
             }
             car->has_car_cmd = false;
+        }
+        else if (msr::airlib::AirSimSettings::isBoat(vehicle_ros->vehicle_type_)) {
+            auto boat = static_cast<BoatROS*>(vehicle_ros.get());
+            if (boat->has_boat_cmd) {
+                std::lock_guard<std::mutex> guard(drone_control_mutex_);
+                get_boat_client()->setBoatControls(boat->boat_cmd, vehicle_ros->vehicle_name);
+            }
+            boat->has_boat_cmd = false;
+        }
+        else if (msr::airlib::AirSimSettings::isSatellite(vehicle_ros->vehicle_type_)) {
+            auto satellite = static_cast<SatelliteROS*>(vehicle_ros.get());
+            if (satellite->has_satellite_cmd) {
+                std::lock_guard<std::mutex> guard(drone_control_mutex_);
+                get_satellite_client()->setSatelliteControls(satellite->satellite_cmd, vehicle_ros->vehicle_name);
+            }
+            else {
+                get_satellite_client()->setSatelliteControls(msr::airlib::SatelliteApiBase::SatelliteControls(), vehicle_ros->vehicle_name);
+            }
+            satellite->has_satellite_cmd = false;
         }
     }
     // Only camera rotation, no translation movement of camera

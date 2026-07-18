@@ -11,6 +11,7 @@ RPCLIB_PORT_CV = 41451
 RPCLIB_PORT_CAR = 41461
 RPCLIB_PORT_MULTIROTOR = 41471
 RPCLIB_PORT_BOAT = 41481
+RPCLIB_PORT_SATELLITE = 41491
 class VehicleClient:
     def __init__(self, ip = "", port = RPCLIB_PORT_CV, timeout_value = 3600):
         if (ip == ""):
@@ -207,6 +208,41 @@ class VehicleClient:
             val (float): Intensity of the effect, Range 0-1
         """
         self.client.call('simSetWeatherParameter', param, val)
+#scene map
+    def simLoadSceneMap(self, image_path, meters_per_pixel, center_x = 0, center_y = 0, z = 0, yaw = 0, collision_enabled = True, object_name = "LAESimSceneMap"):
+        """
+        Load an image as a physically scaled ground map plane in the Unreal scene.
+
+        Args:
+            image_path (str): Absolute path to png/jpg/bmp image on the Unreal host.
+            meters_per_pixel (float): Physical resolution of the image.
+            center_x, center_y, z (float): Map center in AirSim NED meters.
+            yaw (float): Map yaw in degrees.
+            collision_enabled (bool): Whether the plane blocks vehicles.
+            object_name (str): Actor name for the generated map.
+        """
+        return self.client.call('simLoadSceneMap', image_path, meters_per_pixel, center_x, center_y, z, yaw, collision_enabled, object_name)
+    def simUnloadSceneMap(self):
+        """
+        Remove the current generated scene map plane.
+        """
+        return self.client.call('simUnloadSceneMap')
+    def simGetSceneMapInfo(self):
+        """
+        Returns:
+            SceneMapInfo: Current scene map metadata.
+        """
+        return SceneMapInfo.from_msgpack(self.client.call('simGetSceneMapInfo'))
+    def simSceneMapToWorld(self, u, v, z = 0):
+        """
+        Convert image pixel coordinate (u, v) to AirSim NED world coordinate.
+        """
+        return Vector3r.from_msgpack(self.client.call('simSceneMapToWorld', u, v, z))
+    def simWorldToSceneMap(self, x, y):
+        """
+        Convert AirSim NED world x/y coordinate to image pixel coordinate.
+        """
+        return Vector2r.from_msgpack(self.client.call('simWorldToSceneMap', x, y))
 #camera control
 #simGetImage returns compressed png in array of bytes
 #image_type uses one of the ImageType members
@@ -1303,73 +1339,126 @@ class BoatClient(VehicleClient, object):
         """
         controls_raw = self.client.call('getBoatControls', vehicle_name)
         return BoatControls.from_msgpack(controls_raw)
-#----------------------------------- Multi-Vehicle Client (UAV + UGV + USV) ---------------------------------------------
+#----------------------------------- Satellite APIs ---------------------------------------------
+class SatelliteClient(VehicleClient, object):
+    def __init__(self, ip = "", port = RPCLIB_PORT_SATELLITE, timeout_value = 3600):
+        super(SatelliteClient, self).__init__(ip, port, timeout_value)
+    def setSatelliteControls(self, controls, vehicle_name = ''):
+        """
+        Control the satellite as an ideal 3D point mass using NED velocity commands.
+        Args:
+            controls (SatelliteControls): vx/vy/vz in m/s, yaw_rate in rad/s
+            vehicle_name (str, optional): Name of vehicle to be controlled
+        """
+        self.client.call('setSatelliteControls', controls, vehicle_name)
+    def getSatelliteState(self, vehicle_name = ''):
+        """
+        The position inside the returned SatelliteState is in the frame of the vehicle's starting point.
+        """
+        state_raw = self.client.call('getSatelliteState', vehicle_name)
+        return SatelliteState.from_msgpack(state_raw)
+    def getSatelliteControls(self, vehicle_name=''):
+        controls_raw = self.client.call('getSatelliteControls', vehicle_name)
+        return SatelliteControls.from_msgpack(controls_raw)
+#----------------------------------- Multi-Vehicle Client (UAV + UGV + USV + Satellite) ---------------------------------------------
 class MultiVehicleClient(object):
     """
-    Unified client for scenarios with drones (UAV), cars (UGV), and boats (USV).
-    Automatically routes API calls to the correct RPC port (41471 for Multirotor, 41461 for Car, 41481 for Boat).
+    Unified client for scenarios with drones (UAV), cars (UGV), boats (USV), and satellites.
+    Automatically routes API calls to the correct RPC port (41471 for Multirotor, 41461 for Car, 41481 for Boat, 41491 for Satellite).
     Use this when you have mixed vehicle types and need position/lidar from both.
     """
     def __init__(self, ip="", timeout_value=3600):
         if ip == "":
             ip = "127.0.0.1"
+        self._world = VehicleClient(ip=ip, port=RPCLIB_PORT_CV, timeout_value=timeout_value)
         self._multirotor = MultirotorClient(ip=ip, port=RPCLIB_PORT_MULTIROTOR, timeout_value=timeout_value)
         self._car = CarClient(ip=ip, port=RPCLIB_PORT_CAR, timeout_value=timeout_value)
         self._boat = BoatClient(ip=ip, port=RPCLIB_PORT_BOAT, timeout_value=timeout_value)
+        self._satellite = SatelliteClient(ip=ip, port=RPCLIB_PORT_SATELLITE, timeout_value=timeout_value)
     def confirmConnection(self):
+        self._world.confirmConnection()
         self._multirotor.confirmConnection()
         self._car.confirmConnection()
         self._boat.confirmConnection()
+        self._satellite.confirmConnection()
+    def simLoadSceneMap(self, image_path, meters_per_pixel, center_x=0, center_y=0, z=0, yaw=0, collision_enabled=True, object_name="LAESimSceneMap"):
+        """Load an image map through the CV/world RPC port."""
+        return self._world.simLoadSceneMap(image_path, meters_per_pixel, center_x, center_y, z, yaw, collision_enabled, object_name)
+    def simUnloadSceneMap(self):
+        """Remove the current generated scene map plane."""
+        return self._world.simUnloadSceneMap()
+    def simGetSceneMapInfo(self):
+        """Get current generated scene map metadata."""
+        return self._world.simGetSceneMapInfo()
+    def simSceneMapToWorld(self, u, v, z=0):
+        """Convert image pixel coordinate to AirSim NED world coordinate."""
+        return self._world.simSceneMapToWorld(u, v, z)
+    def simWorldToSceneMap(self, x, y):
+        """Convert AirSim NED world x/y coordinate to image pixel coordinate."""
+        return self._world.simWorldToSceneMap(x, y)
     def _try_multirotor_then_car(self, fn_multirotor, fn_car, vehicle_name, *args, **kwargs):
         """Try multirotor client first, then car client if vehicle not found."""
         try:
             return fn_multirotor(vehicle_name, *args, **kwargs)
         except Exception:
             return fn_car(vehicle_name, *args, **kwargs)
-    def _try_multirotor_car_then_boat(self, fn_multirotor, fn_car, fn_boat, vehicle_name, *args, **kwargs):
-        """Try multirotor, car, then boat clients if vehicle not found."""
+    def _try_multirotor_car_boat_then_satellite(self, fn_multirotor, fn_car, fn_boat, fn_satellite, vehicle_name, *args, **kwargs):
+        """Try multirotor, car, boat, then satellite clients if vehicle not found."""
         try:
             return fn_multirotor(vehicle_name, *args, **kwargs)
         except Exception:
             try:
                 return fn_car(vehicle_name, *args, **kwargs)
             except Exception:
-                return fn_boat(vehicle_name, *args, **kwargs)
+                try:
+                    return fn_boat(vehicle_name, *args, **kwargs)
+                except Exception:
+                    return fn_satellite(vehicle_name, *args, **kwargs)
     def simGetVehiclePose(self, vehicle_name=''):
-        """Get pose - tries Multirotor (41471), Car (41461), then Boat (41481) port."""
-        return self._try_multirotor_car_then_boat(
+        """Get pose - tries Multirotor (41471), Car (41461), Boat (41481), then Satellite (41491) port."""
+        return self._try_multirotor_car_boat_then_satellite(
             self._multirotor.simGetVehiclePose,
             self._car.simGetVehiclePose,
             self._boat.simGetVehiclePose,
+            self._satellite.simGetVehiclePose,
             vehicle_name
         )
     def getLidarData(self, lidar_name='', vehicle_name=''):
-        """Get lidar data - tries Multirotor (41471), Car (41461), then Boat (41481) port."""
+        """Get lidar data - tries Multirotor (41471), Car (41461), Boat (41481), then Satellite (41491) port."""
         try:
             return self._multirotor.getLidarData(lidar_name, vehicle_name)
         except Exception:
             try:
                 return self._car.getLidarData(lidar_name, vehicle_name)
             except Exception:
-                return self._boat.getLidarData(lidar_name, vehicle_name)
+                try:
+                    return self._boat.getLidarData(lidar_name, vehicle_name)
+                except Exception:
+                    return self._satellite.getLidarData(lidar_name, vehicle_name)
     def simGetImages(self, requests, vehicle_name='', external=False):
-        """Get images - tries Multirotor (41471), Car (41461), then Boat (41481) port."""
+        """Get images - tries Multirotor (41471), Car (41461), Boat (41481), then Satellite (41491) port."""
         try:
             return self._multirotor.simGetImages(requests, vehicle_name, external)
         except Exception:
             try:
                 return self._car.simGetImages(requests, vehicle_name, external)
             except Exception:
-                return self._boat.simGetImages(requests, vehicle_name, external)
+                try:
+                    return self._boat.simGetImages(requests, vehicle_name, external)
+                except Exception:
+                    return self._satellite.simGetImages(requests, vehicle_name, external)
     def enableApiControl(self, is_enabled, vehicle_name=''):
-        """Enable API control - tries multirotor, car, then boat clients."""
+        """Enable API control - tries multirotor, car, boat, then satellite clients."""
         try:
             self._multirotor.enableApiControl(is_enabled, vehicle_name)
         except Exception:
             try:
                 self._car.enableApiControl(is_enabled, vehicle_name)
             except Exception:
-                self._boat.enableApiControl(is_enabled, vehicle_name)
+                try:
+                    self._boat.enableApiControl(is_enabled, vehicle_name)
+                except Exception:
+                    self._satellite.enableApiControl(is_enabled, vehicle_name)
     def armDisarm(self, arm, vehicle_name=''):
         """Arm/disarm - tries multirotor first (cars may not support)."""
         try:
@@ -1378,7 +1467,10 @@ class MultiVehicleClient(object):
             try:
                 return self._car.armDisarm(arm, vehicle_name)
             except Exception:
-                return self._boat.armDisarm(arm, vehicle_name)
+                try:
+                    return self._boat.armDisarm(arm, vehicle_name)
+                except Exception:
+                    return self._satellite.armDisarm(arm, vehicle_name)
     def getMultirotorState(self, vehicle_name=''):
         """Get drone state. Use for multirotor vehicles only."""
         return self._multirotor.getMultirotorState(vehicle_name)
@@ -1388,12 +1480,16 @@ class MultiVehicleClient(object):
     def getBoatState(self, vehicle_name=''):
         """Get boat state. Use for boat vehicles only."""
         return self._boat.getBoatState(vehicle_name)
+    def getSatelliteState(self, vehicle_name=''):
+        """Get satellite state. Use for satellite vehicles only."""
+        return self._satellite.getSatelliteState(vehicle_name)
     def listVehicles(self):
         """List all vehicles."""
         try:
             multi = set(self._multirotor.listVehicles())
             car = set(self._car.listVehicles())
             boat = set(self._boat.listVehicles())
-            return list(multi | car | boat)
+            satellite = set(self._satellite.listVehicles())
+            return list(multi | car | boat | satellite)
         except Exception:
             return self._multirotor.listVehicles()

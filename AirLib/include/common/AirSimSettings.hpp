@@ -5,6 +5,7 @@
 #define airsim_core_AirSimSettings_hpp
 
 #include "CommonStructs.hpp"
+#include "EarthUtils.hpp"
 #include "ImageCaptureBase.hpp"
 #include "Settings.hpp"
 #include "common_utils/Utils.hpp"
@@ -36,6 +37,7 @@ namespace airlib
         static constexpr char const* kVehicleTypeArduRover = "ardurover";
         static constexpr char const* kVehicleTypeSimpleBoat = "simpleboat";
         static constexpr char const* kVehicleTypePhysXBoat = "physxboat";
+        static constexpr char const* kVehicleTypeSimpleSatellite = "simplesatellite";
         static constexpr char const* kVehicleTypeComputerVision = "computervision";
 
         static constexpr char const* kVehicleInertialFrame = "VehicleInertialFrame";
@@ -257,6 +259,23 @@ namespace airlib
         {
         };
 
+        struct StartOnSceneMapSetting
+        {
+            bool enabled = false;
+            std::string coordinate_type = "Pixel";
+            float u = 0.0f;
+            float v = 0.0f;
+            float map_x = 0.0f;
+            float map_y = 0.0f;
+            double latitude = 0.0;
+            double longitude = 0.0;
+            float altitude = 0.0f;
+            bool has_altitude = false;
+            float height = 0.0f;
+            bool has_yaw = false;
+            float yaw = 0.0f;
+        };
+
         struct VehicleSetting
         {
             //required
@@ -276,6 +295,7 @@ namespace airlib
             //nan means use player start
             Vector3r position = VectorMath::nanVector(); //in global NED
             Rotation rotation = Rotation::nanRotation();
+            StartOnSceneMapSetting start_on_scene_map;
 
             CameraSettingMap cameras;
             std::map<std::string, std::shared_ptr<SensorSetting>> sensors;
@@ -380,6 +400,62 @@ namespace airlib
             bool move_sun = true;
         };
 
+        struct SceneMapSetting
+        {
+            bool enabled = false;
+            std::string image_path = "";
+            std::string object_name = "LAESimSceneMap";
+            float meters_per_pixel = 1.0f;
+            std::string pixel_coordinate_frame = "NED";
+            float center_x = 0.0f;
+            float center_y = 0.0f;
+            float z = 0.0f;
+            float yaw = 0.0f;
+            bool collision_enabled = true;
+            int segmentation_id = -1;
+
+            bool geo_reference_enabled = false;
+            double reference_latitude = 0.0;
+            double reference_longitude = 0.0;
+            float reference_altitude = 0.0f;
+            float reference_u = 0.0f;
+            float reference_v = 0.0f;
+            bool has_reference_pixel = false;
+
+            bool usesNorthUpPixels() const
+            {
+                const auto frame = Utils::toLower(pixel_coordinate_frame);
+                return frame == "northup" || frame == "north_up" || frame == "googleearth" || frame == "google_earth" || frame == "satellite";
+            }
+
+            Vector2r pixelToLocal(float image_u, float image_v, int map_width_px, int map_height_px) const
+            {
+                if (usesNorthUpPixels()) {
+                    return Vector2r(
+                        -(image_v - map_height_px * 0.5f) * meters_per_pixel,
+                        (image_u - map_width_px * 0.5f) * meters_per_pixel);
+                }
+                return Vector2r(
+                    (image_u - map_width_px * 0.5f) * meters_per_pixel,
+                    (image_v - map_height_px * 0.5f) * meters_per_pixel);
+            }
+
+            Vector2r localToPixel(float local_x, float local_y, int map_width_px, int map_height_px) const
+            {
+                float map_u;
+                float map_v;
+                if (usesNorthUpPixels()) {
+                    map_u = local_y / meters_per_pixel + map_width_px * 0.5f;
+                    map_v = -local_x / meters_per_pixel + map_height_px * 0.5f;
+                }
+                else {
+                    map_u = local_x / meters_per_pixel + map_width_px * 0.5f;
+                    map_v = local_y / meters_per_pixel + map_height_px * 0.5f;
+                }
+                return Vector2r(map_u, map_v);
+            }
+        };
+
     private: //fields
         float settings_version_actual;
         float settings_version_minimum = 1.2f;
@@ -392,6 +468,7 @@ namespace airlib
         RecordingSetting recording_setting;
         SegmentationSetting segmentation_setting;
         TimeOfDaySetting tod_setting;
+        SceneMapSetting scene_map_setting;
 
         std::vector<std::string> warning_messages;
         std::vector<std::string> error_messages;
@@ -405,6 +482,7 @@ namespace airlib
         int api_port_car = RpcLibPortCar;
         int api_port_multirotor = RpcLibPortMultirotor;
         int api_port_boat = RpcLibPortBoat;
+        int api_port_satellite = RpcLibPortSatellite;
         std::string physics_engine_name = "";
 
         std::string clock_type = "";
@@ -455,6 +533,7 @@ namespace airlib
             loadSegmentationSetting(settings_json, segmentation_setting);
             loadPawnPaths(settings_json, pawn_paths);
             loadOtherSettings(settings_json);
+            loadSceneMapSetting(settings_json, scene_map_setting);
             loadDefaultSensorSettings(simmode_name, settings_json, sensor_defaults);
             loadVehicleSettings(simmode_name, settings_json, vehicles, sensor_defaults, camera_defaults);
             loadExternalCameraSettings(settings_json, external_cameras, camera_defaults);
@@ -540,6 +619,11 @@ namespace airlib
             return vehicle_type == kVehicleTypeSimpleBoat || vehicle_type == kVehicleTypePhysXBoat;
         }
 
+        static bool isSatellite(const std::string& vehicle_type)
+        {
+            return vehicle_type == kVehicleTypeSimpleSatellite;
+        }
+
         static bool isComputerVision(const std::string& vehicle_type)
         {
             return vehicle_type == kVehicleTypeComputerVision;
@@ -557,6 +641,7 @@ namespace airlib
             bool has_multirotor = false;
             bool has_car = false;
             bool has_boat = false;
+            bool has_satellite = false;
             bool has_computer_vision = false;
 
             for (const auto& key : keys) {
@@ -568,16 +653,19 @@ namespace airlib
                 has_multirotor = has_multirotor || isMultirotor(vehicle_type);
                 has_car = has_car || isCar(vehicle_type);
                 has_boat = has_boat || isBoat(vehicle_type);
+                has_satellite = has_satellite || isSatellite(vehicle_type);
                 has_computer_vision = has_computer_vision || isComputerVision(vehicle_type);
             }
 
-            if ((has_multirotor ? 1 : 0) + (has_car ? 1 : 0) + (has_boat ? 1 : 0) > 1)
+            if ((has_multirotor ? 1 : 0) + (has_car ? 1 : 0) + (has_boat ? 1 : 0) + (has_satellite ? 1 : 0) > 1)
                 return kSimModeTypeAirGround;
             if (has_multirotor)
                 return kSimModeTypeMultirotor;
             if (has_car)
                 return kSimModeTypeCar;
             if (has_boat)
+                return kSimModeTypeAirGround;
+            if (has_satellite)
                 return kSimModeTypeAirGround;
             if (has_computer_vision)
                 return kSimModeTypeComputerVision;
@@ -886,7 +974,7 @@ namespace airlib
             // sensor pack for every vehicle injects multirotor-only defaults like barometer and
             // magnetometer into surface vehicles, which is both semantically wrong and has caused runtime
             // instability in mixed scenes.
-            if (simmode_name == kSimModeTypeAirGround && (isCar(vehicle_type) || isBoat(vehicle_type))) {
+            if (simmode_name == kSimModeTypeAirGround && (isCar(vehicle_type) || isBoat(vehicle_type) || isSatellite(vehicle_type))) {
                 vehicle_sensor_defaults.clear();
                 for (const auto& sensor_pair : sensor_defaults) {
                     const auto sensor_type = sensor_pair.second->sensor_type;
@@ -936,6 +1024,7 @@ namespace airlib
 
             vehicle_setting->position = createVectorSetting(settings_json, vehicle_setting->position);
             vehicle_setting->rotation = createRotationSetting(settings_json, vehicle_setting->rotation);
+            loadStartOnSceneMapSetting(settings_json, vehicle_setting->start_on_scene_map);
 
             loadCameraSettings(settings_json, vehicle_setting->cameras, camera_defaults);
             loadSensorSettings(settings_json, "Sensors", vehicle_setting->sensors, vehicle_sensor_defaults);
@@ -1014,6 +1103,8 @@ namespace airlib
                                PawnPath("Class'/AirSim/Blueprints/BP_FlyingPawn.BP_FlyingPawn_C'"));
             pawn_paths.emplace("DefaultBoat",
                                PawnPath("Class'/Script/AirSim.BoatPawn'"));
+            pawn_paths.emplace("DefaultSatellite",
+                               PawnPath("Class'/Script/AirSim.SatellitePawn'"));
             pawn_paths.emplace("DefaultComputerVision",
                                PawnPath("Class'/AirSim/Blueprints/BP_ComputerVisionPawn.BP_ComputerVisionPawn_C'"));
         }
@@ -1260,6 +1351,7 @@ namespace airlib
             api_port_car = settings_json.getInt("ApiServerPortCar", RpcLibPortCar);
             api_port_multirotor = settings_json.getInt("ApiServerPortMultirotor", api_port);
             api_port_boat = settings_json.getInt("ApiServerPortBoat", RpcLibPortBoat);
+            api_port_satellite = settings_json.getInt("ApiServerPortSatellite", RpcLibPortSatellite);
             is_record_ui_visible = settings_json.getBool("RecordUIVisible", true);
             engine_sound = settings_json.getBool("EngineSound", false);
             enable_rpc = settings_json.getBool("EnableRpc", enable_rpc);
@@ -1300,6 +1392,120 @@ namespace airlib
             }
         }
 
+        static void loadSceneMapSetting(const Settings& settings_json, SceneMapSetting& scene_map)
+        {
+            Settings scene_map_json;
+            if (settings_json.getChild("SceneMap", scene_map_json)) {
+                scene_map.enabled = scene_map_json.getBool("Enabled", scene_map.enabled);
+                scene_map.image_path = scene_map_json.getString("ImagePath", scene_map.image_path);
+                scene_map.object_name = scene_map_json.getString("ObjectName", scene_map.object_name);
+                scene_map.meters_per_pixel = scene_map_json.getFloat("MetersPerPixel", scene_map.meters_per_pixel);
+                scene_map.pixel_coordinate_frame = scene_map_json.getString("PixelCoordinateFrame", scene_map.pixel_coordinate_frame);
+                scene_map.center_x = scene_map_json.getFloat("CenterX", scene_map.center_x);
+                scene_map.center_y = scene_map_json.getFloat("CenterY", scene_map.center_y);
+                scene_map.z = scene_map_json.getFloat("Z", scene_map.z);
+                scene_map.yaw = scene_map_json.getFloat("Yaw", scene_map.yaw);
+                scene_map.collision_enabled = scene_map_json.getBool("CollisionEnabled", scene_map.collision_enabled);
+                scene_map.segmentation_id = scene_map_json.getInt("SegmentationId", scene_map.segmentation_id);
+
+                Settings geo_json;
+                if (scene_map_json.getChild("GeoReference", geo_json) || scene_map_json.getChild("GeoReferencing", geo_json)) {
+                    scene_map.geo_reference_enabled = geo_json.getBool("Enabled", true);
+                    scene_map.reference_latitude = geo_json.getDouble("ReferenceLatitude", geo_json.getDouble("Latitude", scene_map.reference_latitude));
+                    scene_map.reference_longitude = geo_json.getDouble("ReferenceLongitude", geo_json.getDouble("Longitude", scene_map.reference_longitude));
+                    scene_map.reference_altitude = geo_json.getFloat("ReferenceAltitude", geo_json.getFloat("Altitude", scene_map.reference_altitude));
+                    scene_map.reference_u = geo_json.getFloat("ReferenceU", geo_json.getFloat("U", scene_map.reference_u));
+                    scene_map.reference_v = geo_json.getFloat("ReferenceV", geo_json.getFloat("V", scene_map.reference_v));
+                    scene_map.has_reference_pixel = geo_json.hasKey("ReferenceU") || geo_json.hasKey("ReferenceV") || geo_json.hasKey("U") || geo_json.hasKey("V");
+                }
+            }
+        }
+
+        static void loadStartOnSceneMapSetting(const Settings& settings_json, StartOnSceneMapSetting& start_setting)
+        {
+            Settings start_json;
+            if (settings_json.getChild("StartOnSceneMap", start_json)) {
+                start_setting.enabled = start_json.getBool("Enabled", true);
+                start_setting.coordinate_type = start_json.getString("CoordinateType", start_setting.coordinate_type);
+                start_setting.u = start_json.getFloat("U", start_json.getFloat("u", start_setting.u));
+                start_setting.v = start_json.getFloat("V", start_json.getFloat("v", start_setting.v));
+                start_setting.map_x = start_json.getFloat("MapX", start_json.getFloat("X", start_setting.map_x));
+                start_setting.map_y = start_json.getFloat("MapY", start_json.getFloat("Y", start_setting.map_y));
+                start_setting.latitude = start_json.getDouble("Latitude", start_json.getDouble("Lat", start_setting.latitude));
+                start_setting.longitude = start_json.getDouble("Longitude", start_json.getDouble("Lon", start_json.getDouble("Lng", start_setting.longitude)));
+                start_setting.altitude = start_json.getFloat("Altitude", start_json.getFloat("Alt", start_setting.altitude));
+                start_setting.has_altitude = start_json.hasKey("Altitude") || start_json.hasKey("Alt");
+                start_setting.height = start_json.getFloat("Height", start_json.getFloat("ZAboveMap", start_setting.height));
+                start_setting.yaw = start_json.getFloat("Yaw", start_setting.yaw);
+                start_setting.has_yaw = start_json.hasKey("Yaw");
+            }
+        }
+
+    public:
+        void applySceneMapVehicleStartSettings(int image_width_px, int image_height_px)
+        {
+            if (!scene_map_setting.enabled || scene_map_setting.meters_per_pixel <= 0)
+                return;
+
+            for (auto& vehicle_pair : vehicles) {
+                auto& vehicle_setting = *vehicle_pair.second;
+                if (!vehicle_setting.start_on_scene_map.enabled)
+                    continue;
+
+                const auto coordinate_type = Utils::toLower(vehicle_setting.start_on_scene_map.coordinate_type);
+                float local_x = vehicle_setting.start_on_scene_map.map_x;
+                float local_y = vehicle_setting.start_on_scene_map.map_y;
+                if (coordinate_type == "pixel" || coordinate_type == "pixels") {
+                    const auto local = scene_map_setting.pixelToLocal(vehicle_setting.start_on_scene_map.u, vehicle_setting.start_on_scene_map.v, image_width_px, image_height_px);
+                    local_x = local.x();
+                    local_y = local.y();
+                }
+                else if (coordinate_type == "gps" || coordinate_type == "geopoint" || coordinate_type == "geo" || coordinate_type == "lla") {
+                    GeoPoint reference_geo;
+                    float reference_u = 0.0f;
+                    float reference_v = 0.0f;
+                    if (scene_map_setting.geo_reference_enabled) {
+                        reference_geo = GeoPoint(scene_map_setting.reference_latitude, scene_map_setting.reference_longitude, scene_map_setting.reference_altitude);
+                        reference_u = scene_map_setting.has_reference_pixel ? scene_map_setting.reference_u : image_width_px * 0.5f;
+                        reference_v = scene_map_setting.has_reference_pixel ? scene_map_setting.reference_v : image_height_px * 0.5f;
+                    }
+                    else {
+                        reference_geo = origin_geopoint.home_geo_point;
+                        reference_u = image_width_px * 0.5f;
+                        reference_v = image_height_px * 0.5f;
+                    }
+
+                    const auto reference_local = scene_map_setting.pixelToLocal(reference_u, reference_v, image_width_px, image_height_px);
+                    const GeoPoint vehicle_geo(
+                        vehicle_setting.start_on_scene_map.latitude,
+                        vehicle_setting.start_on_scene_map.longitude,
+                        vehicle_setting.start_on_scene_map.has_altitude ? vehicle_setting.start_on_scene_map.altitude : reference_geo.altitude);
+                    const auto ned_from_reference = EarthUtils::GeodeticToNedFast(vehicle_geo, reference_geo);
+                    if (scene_map_setting.usesNorthUpPixels()) {
+                        local_x = reference_local.x() + ned_from_reference.y();
+                        local_y = reference_local.y() - ned_from_reference.x();
+                    }
+                    else {
+                        local_x = reference_local.x() + ned_from_reference.x();
+                        local_y = reference_local.y() + ned_from_reference.y();
+                    }
+                }
+
+                constexpr float degrees_to_radians = 3.14159265358979323846f / 180.0f;
+                const float yaw_rad = scene_map_setting.yaw * degrees_to_radians;
+                const float cos_yaw = std::cos(yaw_rad);
+                const float sin_yaw = std::sin(yaw_rad);
+                vehicle_setting.position = Vector3r(
+                    scene_map_setting.center_x + cos_yaw * local_x - sin_yaw * local_y,
+                    scene_map_setting.center_y + sin_yaw * local_x + cos_yaw * local_y,
+                    scene_map_setting.z - vehicle_setting.start_on_scene_map.height);
+
+                if (vehicle_setting.start_on_scene_map.has_yaw)
+                    vehicle_setting.rotation.yaw = scene_map_setting.yaw + vehicle_setting.start_on_scene_map.yaw;
+            }
+        }
+
+    private:
         static void loadDefaultCameraSetting(const Settings& settings_json, CameraSetting& camera_defaults)
         {
             Settings child_json;

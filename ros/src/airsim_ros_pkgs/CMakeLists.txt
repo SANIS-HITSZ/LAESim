@@ -53,8 +53,13 @@ add_message_files(
   VelCmdGroup.msg
   CarControls.msg
   CarState.msg
+  BoatControls.msg
+  BoatState.msg
+  SatelliteControls.msg
+  SatelliteState.msg
   Altimeter.msg
   Environment.msg
+  SceneMapInfo.msg
 )
 
 add_service_files(
@@ -66,6 +71,11 @@ add_service_files(
   LandGroup.srv
   Reset.srv
   SetLocalPosition.srv
+  LoadSceneMap.srv
+  GetSceneMapInfo.srv
+  SceneMapToWorld.srv
+  WorldToSceneMap.srv
+  UnloadSceneMap.srv
 )
 
 generate_messages(

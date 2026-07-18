@@ -24,7 +24,7 @@ E:\AAA_project\CETC\LAESim_upload_gitclean
 旧的偏臃肿版 AirSim_Multi_upload_clean：676.38 MB
 ```
 
-`gitclean_min` 早期曾尝试做到约 218 MB，但实践证明从 GitHub 新 clone 后进入 UE 会因为缺少 AirSim 插件基础 Content 而崩溃。之后又发现排除 `StarterContent` 虽然不影响运行，但会触发 CDO 默认属性警告。现在修正版保留必要的插件基础 Content 和 StarterContent，并继续排除高模 SUV、Boat 构建产物和编译产物。
+`gitclean_min` 早期曾尝试做到约 218 MB，但实践证明从 GitHub 新 clone 后进入 UE 会因为缺少 AirSim 插件基础 Content 而崩溃。之后又发现排除 `StarterContent` 虽然不影响运行，但会触发 CDO 默认属性警告。现在修正版保留必要的插件基础 Content 和 StarterContent，并继续排除高模 SUV、Boat / Satellite 构建产物和编译产物。
 
 ## 2. 为什么不用工作目录直接上传
 
@@ -105,9 +105,10 @@ CDO Constructor (SimModeBase): Failed to find ParticleSystem'/AirSim/StarterCont
 ```text
 Unreal/Plugins/AirSim/Content/VehicleAdv/SUV
 Unreal/Plugins/AirSim/Content/Models/Boat
+Unreal/Plugins/AirSim/Content/Models/Satellite
 ```
 
-其中 `VehicleAdv/SUV` 由 `build.cmd` 下载，`Models/Boat` 由 `Unreal/Assets/Boat` 构建时复制。
+其中 `VehicleAdv/SUV` 由 `build.cmd` 下载，`Models/Boat` 由 `Unreal/Assets/Boat` 构建时复制，`Models/Satellite` 由 `Unreal/Assets/Satellite` 构建时复制。插件 Content 里的 `Models/Boat` 和 `Models/Satellite` 是部署结果，不是源码入口。
 
 ## 4. Boat 模型如何保留
 
@@ -139,6 +140,45 @@ IF EXIST Unreal\Assets\Boat\Models\Boat (
 - 编译/部署后运行：由脚本复制到 `Unreal/Plugins/AirSim/Content/Models/Boat`
 - 运行时加载：`BoatPawn.cpp` 固定加载 `/AirSim/Models/Boat/Type_052B_Destroyer_Combined`
 
+## 4.1 Satellite 模型如何保留
+
+Satellite 和 Boat 使用同样的资源保留方式。不要把构建后生成的 Satellite 插件目录当作源码上传：
+
+```text
+Unreal\Plugins\AirSim\Content\Models\Satellite
+```
+
+本工程采用源码资产目录：
+
+```text
+Unreal\Assets\Satellite\Models\Satellite
+```
+
+该目录中包含卫星 OBJ、贴图、材质和已经导入 UE 后得到的 `.uasset`。`build.cmd` 中已经加入同步逻辑：
+
+```cmd
+IF EXIST Unreal\Assets\Satellite\Models\Satellite (
+    IF NOT EXIST Unreal\Plugins\AirSim\Content\Models mkdir Unreal\Plugins\AirSim\Content\Models
+    robocopy /MIR Unreal\Assets\Satellite\Models\Satellite Unreal\Plugins\AirSim\Content\Models\Satellite /njh /njs /ndl /np
+    IF ERRORLEVEL 8 goto :buildfailed
+)
+```
+
+也就是说：
+
+- GitHub 上传：保留 `Unreal/Assets/Satellite/Models/Satellite`
+- 编译/部署后运行：由脚本复制到 `Unreal/Plugins/AirSim/Content/Models/Satellite`
+- 运行时加载：`SatellitePawn.cpp` 固定加载 `/AirSim/Models/Satellite/10477_Satellite_v1_L3`
+- `PreparePortableSource.ps1` 会保留 `Unreal/Assets` 下的模型 `.obj`，但仍排除其他位置的 C++ 编译 `.obj`
+
+`settings.json` 中只需要写：
+
+```json
+"VehicleType": "SimpleSatellite"
+```
+
+不需要写 Satellite 模型路径。
+
 ## 5. 生成最小上传版的推荐流程
 
 先以旧 GitHub 基线为底：
@@ -153,7 +193,9 @@ robocopy $base $out /E `
   /XF *.sdf *.opensdf *.suo *.VC.db *.VC.VC.opendb *.ipch *.pdb *.ilk *.obj *.dll *.lib *.exp *.log *.tmp
 ```
 
-然后从工作工程覆盖 Boat 相关源码、API、ROS、Python、settings 和文档。
+注意：上面这个手工 `robocopy` 基线命令会排除所有 `.obj`，这对 C++ 编译产物是对的，但 Satellite 的源模型也有 `.obj` 文件。后续覆盖 `Unreal/Assets/Satellite` 时要从工作工程重新复制，或者直接使用 `PreparePortableSource.ps1`，该脚本已经 special-case 保留 `Unreal/Assets` 下的模型 `.obj`。
+
+然后从工作工程覆盖 Boat / Satellite 相关源码、API、ROS、Python、settings 和文档。
 
 核心应覆盖：
 
@@ -173,6 +215,7 @@ Multi_use
 how_to_use_settings
 ros
 Unreal/Assets/Boat
+Unreal/Assets/Satellite
 Unreal/Plugins/AirSim/AirSim.uplugin
 Unreal/Plugins/AirSim/Source
 ```
@@ -187,11 +230,12 @@ robocopy "$src\Unreal\Plugins\AirSim\Source" "$out\Unreal\Plugins\AirSim\Source"
       "$src\Unreal\Plugins\AirSim\Source\Saved"
 ```
 
-修正版需要复制插件基础 Content 和 StarterContent，但排除高模 SUV 与 Boat 构建产物：
+修正版需要复制插件基础 Content 和 StarterContent，但排除高模 SUV 与 Boat / Satellite 构建产物：
 
 ```powershell
 robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Content" /E /MT:16 `
   /XD "$src\Unreal\Plugins\AirSim\Content\Models\Boat" `
+      "$src\Unreal\Plugins\AirSim\Content\Models\Satellite" `
       "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV"
 ```
 
@@ -203,6 +247,7 @@ $out = 'E:\AAA_project\CETC\LAESim_upload_gitclean'
 
 robocopy "$src\Unreal\Plugins\AirSim\Content" "$out\Unreal\Plugins\AirSim\Content" /E /MT:16 `
   /XD "$src\Unreal\Plugins\AirSim\Content\Models\Boat" `
+      "$src\Unreal\Plugins\AirSim\Content\Models\Satellite" `
       "$src\Unreal\Plugins\AirSim\Content\VehicleAdv\SUV"
 ```
 
@@ -233,13 +278,20 @@ build.cmd
 BuildAirSimRelease.bat
 AirLib\include\vehicles\boat
 AirLib\src\vehicles\boat
+AirLib\include\vehicles\satellite
+AirLib\src\vehicles\satellite
 PythonClient\airsim\client.py
 PythonClient\airsim\types.py
 Multi_use\boat_keyboard_control.py
+Multi_use\satellite_keyboard_control.py
 ros\src\airsim_ros_pkgs\msg\BoatControls.msg
 ros\src\airsim_ros_pkgs\msg\BoatState.msg
+ros\src\airsim_ros_pkgs\msg\SatelliteControls.msg
+ros\src\airsim_ros_pkgs\msg\SatelliteState.msg
 ros\src\example\keyboard_boat_ros.py
+ros\src\example\keyboard_satellite_ros.py
 Unreal\Assets\Boat\Models\Boat\Type_052B_Destroyer_Combined.uasset
+Unreal\Assets\Satellite\Models\Satellite\10477_Satellite_v1_L3.uasset
 Unreal\Plugins\AirSim\Content\Blueprints\BP_PIPCamera.uasset
 Unreal\Plugins\AirSim\Content\VehicleAdv\PhysicsMaterials\Slippery.uasset
 Unreal\Plugins\AirSim\Content\VehicleAdv\PhysicsMaterials\NonSlippery.uasset
@@ -247,8 +299,10 @@ Unreal\Plugins\AirSim\Content\VehicleAdv\Sound\Engine_Loop_Cue.uasset
 Unreal\Plugins\AirSim\Content\StarterContent\Particles\P_Explosion.uasset
 Unreal\Plugins\AirSim\Content\StarterContent\Materials\M_Tech_Hex_Tile_Pulse.uasset
 Unreal\Plugins\AirSim\Source\Vehicles\Boat\BoatPawn.cpp
+Unreal\Plugins\AirSim\Source\Vehicles\Satellite\SatellitePawn.cpp
 Unreal\Plugins\AirSim\Source\Vehicles\AirGround\SimModeAirGround.cpp
 how_to_use_settings\settings_airground_2uav_1car_1boat_with_sensors.json
+how_to_use_settings\settings_airground_2uav_1car_1boat_1satellite_with_sensors.json
 ```
 
 可用下面命令快速检查大小：
@@ -287,6 +341,26 @@ Boat 默认模型会在 `BuildAirSimRelease.bat` 调用的 `build.cmd` 中从 `U
 ```
 
 不需要写 Boat 模型路径。
+
+Satellite 默认模型同理，会从：
+
+```text
+Unreal\Assets\Satellite\Models\Satellite
+```
+
+自动复制到：
+
+```text
+Unreal\Plugins\AirSim\Content\Models\Satellite
+```
+
+`settings.json` 中只需要写：
+
+```json
+"VehicleType": "SimpleSatellite"
+```
+
+不需要写 Satellite 模型路径。
 
 ## 8. 这次已留档的问题
 

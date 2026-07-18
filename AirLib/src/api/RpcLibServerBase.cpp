@@ -128,6 +128,27 @@ namespace airlib
             getWorldSimApi()->setWeatherParameter(param, val);
         });
 
+        pimpl_->server.bind("simLoadSceneMap", [&](const std::string& image_path, float meters_per_pixel, float center_x, float center_y, float z,
+                                                   float yaw, bool collision_enabled, const std::string& object_name) -> bool {
+            return getWorldSimApi()->simLoadSceneMap(image_path, meters_per_pixel, center_x, center_y, z, yaw, collision_enabled, object_name);
+        });
+
+        pimpl_->server.bind("simUnloadSceneMap", [&]() -> bool {
+            return getWorldSimApi()->simUnloadSceneMap();
+        });
+
+        pimpl_->server.bind("simGetSceneMapInfo", [&]() -> RpcLibAdaptorsBase::SceneMapInfo {
+            return RpcLibAdaptorsBase::SceneMapInfo(getWorldSimApi()->simGetSceneMapInfo());
+        });
+
+        pimpl_->server.bind("simSceneMapToWorld", [&](float u, float v, float z) -> RpcLibAdaptorsBase::Vector3r {
+            return RpcLibAdaptorsBase::Vector3r(getWorldSimApi()->simSceneMapToWorld(u, v, z));
+        });
+
+        pimpl_->server.bind("simWorldToSceneMap", [&](float x, float y) -> RpcLibAdaptorsBase::Vector2r {
+            return RpcLibAdaptorsBase::Vector2r(getWorldSimApi()->simWorldToSceneMap(x, y));
+        });
+
         pimpl_->server.bind("enableApiControl", [&](bool is_enabled, const std::string& vehicle_name) -> void {
             getVehicleApi(vehicle_name)->enableApiControl(is_enabled);
         });

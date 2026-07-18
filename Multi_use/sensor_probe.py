@@ -54,6 +54,7 @@ OUTPUT_ROOT = SCRIPT_DIR / "sensor_probe_outputs"
 MULTIROTOR_TYPES = {"simpleflight", "px4multirotor", "arducopter", "arducoptersolo"}
 CAR_TYPES = {"physxcar", "ardurover"}
 BOAT_TYPES = {"simpleboat", "physxboat"}
+SATELLITE_TYPES = {"simplesatellite"}
 FLOAT_IMAGE_TYPES = {airsim.ImageType.DepthPlanar, airsim.ImageType.DepthPerspective}
 IMAGE_TYPE_NAMES = {
     airsim.ImageType.Scene: "Scene",
@@ -81,6 +82,8 @@ def infer_vehicle_kind(vehicle_config: dict) -> str:
         return "car"
     if vehicle_type in BOAT_TYPES:
         return "boat"
+    if vehicle_type in SATELLITE_TYPES:
+        return "satellite"
     return "unknown"
 
 
@@ -90,6 +93,7 @@ def connect_clients(host: str, settings: dict):
     api_port_car = int(settings.get("ApiServerPortCar", 41461))
     api_port_multirotor = int(settings.get("ApiServerPortMultirotor", api_port))
     api_port_boat = int(settings.get("ApiServerPortBoat", 41481))
+    api_port_satellite = int(settings.get("ApiServerPortSatellite", 41491))
 
     generic = airsim.VehicleClient(ip=host, port=api_port_cv)
     generic.confirmConnection()
@@ -97,7 +101,8 @@ def connect_clients(host: str, settings: dict):
     multi = airsim.MultirotorClient(ip=host, port=api_port_multirotor)
     car = airsim.CarClient(ip=host, port=api_port_car)
     boat = airsim.BoatClient(ip=host, port=api_port_boat)
-    return generic, multi, car, boat
+    satellite = airsim.SatelliteClient(ip=host, port=api_port_satellite)
+    return generic, multi, car, boat, satellite
 
 
 def build_vehicle_map(settings: dict, selected_vehicles: list[str] | None) -> dict:
@@ -240,13 +245,15 @@ def save_lidar_points(output_dir: Path, vehicle_name: str, lidar_name: str, lida
     }
 
 
-def get_vehicle_client(kind: str, multirotor_client, car_client, boat_client):
+def get_vehicle_client(kind: str, multirotor_client, car_client, boat_client, satellite_client):
     if kind == "multirotor":
         return multirotor_client
     if kind == "car":
         return car_client
     if kind == "boat":
         return boat_client
+    if kind == "satellite":
+        return satellite_client
     raise ValueError(f"Unsupported vehicle kind for typed sensor access: {kind}")
 
 
@@ -255,6 +262,7 @@ def probe_vehicle(
     multirotor_client,
     car_client,
     boat_client,
+    satellite_client,
     vehicle_name: str,
     vehicle_cfg: dict,
     output_dir: Path,
@@ -303,7 +311,7 @@ def probe_vehicle(
     sensor_configs = vehicle_cfg.get("Sensors", {})
     lidar_names = [name for name, cfg in sensor_configs.items() if int(cfg.get("SensorType", -1)) == 6 and cfg.get("Enabled", True)]
     if lidar_names:
-        typed_client = get_vehicle_client(kind, multirotor_client, car_client, boat_client)
+        typed_client = get_vehicle_client(kind, multirotor_client, car_client, boat_client, satellite_client)
         for lidar_name in lidar_names:
             lidar_data = typed_client.getLidarData(lidar_name=lidar_name, vehicle_name=vehicle_name)
             lidar_record = save_lidar_points(output_dir, vehicle_name, lidar_name, lidar_data)
@@ -353,7 +361,7 @@ def main():
     if args.list_only:
         return
 
-    generic_client, multirotor_client, car_client, boat_client = connect_clients(args.host, settings)
+    generic_client, multirotor_client, car_client, boat_client, satellite_client = connect_clients(args.host, settings)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = Path(args.output_root) / f"sensor_probe_{timestamp}"
@@ -373,6 +381,7 @@ def main():
                 multirotor_client,
                 car_client,
                 boat_client,
+                satellite_client,
                 vehicle_name,
                 vehicle_cfg,
                 output_dir,

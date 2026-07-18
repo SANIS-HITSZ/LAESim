@@ -116,6 +116,96 @@ namespace airlib_rpclib
             }
         };
 
+        struct SceneMapInfo
+        {
+            bool enabled = false;
+            std::string object_name;
+            std::string image_path;
+            float meters_per_pixel = 1.0f;
+            std::string pixel_coordinate_frame = "NED";
+            int image_width_px = 0;
+            int image_height_px = 0;
+            int width_px = 0;
+            int height_px = 0;
+            float width_meters = 0.0f;
+            float height_meters = 0.0f;
+            float center_x = 0.0f;
+            float center_y = 0.0f;
+            float z_val = 0.0f;
+            float yaw = 0.0f;
+            bool collision_enabled = true;
+            bool geo_reference_enabled = false;
+            double reference_latitude = 0.0;
+            double reference_longitude = 0.0;
+            float reference_altitude = 0.0f;
+            float reference_u = 0.0f;
+            float reference_v = 0.0f;
+
+            MSGPACK_DEFINE_MAP(enabled, object_name, image_path, meters_per_pixel, pixel_coordinate_frame,
+                               image_width_px, image_height_px, width_px, height_px, width_meters, height_meters,
+                               center_x, center_y, z_val, yaw,
+                               collision_enabled, geo_reference_enabled, reference_latitude, reference_longitude,
+                               reference_altitude, reference_u, reference_v);
+
+            SceneMapInfo()
+            {
+            }
+
+            SceneMapInfo(const msr::airlib::WorldSimApiBase::SceneMapInfo& s)
+            {
+                enabled = s.enabled;
+                object_name = s.object_name;
+                image_path = s.image_path;
+                meters_per_pixel = s.meters_per_pixel;
+                pixel_coordinate_frame = s.pixel_coordinate_frame;
+                image_width_px = s.image_width_px;
+                image_height_px = s.image_height_px;
+                width_px = s.width_px;
+                height_px = s.height_px;
+                width_meters = s.width_meters;
+                height_meters = s.height_meters;
+                center_x = s.center_x;
+                center_y = s.center_y;
+                z_val = s.z;
+                yaw = s.yaw;
+                collision_enabled = s.collision_enabled;
+                geo_reference_enabled = s.geo_reference_enabled;
+                reference_latitude = s.reference_latitude;
+                reference_longitude = s.reference_longitude;
+                reference_altitude = s.reference_altitude;
+                reference_u = s.reference_u;
+                reference_v = s.reference_v;
+            }
+
+            msr::airlib::WorldSimApiBase::SceneMapInfo to() const
+            {
+                msr::airlib::WorldSimApiBase::SceneMapInfo info;
+                info.enabled = enabled;
+                info.object_name = object_name;
+                info.image_path = image_path;
+                info.meters_per_pixel = meters_per_pixel;
+                info.pixel_coordinate_frame = pixel_coordinate_frame;
+                info.image_width_px = image_width_px;
+                info.image_height_px = image_height_px;
+                info.width_px = width_px;
+                info.height_px = height_px;
+                info.width_meters = width_meters;
+                info.height_meters = height_meters;
+                info.center_x = center_x;
+                info.center_y = center_y;
+                info.z = z_val;
+                info.yaw = yaw;
+                info.collision_enabled = collision_enabled;
+                info.geo_reference_enabled = geo_reference_enabled;
+                info.reference_latitude = reference_latitude;
+                info.reference_longitude = reference_longitude;
+                info.reference_altitude = reference_altitude;
+                info.reference_u = reference_u;
+                info.reference_v = reference_v;
+                return info;
+            }
+        };
+
         struct Quaternionr
         {
             msr::airlib::real_T w_val = 1, x_val = 0, y_val = 0, z_val = 0;

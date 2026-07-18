@@ -1,0 +1,11 @@
+std_msgs/Header header
+geometry_msgs/PoseWithCovariance pose
+geometry_msgs/TwistWithCovariance twist
+float32 speed
+float32 forward_speed
+float32 lateral_speed
+float32 yaw_rate
+float32 throttle
+float32 steering
+float32 brake
+bool anchor

@@ -1,0 +1,64 @@
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "AirGround",
+  "ClockType": "ScalableClock",
+  "ApiServerPortCV": 41451,
+  "ApiServerPortCar": 41461,
+  "ApiServerPortMultirotor": 41471,
+  "ApiServerPortBoat": 41481,
+  "SceneMap": {
+    "Enabled": true,
+    "ImagePath": "C:/path/to/google_earth_satellite.png",
+    "ObjectName": "LAESimSceneMap",
+    "MetersPerPixel": 0.20,
+    "PixelCoordinateFrame": "NorthUp",
+    "CenterX": 0,
+    "CenterY": 0,
+    "Z": 0,
+    "Yaw": 0,
+    "CollisionEnabled": true,
+    "SegmentationId": 21,
+    "GeoReference": {
+      "Enabled": true,
+      "ReferenceLatitude": 22.591244,
+      "ReferenceLongitude": 113.969778,
+      "ReferenceAltitude": 21,
+      "ReferenceU": 1024,
+      "ReferenceV": 450
+    }
+  },
+  "Vehicles": {
+    "UAV": {
+      "VehicleType": "SimpleFlight",
+      "StartOnSceneMap": {
+        "CoordinateType": "GPS",
+        "Latitude": 22.591244,
+        "Longitude": 113.969778,
+        "Altitude": 21,
+        "Height": 5,
+        "Yaw": 0
+      },
+      "Sensors": {
+        "imu": { "SensorType": 2, "Enabled": true },
+        "gps": { "SensorType": 3, "Enabled": true },
+        "magnetometer": { "SensorType": 4, "Enabled": true },
+        "barometer": { "SensorType": 1, "Enabled": true }
+      },
+      "Cameras": {
+        "front_center_scene": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 1, "Width": 640, "Height": 480, "FOV_Degrees": 120 },
+            { "PublishToRos": 1, "ImageType": 5, "Width": 640, "Height": 480, "FOV_Degrees": 120 }
+          ],
+          "Pitch": 0,
+          "Roll": 0,
+          "X": 0.25,
+          "Y": 0,
+          "Yaw": 0,
+          "Z": 0.3
+        }
+      }
+    }
+  }
+}

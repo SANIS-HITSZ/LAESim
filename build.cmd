@@ -175,6 +175,16 @@ IF EXIST Unreal\Assets\Boat\Models\Boat (
     )
 )
 
+REM //---------- install Satellite model assets ------------
+IF EXIST Unreal\Assets\Satellite\Models\Satellite (
+    IF NOT EXIST Unreal\Plugins\AirSim\Content\Models mkdir Unreal\Plugins\AirSim\Content\Models
+    robocopy /MIR Unreal\Assets\Satellite\Models\Satellite Unreal\Plugins\AirSim\Content\Models\Satellite /njh /njs /ndl /np
+    IF ERRORLEVEL 8 goto :buildfailed
+    IF NOT EXIST Unreal\Plugins\AirSim\Content\Models\Satellite\10477_Satellite_v1_L3.uasset (
+        ECHO Unable to find Satellite model asset. SatellitePawn will use the fallback mesh until the OBJ is imported as a StaticMesh uasset.
+    )
+)
+
 REM //---------- get Eigen library ----------
 IF NOT EXIST AirLib\deps mkdir AirLib\deps
 IF NOT EXIST AirLib\deps\eigen3\Eigen\Dense (
@@ -242,4 +252,3 @@ echo #### Build failed - see messages above. 1>&2
 :buildfailed_nomsg
 chdir /d %ROOT_DIR% 
 exit /b 1
-

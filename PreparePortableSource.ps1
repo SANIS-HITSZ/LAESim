@@ -51,6 +51,11 @@ function ShouldSkipDirectory([System.IO.DirectoryInfo]$directoryInfo) {
 }
 
 function ShouldSkipFile([System.IO.FileInfo]$fileInfo) {
+    $assetsRoot = Join-Path $sourceRoot "Unreal\Assets"
+    if (($fileInfo.Extension -ieq ".obj") -and $fileInfo.FullName.StartsWith($assetsRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+        return $false
+    }
+
     foreach ($pattern in $excludeFileNames) {
         if ($fileInfo.Name -like $pattern) {
             return $true

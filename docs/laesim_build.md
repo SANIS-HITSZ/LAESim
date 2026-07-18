@@ -72,6 +72,10 @@ Unreal\Plugins\AirSim\Content\Models\Boat
 
 默认 Pawn 会加载 `/AirSim/Models/Boat/Type_052B_Destroyer_Combined`，因此普通使用者不需要在 `settings.json` 中配置模型路径。若资源没有复制成功，Boat 会回退到代码生成的简化外形。
 
+## Satellite 模型资源
+
+Satellite 源码资产位于 `Unreal\Assets\Satellite\Models\Satellite`。构建脚本会将其复制到 `Unreal\Plugins\AirSim\Content\Models\Satellite`，默认 Pawn 加载 `/AirSim/Models/Satellite/10477_Satellite_v1_L3`；资源缺失时会回退到代码生成的简化卫星外形。
+
 ## 接入自己的 UE 工程
 
 1. 创建或打开一个 UE 4.27 C++ 项目。
@@ -95,7 +99,7 @@ Unreal\Plugins\AirSim\Content\Models\Boat
 
 - `Unreal\Plugins\AirSim\Binaries` 已生成插件二进制
 - UE 能加载 AirSim/LAESim 插件并进入 Play
-- `settings.json` 使用 `AirGround` 时能同时生成无人机、汽车和船
-- 本机端口 `41451`、`41461`、`41471`、`41481` 按配置监听
+- `settings.json` 使用 `AirGround` 时能同时生成无人机、汽车、船和卫星
+- 本机端口 `41451`、`41461`、`41471`、`41481`、`41491` 按配置监听
 
 构建完成后继续阅读[使用 LAESim](laesim_use.md)。
