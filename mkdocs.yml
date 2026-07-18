@@ -23,6 +23,12 @@ exclude_docs: |
   !laesim_build.md
   !laesim_use.md
   !laesim_wsl_ros_ns3.md
+  !css/
+  !css/**
+  !js/
+  !js/**
+  !img/
+  !img/**
   !stylesheets/
   !stylesheets/laesim.css
 
