@@ -63,6 +63,7 @@ nav:
   - "上游参考":
       - "AirSim 官方文档": https://microsoft.github.io/AirSim/
       - "AirSim API 文档": https://microsoft.github.io/AirSim/apis/
+      - "ns-3 官方文档": https://www.nsnam.org/documentation/
   - "项目":
       - "GitHub 仓库": https://github.com/SANIS-HITSZ/LAESim
       - "提交问题": https://github.com/SANIS-HITSZ/LAESim/issues
