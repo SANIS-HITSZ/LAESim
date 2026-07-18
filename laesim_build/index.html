@@ -140,8 +140,9 @@
 </ul>
 <p>需要 ROS 或 ns-3 时，再准备 WSL2；它们不是 Windows 插件编译的前置条件。</p>
 <h2 id="_2">获取源码<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
-<pre class="highlight"><code class="language-powershell">git clone https://github.com/SANIS-HITSZ/LAESim.git H:\LAESim
-Set-Location H:\LAESim</code></pre>
+<pre class="highlight"><code class="language-powershell">$LaesimRoot = Join-Path $HOME "source\LAESim"
+git clone https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
+Set-Location $LaesimRoot</code></pre>
 <p>若 PowerShell 禁止运行本地脚本，可仅为当前用户启用签名策略：</p>
 <pre class="highlight"><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
 <h2 id="laesim_1">编译 LAESim 插件<a class="headerlink" href="#laesim_1" title="Permanent link">#</a></h2>
@@ -150,7 +151,7 @@ Set-Location H:\LAESim</code></pre>
 <p>该脚本会查找 Visual Studio 开发环境，然后调用：</p>
 <pre class="highlight"><code class="language-cmd">build.cmd --Release</code></pre>
 <p>构建结束后，LAESim 插件位于：</p>
-<pre class="highlight"><code class="language-text">H:\LAESim\Unreal\Plugins\AirSim</code></pre>
+<pre class="highlight"><code class="language-text">&lt;LAESim 源码目录&gt;\Unreal\Plugins\AirSim</code></pre>
 <h3 id="ue">UE 安装在非标准目录<a class="headerlink" href="#ue" title="Permanent link">#</a></h3>
 <p>自动探测失败时指定 UE 根目录：</p>
 <pre class="highlight"><code class="language-cmd">set UNREAL_ENGINE_ROOT=E:\epgame\UE_4.27
@@ -167,7 +168,7 @@ BuildAirSimRelease.bat</code></pre>
 <li>将 <code>Unreal\Plugins\AirSim</code> 整体复制到目标项目的 <code>Plugins\AirSim</code>。</li>
 <li>重新生成并编译目标项目的 <code>Development Editor</code>。</li>
 <li>在关卡中配置 <code>PlayerStart</code> 和 <code>AirSimGameMode</code>。</li>
-<li>将 LAESim 配置放到 <code>C:\Users\&lt;用户名&gt;\Documents\AirSim\settings.json</code>。</li>
+<li>将 LAESim 配置放到 <code>%USERPROFILE%\Documents\AirSim\settings.json</code>。</li>
 <li>打开关卡并点击 Play。</li>
 </ol>
 <p>只验证仓库自带 Blocks 场景时，可以额外运行：</p>
