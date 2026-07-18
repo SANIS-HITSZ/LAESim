@@ -21,6 +21,7 @@ exclude_docs: |
   !laesim_build.md
   !laesim_use.md
   !laesim_wsl_ros_ns3.md
+  !simulation_cases.md
   !css/
   !css/**
   !js/
@@ -60,6 +61,7 @@ nav:
       - "使用 LAESim": laesim_use.md
   - "自组织网络":
       - "WSL2、ROS 与 ns-3": laesim_wsl_ros_ns3.md
+  - "仿真案例": simulation_cases.md
   - "上游参考":
       - "AirSim 官方文档": https://microsoft.github.io/AirSim/
       - "AirSim API 文档": https://microsoft.github.io/AirSim/apis/
