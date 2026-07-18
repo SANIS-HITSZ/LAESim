@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>WSL2, ROS and ns-3 - LAESim</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "WSL2, ROS and ns-3";
+        var mkdocs_page_input_path = "laesim_wsl_ros_ns3.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> LAESim
+        </a>
+        <div class="version">
+          master
+        </div><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Home</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">WSL2, ROS and ns-3</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1">1. 最终结构</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2">2. 已验证版本</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-h-laesim-wsl2">3. 在 H 盘创建 LAESim WSL2</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#31-ubuntu-2004-rootfs">3.1 准备 Ubuntu 20.04 rootfs</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#32">3.2 导入并设置默认用户</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-ros-noetic-laesim-ros">4. 安装 ROS Noetic 和编译 LAESim ROS</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#41">4.1 安装依赖</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#42">4.2 克隆与编译</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#5-windows-ue-wsl-ros">5. 验证 Windows UE 与 WSL ROS 联动</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#51-windows">5.1 Windows 端</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#52-wsl">5.2 WSL 端</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#6-ns-3">6. 安装与构建 ns-3</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#7">7. 可配置网络后端</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#8-ros">8. ROS 消息接口</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#9">9. 图像与“真实网络栈”的边界</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#10">10. 当前限制与下一步</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#11">11. 官方参考</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../CHANGELOG/">Changelog</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Building AirSim</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../use_precompiled/">Download Binaries</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../build_windows/">Build on Windows</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../build_linux/">Build on Linux</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../build_macos/">Build on macOS</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../docker_ubuntu/">Docker on Linux</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../azure/">AirSim on Azure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_custenv/">Custom Unreal Environment</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../Unity/">AirSim with Unity</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_unity_environments/">Custom Unity Environment</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../unity_api_support/">Unity APIs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../build_faq/">FAQ</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Using AirSim</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../apis/">Core APIs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../image_apis/">Image APIs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../apis_cpp/">C++ APIs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../api_docs/html/">API Reference Docs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../dev_workflow/">Development Workflow</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../settings/">Settings</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../camera_views/">Camera Views</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../using_car/">Car Mode</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../remote_control/">Remote Control</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../xbox_controller/">XBox Controller</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../steering_wheel_installation/">Steering Wheel</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../multi_vehicle/">Multiple Vehicles</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >Sensors</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../sensors/">Sensors</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../lidar/">LIDAR</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../distance_sensor/">Distance Sensor</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../InfraredCamera/">Infrared Camera</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../airsim_ros_pkgs/">ROS: AirSim ROS Wrapper</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../airsim_tutorial_pkgs/">ROS: AirSim Tutorial Packages</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../gazebo_drone/">Import Gazebo models</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../retexturing/">Domain Randomization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../meshes/">Mesh Vertex Buffers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../playback/">Playing Logs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../voxel_grid/">Voxel Grid Generator</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../event_sim/">Event camera</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Design</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../design/">Architecture</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../code_structure/">Code Structure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../adding_new_apis/">Adding new APIs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../modify_recording_data/">Modifying Recording Data</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../coding_guidelines/">Coding Guidelines</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../flight_controller/">Flight Controller</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../simple_flight/">Simple Flight</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hello_drone/">Hello Drone</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">External Flight Controllers</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" >MavLink and PX4</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../px4_setup/">PX4 Setup for AirSim</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../px4_sitl/">PX4 in SITL</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../px4_sitl_wsl2/">PX4 SITL with WSL 2</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../px4_lockstep/">PX4 Lockstep</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../px4_multi_vehicle/">PX4 Multi-vehicle in SITL</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://youtu.be/1oY8Qu5maQQ">AirSim with Pixhawk</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://youtu.be/HNWdYrtw3f0">PX4 Setup with AirSim</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://www.youtube.com/watch?v=d_FyjKDWQfc&feature=youtu.be">Debugging Attitude Estimation</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://github.com/Microsoft/AirSim/wiki/Intercepting-MavLink-messages">Intercepting MavLink Messages</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://github.com/Microsoft/AirSim/wiki/Rapid-Descent-on-PX4-drones">Rapid Descent on PX4 Drones</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../px4_build/">Building PX4</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../px4_logging/">PX4/MavLink Logging</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../log_viewer/">MavLink LogViewer</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../mavlinkcom/">MavLinkCom</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../mavlinkcom_mocap/">MavLink MoCap</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >ArduPilot</a>
+    <ul>
+                <li class="toctree-l2"><a class="" href="https://ardupilot.org/dev/docs/building-the-code.html">ArduPilot SITL Setup</a>
+                </li>
+                <li class="toctree-l2"><a class="" href="https://ardupilot.org/dev/docs/sitl-with-airsim.html">AirSim & ArduPilot</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Upgrading</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_upgrade/">Upgrading Unreal</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../upgrade_apis/">Upgrading APIs</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../upgrade_settings/">Upgrading Settings</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributed Tutorials</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../reinforcement_learning/">Reinforcement Learning</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www.youtube.com/watch?v=y09VbdQWvQY">Using Environments from Marketplace</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/simondlevy/AirSimTensorFlow">Simple Collision Avoidance</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://aka.ms/AutonomousDrivingCookbook">Autonomous Driving on Azure</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/hexacopter">Building Hexacopter</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/moveOnPath-demo">Moving on Path Demo</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../point_clouds/">Building Point Clouds</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../drone_survey/">Surveying Using Drone</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../orbit/">Orbit Trajectory</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://youtu.be/Bp86WiLUC80">Importing a custom multirotor mesh</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../object_detection/">Object Detection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://youtu.be/ZonkdMcwXH4">AirSim with MAVROS and PX4</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Misc</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../custom_drone/">AirSim on Real Drones</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cmake_linux/">Installing cmake on Linux</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hard_drive/">Tips for Busy HDD</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pfm/">pfm format</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_proj/">Setting up Unreal Environment</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../unreal_blocks/">Blocks Environment</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../who_is_using/">Who is Using AirSim</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../working_with_plugin_contents/">Working with UE Plugin Contents</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/Microsoft/AirSim/wiki/technion">Formula Student Technion Self-drive</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Support</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../faq/">FAQ</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../SUPPORT/">Support</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../create_issue/">Create Issue</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING/">Contribute</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">LAESim</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Home</li>
+      <li class="breadcrumb-item active">WSL2, ROS and ns-3</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/master/docs/laesim_wsl_ros_ns3.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="laesim-wsl2ros-noetic-ns-3">LAESim 的 WSL2、ROS Noetic 与 ns-3 集成<a class="headerlink" href="#laesim-wsl2ros-noetic-ns-3" title="Permanent link">#</a></h1>
+<p>本文说明如何在 Windows 上保留 UE4/AirSim 图形与物理仿真，同时把 ROS 和可选的 ns-3 网络仿真放到 WSL2。文中的主机路径、版本和测试结果均来自一次完整实测。</p>
+<h2 id="1">1. 最终结构<a class="headerlink" href="#1" title="Permanent link">#</a></h2>
+<pre class="highlight"><code class="language-text">Windows 11
+  UE 4.27 + LAESim/AirSim
+  C:\Users\&lt;用户&gt;\Documents\AirSim\settings.json
+                | AirSim RPC (WSL2 网关地址)
+                v
+H:\WSL\LAESim\ext4.vhdx
+  Ubuntu 20.04 + ROS Noetic
+  airsim_node
+  laesim_network_bridge
+       | Backend=none  -&gt; 理想网络，消息立即到达
+       ` Backend=ns3   -&gt; ns-3.48 Wi-Fi ad hoc + OLSR/AODV</code></pre>
+<p>WSL 的 Linux 文件系统保存在 <code>H:\WSL\LAESim\ext4.vhdx</code>，不会使用 C 盘的默认 WSL 发行版目录。本次实测 VHDX 约为 8 GB，后续编译缓存会继续增长。</p>
+<h2 id="2">2. 已验证版本<a class="headerlink" href="#2" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>版本或位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows 仿真端</td>
+<td>UE 4.27，LAESim AirGround 六机配置</td>
+</tr>
+<tr>
+<td>WSL</td>
+<td>WSL2，发行版名 <code>LAESim</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>Ubuntu 20.04 (focal)</td>
+</tr>
+<tr>
+<td>ROS</td>
+<td>ROS Noetic</td>
+</tr>
+<tr>
+<td>AirSim ROS 工作空间</td>
+<td><code>/home/pyq/LAESim/ros</code></td>
+</tr>
+<tr>
+<td>ns-3</td>
+<td><code>ns-3.48</code>，提交 <code>d2add90b452d600cfb4859baed8e9ea633519447</code></td>
+</tr>
+<tr>
+<td>ns-3 编译器</td>
+<td>GCC/G++ 11</td>
+</tr>
+<tr>
+<td>AirSim ROS 编译器</td>
+<td>GCC/G++ 8</td>
+</tr>
+</tbody>
+</table>
+<p>ROS Noetic 与 Ubuntu 20.04 都已离开标准支持周期。这一组合是为了兼容当前 AirSim ROS1 工程；新项目长期应评估 Ubuntu 22.04/24.04 与 ROS 2，但不要在本工程尚未迁移时直接替换。</p>
+<h2 id="3-h-laesim-wsl2">3. 在 H 盘创建 LAESim WSL2<a class="headerlink" href="#3-h-laesim-wsl2" title="Permanent link">#</a></h2>
+<h3 id="31-ubuntu-2004-rootfs">3.1 准备 Ubuntu 20.04 rootfs<a class="headerlink" href="#31-ubuntu-2004-rootfs" title="Permanent link">#</a></h3>
+<p>本次使用的是一个干净 Ubuntu 20.04 WSL 发行版的导出文件：</p>
+<pre class="highlight"><code class="language-powershell">wsl --export Formation-tracking H:\WSL\Formation-tracking\Ubuntu-20.04.tar
+Get-FileHash H:\WSL\Formation-tracking\Ubuntu-20.04.tar -Algorithm SHA256</code></pre>
+<p>本次归档的 SHA256 为：</p>
+<pre class="highlight"><code class="language-text">FB9EC23B9AC9D1FB1B09CA8FBC9924E288BAADE1E206887C9AB6DA42AE520CBC</code></pre>
+<p>该哈希只用于识别本次实测归档，不是 Ubuntu 官方发布哈希。其他开发者可以从自己的干净 Ubuntu 20.04 WSL 导出，或者从微软的 Ubuntu 20.04 WSL 安装包中提取 <code>install.tar.gz</code>。rootfs 文件自身也应保存在 H 盘。</p>
+<h3 id="32">3.2 导入并设置默认用户<a class="headerlink" href="#32" title="Permanent link">#</a></h3>
+<p>在仓库根目录用管理员 PowerShell 执行：</p>
+<pre class="highlight"><code class="language-powershell">powershell -ExecutionPolicy Bypass -File .\NetworkSim\scripts\create_laesim_wsl.ps1 `
+  -RootfsPath H:\WSL\Formation-tracking\Ubuntu-20.04.tar `
+  -InstallRoot H:\WSL\LAESim `
+  -DistroName LAESim `
+  -DefaultUser pyq</code></pre>
+<p>脚本会执行 <code>wsl --import ... --version 2</code>，创建用户（若不存在），并写入：</p>
+<pre class="highlight"><code class="language-ini">[boot]
+systemd=true
+
+[user]
+default=pyq
+
+[interop]
+appendWindowsPath=false</code></pre>
+<p>验证发行版和磁盘位置：</p>
+<pre class="highlight"><code class="language-powershell">wsl -l -v
+Get-Item H:\WSL\LAESim\ext4.vhdx
+wsl -d LAESim -- id</code></pre>
+<p><code>wsl -l -v</code> 应显示 <code>LAESim</code> 的 VERSION 为 <code>2</code>，<code>id</code> 应显示用户 <code>pyq</code>。</p>
+<h2 id="4-ros-noetic-laesim-ros">4. 安装 ROS Noetic 和编译 LAESim ROS<a class="headerlink" href="#4-ros-noetic-laesim-ros" title="Permanent link">#</a></h2>
+<h3 id="41">4.1 安装依赖<a class="headerlink" href="#41" title="Permanent link">#</a></h3>
+<p>本机访问 ROS 官方软件源曾超时，因此脚本默认使用中科大 ROS 镜像，并采用 FishROS 提供的密钥镜像和 <code>rosdepc</code> 作为网络故障回退。也可以先运行用户提供的 FishROS 安装器，但为了可重复性，建议项目安装使用已固定步骤的脚本。</p>
+<pre class="highlight"><code class="language-powershell">wsl -d LAESim -u root -- env TARGET_USER=pyq `
+  bash /mnt/h/LAESim/NetworkSim/scripts/bootstrap_wsl_ros.sh</code></pre>
+<p>如需换软件源：</p>
+<pre class="highlight"><code class="language-powershell">wsl -d LAESim -u root -- env TARGET_USER=pyq `
+  ROS_APT_MIRROR=https://packages.ros.org/ros/ubuntu `
+  bash /mnt/h/LAESim/NetworkSim/scripts/bootstrap_wsl_ros.sh</code></pre>
+<h3 id="42">4.2 克隆与编译<a class="headerlink" href="#42" title="Permanent link">#</a></h3>
+<p>源码建议放在 WSL 的 ext4 内，而不是 <code>/mnt/h</code>，以减少大量小文件编译时的跨文件系统开销：</p>
+<pre class="highlight"><code class="language-bash">wsl -d LAESim
+git clone https://github.com/SANIS-HITSZ/LAESim.git ~/LAESim
+cd ~/LAESim
+./setup.sh
+cd ros
+source /opt/ros/noetic/setup.bash
+catkin_make \
+  -DCMAKE_C_COMPILER=/usr/bin/gcc-8 \
+  -DCMAKE_CXX_COMPILER=/usr/bin/g++-8
+source devel/setup.bash</code></pre>
+<p>若 <code>setup.sh</code> 因网络问题未获得依赖，先确认以下目录存在，再重新编译：</p>
+<pre class="highlight"><code class="language-text">~/LAESim/AirLib/deps/eigen3
+~/LAESim/external/rpclib</code></pre>
+<h2 id="5-windows-ue-wsl-ros">5. 验证 Windows UE 与 WSL ROS 联动<a class="headerlink" href="#5-windows-ue-wsl-ros" title="Permanent link">#</a></h2>
+<h3 id="51-windows">5.1 Windows 端<a class="headerlink" href="#51-windows" title="Permanent link">#</a></h3>
+<ol>
+<li>确认 <code>C:\Users\&lt;用户&gt;\Documents\AirSim\settings.json</code> 是需要测试的多机配置。</li>
+<li>用 UE 4.27 打开 LAESim 环境。</li>
+<li>点击 Play，等待场景和 AirSim RPC 服务完成启动。</li>
+</ol>
+<p>本次六机配置使用了 <code>41451</code>、<code>41461</code>、<code>41471</code>、<code>41481</code> 等 RPC 端口。可以在 Windows PowerShell 检查：</p>
+<pre class="highlight"><code class="language-powershell">Test-NetConnection 127.0.0.1 -Port 41451</code></pre>
+<h3 id="52-wsl">5.2 WSL 端<a class="headerlink" href="#52-wsl" title="Permanent link">#</a></h3>
+<p>WSL2 NAT 模式下不能把 Windows AirSim 当作 WSL 内的 <code>localhost</code>。从默认路由获取 Windows 主机地址：</p>
+<pre class="highlight"><code class="language-bash">export ROS_WS=~/LAESim/ros
+source /opt/ros/noetic/setup.bash
+source "$ROS_WS/devel/setup.bash"
+export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
+
+roscore</code></pre>
+<p>另开一个 WSL 终端：</p>
+<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
+source ~/LAESim/ros/devel/setup.bash
+export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
+roslaunch airsim_ros_pkgs airsim_node.launch host:="$WINDOWS_HOST"</code></pre>
+<p>验证主题：</p>
+<pre class="highlight"><code class="language-bash">rostopic list | grep /airsim_node
+rostopic hz /airsim_node/Car/odom_local_ned</code></pre>
+<p>本次实测成功收到 <code>UAV</code>、<code>UAV2</code>、<code>UAV3</code>、<code>Car</code>、<code>Car2</code>、<code>Car3</code> 六个载具的位姿、GPS 和传感器主题，Car 状态约为 17 Hz。车载 TF 可能出现 <code>TF_REPEATED_DATA</code> 警告，这是重复时间戳告警，不代表 RPC 连接失败。</p>
+<h2 id="6-ns-3">6. 安装与构建 ns-3<a class="headerlink" href="#6-ns-3" title="Permanent link">#</a></h2>
+<p>安装脚本固定 ns-3.48 的 tag 对象和提交，避免以后同名远端内容变化：</p>
+<pre class="highlight"><code class="language-bash">wsl -d LAESim
+bash /mnt/h/LAESim/NetworkSim/scripts/bootstrap_ns3.sh
+bash /mnt/h/LAESim/NetworkSim/scripts/build_ns3_runner.sh</code></pre>
+<p>脚本会把 ns-3 放在 <code>~/opt/ns-3.48</code>，构建 examples/tests，运行 <code>hello-simulator</code> 和 <code>core-example-simulator</code>，然后编译 LAESim runner：</p>
+<pre class="highlight"><code class="language-text">~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner</code></pre>
+<p>独立后端冒烟测试：</p>
+<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
+python3 /mnt/h/LAESim/NetworkSim/tests/smoke_backend.py</code></pre>
+<p>本次实测 1024 字节包的输出为：发送 1、到达 1、丢包率 0、平均时延 10 ms。</p>
+<h2 id="7">7. 可配置网络后端<a class="headerlink" href="#7" title="Permanent link">#</a></h2>
+<p>在 AirSim <code>settings.json</code> 顶层加入：</p>
+<pre class="highlight"><code class="language-json">"NetworkSimulation": {
+  "Backend": "none",
+  "StepMs": 20,
+  "Routing": "olsr",
+  "MaxRangeMeters": 250.0,
+  "TxPowerDbm": 16.0,
+  "WarmupSeconds": 3.0,
+  "PacketTimeoutSeconds": 5.0,
+  "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner"
+}</code></pre>
+<p><code>Backend</code> 的含义：</p>
+<table>
+<thead>
+<tr>
+<th>值</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>保持原有理想通信，ROS 消息立即转发，不计算时延、丢包和路由</td>
+</tr>
+<tr>
+<td><code>ns3</code></td>
+<td>经过 ns-3 Wi-Fi ad hoc 网络；位置来自 AirSim odometry</td>
+</tr>
+</tbody>
+</table>
+<p>当前 runner 支持 <code>olsr</code> 和 <code>aodv</code> 路由。<code>MaxRangeMeters</code> 是当前 MVP 的硬通信范围，便于稳定复现实验；后续可以替换为 Friis、LogDistance、Nakagami 等传播/衰落模型。
+<code>PacketTimeoutSeconds</code> 到期后，未送达包会被记为 <code>DROP</code> 并释放桥接器状态。</p>
+<p>启动桥接器：</p>
+<pre class="highlight"><code class="language-bash">export SETTINGS=/mnt/c/Users/&lt;Windows用户&gt;/Documents/AirSim/settings.json
+export ROS_WORKSPACE=~/LAESim/ros
+export BACKEND=none    # 或 ns3；该环境变量会覆盖 settings.json
+bash /mnt/h/LAESim/NetworkSim/scripts/run_ros_network_bridge.sh</code></pre>
+<p>不设置 <code>BACKEND</code> 时使用 <code>settings.json</code> 中的配置。</p>
+<h2 id="8-ros">8. ROS 消息接口<a class="headerlink" href="#8-ros" title="Permanent link">#</a></h2>
+<p>发送端向 <code>/network_sim/tx</code> 发布 <code>std_msgs/String</code>，内容是 JSON：</p>
+<pre class="highlight"><code class="language-json">{
+  "packet_id": "frame-0001",
+  "src": "UAV",
+  "dst": "Car",
+  "size_bytes": 1024,
+  "payload": "application-data"
+}</code></pre>
+<p>接收端订阅 <code>/network_sim/rx/&lt;载具名&gt;</code>。输出会增加 ns-3 的 <code>simulation_time_ns</code>：</p>
+<pre class="highlight"><code class="language-json">{
+  "packet_id": "frame-0001",
+  "src": "UAV",
+  "dst": "Car",
+  "size_bytes": 1024,
+  "simulation_time_ns": 19787694150,
+  "payload": "application-data"
+}</code></pre>
+<p>端到端测试：</p>
+<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
+source ~/LAESim/ros/devel/setup.bash
+python3 /mnt/h/LAESim/NetworkSim/tests/ros_roundtrip_test.py</code></pre>
+<p>本次测试中，<code>none</code> 和 <code>ns3</code> 两种后端都完成了 <code>UAV -&gt; Car</code> 的 ROS 往返；<code>none</code> 的仿真时间为 0，<code>ns3</code> 的输出带非零 ns-3 仿真时间。</p>
+<h2 id="9">9. 图像与“真实网络栈”的边界<a class="headerlink" href="#9" title="Permanent link">#</a></h2>
+<p>ns-3 可以模拟承载图像的字节流，但不会替代 UE 生成画面，也不会自动把 <code>sensor_msgs/Image</code> 变成真实操作系统 socket 流量。当前集成采用“消息级网络仿真”：</p>
+<ul>
+<li>UE/AirSim 仍生成真实仿真画面。</li>
+<li>应用把图像压缩、分片后，以每个分片的真实字节数提交给 <code>/network_sim/tx</code>。</li>
+<li>ns-3 决定分片何时到达或是否丢失。</li>
+<li>接收应用按 <code>packet_id</code>/分片序号重组，再解码图像。</li>
+</ul>
+<p>当前单个 ns-3 包的上限为 60000 字节，大图像必须分片。此方式适合研究自组网对感知/协同算法的影响，也能取得时延、吞吐量、丢包率和路由变化指标。</p>
+<p>如果必须让未经修改的 ROS/TCP/UDP 程序直接经过网络仿真，则需要 TAP/EMU 或 DCE 一类“真实网络栈/网络仿真接入”。该路线需要额外 Linux 网络接口、权限和时钟同步；WSL2 下部署复杂度明显更高，不属于当前 MVP。</p>
+<h2 id="10">10. 当前限制与下一步<a class="headerlink" href="#10" title="Permanent link">#</a></h2>
+<ul>
+<li>runner 当前使用 IEEE 802.11g ad hoc、固定发送功率、RangePropagationLoss 和 OLSR/AODV。</li>
+<li>AirSim 的 ROS 时钟与 ns-3 离散事件时钟目前是软同步：每个 ROS timer 推进固定 <code>StepMs</code>。</li>
+<li><code>METRICS</code> 已提供发送数、到达数、丢包率、吞吐量和平均时延，但尚未发布为 ROS 指标主题或落盘 CSV。</li>
+<li>路由变化尚未导出到 ROS；可通过 ns-3 routing table trace 增加。</li>
+<li>视频应增加编码、分片、重传策略和接收端缓冲，不能把一帧直接当成一个 UDP 包。</li>
+<li>当前 WSL 仍会使用少量 Windows 自身的 WSL 组件空间，但发行版的主要 Linux 磁盘和编译产物位于 H 盘。</li>
+</ul>
+<p>建议下一阶段先固定一个实验场景和指标格式，再增加传播模型、网络指标 ROS topic/CSV、图像分片器，以及仿真时钟同步策略。</p>
+<h2 id="11">11. 官方参考<a class="headerlink" href="#11" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="https://learn.microsoft.com/windows/wsl/use-custom-distro">Microsoft：导入任意 Linux 发行版供 WSL 使用</a></li>
+<li><a href="https://www.nsnam.org/documentation/">ns-3 官方文档入口</a></li>
+<li><a href="https://wiki.ros.org/noetic/Installation/Ubuntu">ROS Noetic 在 Ubuntu 上的安装说明</a></li>
+<li><a href="https://cloud-images.ubuntu.com/">Ubuntu 官方云镜像</a></li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../CHANGELOG/" class="btn btn-neutral float-right" title="Changelog">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>LAESim contributors; AirSim copyright Microsoft Corporation</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/SANIS-HITSZ/LAESim" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../CHANGELOG/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
