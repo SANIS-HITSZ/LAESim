@@ -11,12 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          # AirSim's legacy msgpack-rpc-python dependency requires Python < 3.10.
+          python-version: '3.9'
           architecture: 'x64'
 
       - name: Install dependencies
@@ -31,14 +32,15 @@ jobs:
           pip install Sphinx sphinx_rtd_theme numpy msgpack-rpc-python
 
           pushd PythonClient >/dev/null
-          ./build_api_docs.sh
+          bash ./build_api_docs.sh
           popd >/dev/null
-          cp -r PythonClient/docs/_build docs/api_docs/   # Copy generated files
+          mkdir -p docs/api_docs
+          cp -r PythonClient/docs/_build/html docs/api_docs/
 
           deactivate
 
       - name: Build AirSim Documentation
-        run: ./build_docs.sh
+        run: bash ./build_docs.sh
 
       # Only on commits to 'main' branch
       - name: Deploy

@@ -30,7 +30,7 @@ constexpr uint16_t kPort = 9000;
 
 class PacketIdTag : public Tag
 {
-  public:
+public:
     static TypeId GetTypeId()
     {
         static TypeId tid = TypeId("ns3::LaesimPacketIdTag")
@@ -78,7 +78,7 @@ class PacketIdTag : public Tag
         return m_packetId;
     }
 
-  private:
+private:
     std::string m_packetId;
 };
 
@@ -96,11 +96,9 @@ uint64_t g_bytesDelivered = 0;
 Time g_totalDelay;
 Time g_packetTimeout;
 
-bool
-IsValidPacketId(const std::string& packetId)
+bool IsValidPacketId(const std::string& packetId)
 {
-    if (packetId.empty() || packetId.size() > 128)
-    {
+    if (packetId.empty() || packetId.size() > 128) {
         return false;
     }
     return std::all_of(packetId.begin(), packetId.end(), [](unsigned char value) {
@@ -108,33 +106,26 @@ IsValidPacketId(const std::string& packetId)
     });
 }
 
-void
-ExpirePackets()
+void ExpirePackets()
 {
     std::vector<std::string> expired;
-    for (const auto& [packetId, sentAt] : g_sentAt)
-    {
-        if (Simulator::Now() - sentAt >= g_packetTimeout)
-        {
+    for (const auto& [packetId, sentAt] : g_sentAt) {
+        if (Simulator::Now() - sentAt >= g_packetTimeout) {
             expired.push_back(packetId);
         }
     }
-    for (const std::string& packetId : expired)
-    {
+    for (const std::string& packetId : expired) {
         g_sentAt.erase(packetId);
         std::cout << "DROP " << packetId << " timeout" << std::endl;
     }
 }
 
-void
-ReceivePacket(Ptr<Socket> socket)
+void ReceivePacket(Ptr<Socket> socket)
 {
     Address sender;
-    while (Ptr<Packet> packet = socket->RecvFrom(sender))
-    {
+    while (Ptr<Packet> packet = socket->RecvFrom(sender)) {
         PacketIdTag packetIdTag;
-        if (!packet->PeekPacketTag(packetIdTag))
-        {
+        if (!packet->PeekPacketTag(packetIdTag)) {
             continue;
         }
         const std::string& packetId = packetIdTag.GetPacketId();
@@ -142,8 +133,7 @@ ReceivePacket(Ptr<Socket> socket)
         const uint32_t nodeId = socket->GetNode()->GetId();
         const uint32_t nodeIndex = g_nodeIndex.at(nodeId);
         const auto sent = g_sentAt.find(packetId);
-        if (sent != g_sentAt.end())
-        {
+        if (sent != g_sentAt.end()) {
             g_totalDelay += Simulator::Now() - sent->second;
             g_sentAt.erase(sent);
         }
@@ -155,8 +145,7 @@ ReceivePacket(Ptr<Socket> socket)
     }
 }
 
-void
-PrintMetrics()
+void PrintMetrics()
 {
     const double elapsed = std::max(Simulator::Now().GetSeconds(), 1e-9);
     const double lossRate = g_packetsSent == 0
@@ -174,13 +163,12 @@ PrintMetrics()
               << averageDelayMs << " " << Simulator::Now().GetNanoSeconds() << std::endl;
 }
 
-void
-ConfigureNetwork(uint32_t nodeCount,
-                 const std::string& routing,
-                 double maxRange,
-                 double txPowerDbm,
-                 double warmupSeconds,
-                 double packetTimeoutSeconds)
+void ConfigureNetwork(uint32_t nodeCount,
+                      const std::string& routing,
+                      double maxRange,
+                      double txPowerDbm,
+                      double warmupSeconds,
+                      double packetTimeoutSeconds)
 {
     g_packetTimeout = Seconds(packetTimeoutSeconds);
     g_nodes.Create(nodeCount);
@@ -210,24 +198,20 @@ ConfigureNetwork(uint32_t nodeCount,
     MobilityHelper mobility;
     mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
     mobility.Install(g_nodes);
-    for (uint32_t i = 0; i < nodeCount; ++i)
-    {
+    for (uint32_t i = 0; i < nodeCount; ++i) {
         g_nodes.Get(i)->GetObject<MobilityModel>()->SetPosition(Vector(i * 5.0, 0.0, 0.0));
     }
 
     InternetStackHelper internet;
-    if (routing == "aodv")
-    {
+    if (routing == "aodv") {
         AodvHelper aodv;
         internet.SetRoutingHelper(aodv);
     }
-    else if (routing == "olsr")
-    {
+    else if (routing == "olsr") {
         OlsrHelper olsr;
         internet.SetRoutingHelper(olsr);
     }
-    else
-    {
+    else {
         NS_FATAL_ERROR("Unsupported routing protocol: " << routing);
     }
     internet.Install(g_nodes);
@@ -237,8 +221,7 @@ ConfigureNetwork(uint32_t nodeCount,
     g_interfaces = ipv4.Assign(devices);
 
     TypeId udpFactory = TypeId::LookupByName("ns3::UdpSocketFactory");
-    for (uint32_t i = 0; i < nodeCount; ++i)
-    {
+    for (uint32_t i = 0; i < nodeCount; ++i) {
         g_nodeIndex[g_nodes.Get(i)->GetId()] = i;
 
         Ptr<Socket> receiver = Socket::CreateSocket(g_nodes.Get(i), udpFactory);
@@ -256,41 +239,35 @@ ConfigureNetwork(uint32_t nodeCount,
     std::cout << "READY " << Simulator::Now().GetNanoSeconds() << std::endl;
 }
 
-bool
-HandleCommand(const std::string& line)
+bool HandleCommand(const std::string& line)
 {
     std::istringstream input(line);
     std::string command;
     input >> command;
 
-    if (command.empty())
-    {
+    if (command.empty()) {
         return true;
     }
-    if (command == "POSE")
-    {
+    if (command == "POSE") {
         uint32_t node;
         double x;
         double y;
         double z;
-        if (!(input >> node >> x >> y >> z) || node >= g_nodes.GetN())
-        {
+        if (!(input >> node >> x >> y >> z) || node >= g_nodes.GetN()) {
             std::cout << "ERROR invalid POSE" << std::endl;
             return true;
         }
         g_nodes.Get(node)->GetObject<MobilityModel>()->SetPosition(Vector(x, y, z));
         return true;
     }
-    if (command == "SEND")
-    {
+    if (command == "SEND") {
         uint32_t source;
         uint32_t destination;
         uint32_t sizeBytes;
         std::string packetId;
         if (!(input >> source >> destination >> sizeBytes >> packetId) ||
             source >= g_nodes.GetN() || destination >= g_nodes.GetN() ||
-            sizeBytes == 0 || sizeBytes > 60000 || !IsValidPacketId(packetId))
-        {
+            sizeBytes == 0 || sizeBytes > 60000 || !IsValidPacketId(packetId)) {
             std::cout << "ERROR invalid SEND" << std::endl;
             return true;
         }
@@ -303,23 +280,19 @@ HandleCommand(const std::string& line)
             packet,
             0,
             InetSocketAddress(g_interfaces.GetAddress(destination), kPort));
-        if (sent >= 0)
-        {
+        if (sent >= 0) {
             ++g_packetsSent;
             g_sentAt[packetId] = Simulator::Now();
             std::cout << "QUEUED " << packetId << " " << sent << std::endl;
         }
-        else
-        {
+        else {
             std::cout << "DROP " << packetId << " socket" << std::endl;
         }
         return true;
     }
-    if (command == "STEP")
-    {
+    if (command == "STEP") {
         double milliseconds;
-        if (!(input >> milliseconds) || milliseconds <= 0.0)
-        {
+        if (!(input >> milliseconds) || milliseconds <= 0.0) {
             std::cout << "ERROR invalid STEP" << std::endl;
             return true;
         }
@@ -329,13 +302,11 @@ HandleCommand(const std::string& line)
         std::cout << "STEP_DONE " << Simulator::Now().GetNanoSeconds() << std::endl;
         return true;
     }
-    if (command == "METRICS")
-    {
+    if (command == "METRICS") {
         PrintMetrics();
         return true;
     }
-    if (command == "QUIT")
-    {
+    if (command == "QUIT") {
         PrintMetrics();
         return false;
     }
@@ -345,8 +316,7 @@ HandleCommand(const std::string& line)
 }
 } // namespace
 
-int
-main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     uint32_t nodeCount = 6;
     std::string routing = "olsr";
@@ -364,8 +334,7 @@ main(int argc, char* argv[])
     cmd.AddValue("packetTimeoutSeconds", "Drop-state timeout for undelivered packets", packetTimeoutSeconds);
     cmd.Parse(argc, argv);
 
-    if (nodeCount == 0 || maxRange <= 0.0 || warmupSeconds < 0.0 || packetTimeoutSeconds <= 0.0)
-    {
+    if (nodeCount == 0 || maxRange <= 0.0 || warmupSeconds < 0.0 || packetTimeoutSeconds <= 0.0) {
         NS_FATAL_ERROR("Invalid ns-3 runner configuration");
     }
 
@@ -377,8 +346,7 @@ main(int argc, char* argv[])
                      packetTimeoutSeconds);
 
     std::string line;
-    while (std::getline(std::cin, line) && HandleCommand(line))
-    {
+    while (std::getline(std::cin, line) && HandleCommand(line)) {
     }
 
     Simulator::Destroy();

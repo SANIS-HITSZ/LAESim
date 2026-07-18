@@ -197,7 +197,9 @@ epub_exclude_files = ['search.html']
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+# Keep documentation builds deterministic; the API reference has no external
+# Python inventory references that require a network fetch.
+intersphinx_mapping = {}
 
 # -- Options for todo extension ----------------------------------------------
 

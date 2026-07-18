@@ -393,6 +393,7 @@ ros2/src/log
 # docs
 docs/README.md
 build_docs/
+docs/api_docs/
 
 # api docs
 PythonClient/docs/_build
