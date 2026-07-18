@@ -16,8 +16,9 @@
 ## 获取源码
 
 ```powershell
-git clone https://github.com/SANIS-HITSZ/LAESim.git H:\LAESim
-Set-Location H:\LAESim
+$LaesimRoot = Join-Path $HOME "source\LAESim"
+git clone https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
+Set-Location $LaesimRoot
 ```
 
 若 PowerShell 禁止运行本地脚本，可仅为当前用户启用签名策略：
@@ -43,7 +44,7 @@ build.cmd --Release
 构建结束后，LAESim 插件位于：
 
 ```text
-H:\LAESim\Unreal\Plugins\AirSim
+<LAESim 源码目录>\Unreal\Plugins\AirSim
 ```
 
 ### UE 安装在非标准目录
@@ -77,7 +78,7 @@ Unreal\Plugins\AirSim\Content\Models\Boat
 2. 将 `Unreal\Plugins\AirSim` 整体复制到目标项目的 `Plugins\AirSim`。
 3. 重新生成并编译目标项目的 `Development Editor`。
 4. 在关卡中配置 `PlayerStart` 和 `AirSimGameMode`。
-5. 将 LAESim 配置放到 `C:\Users\<用户名>\Documents\AirSim\settings.json`。
+5. 将 LAESim 配置放到 `%USERPROFILE%\Documents\AirSim\settings.json`。
 6. 打开关卡并点击 Play。
 
 只验证仓库自带 Blocks 场景时，可以额外运行：

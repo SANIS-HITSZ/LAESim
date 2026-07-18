@@ -1,10 +1,11 @@
 [CmdletBinding()]
 param(
     [string]$DistroName = "LAESim",
-    [string]$InstallRoot = "H:\WSL\LAESim",
+    [Parameter(Mandatory = $true)]
+    [string]$InstallRoot,
     [Parameter(Mandatory = $true)]
     [string]$RootfsPath,
-    [string]$DefaultUser = "pyq"
+    [string]$DefaultUser = "laesim"
 )
 
 $ErrorActionPreference = "Stop"

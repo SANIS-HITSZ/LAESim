@@ -7,7 +7,7 @@ LAESim 的主要使用入口是 Windows 侧 `settings.json`、UE 场景，以及
 运行时配置固定放在：
 
 ```text
-C:\Users\<用户名>\Documents\AirSim\settings.json
+%USERPROFILE%\Documents\AirSim\settings.json
 ```
 
 仓库提供四套模板：

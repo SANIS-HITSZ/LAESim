@@ -2,13 +2,21 @@
 set -euo pipefail
 
 ROS_DISTRO="${ROS_DISTRO:-noetic}"
-TARGET_USER="${TARGET_USER:-${SUDO_USER:-pyq}}"
+TARGET_USER="${TARGET_USER:-${SUDO_USER:-}}"
 ROS_APT_MIRROR="${ROS_APT_MIRROR:-https://mirrors.ustc.edu.cn/ros/ubuntu}"
 ROS_KEYRING="/usr/share/keyrings/ros-archive-keyring.gpg"
 ROS_SOURCE="/etc/apt/sources.list.d/ros1.list"
 
 if [[ "${EUID}" -ne 0 ]]; then
     exec sudo --preserve-env=ROS_DISTRO,TARGET_USER,ROS_APT_MIRROR bash "$0" "$@"
+fi
+
+if [[ -z "${TARGET_USER}" ]]; then
+    TARGET_USER="$(getent passwd 1000 | cut -d: -f1 || true)"
+fi
+if [[ -z "${TARGET_USER}" || "${TARGET_USER}" == "root" ]]; then
+    echo "Set TARGET_USER to the non-root Linux user that will run LAESim." >&2
+    exit 1
 fi
 
 if [[ "$(. /etc/os-release && printf '%s' "${VERSION_CODENAME}")" != "focal" ]]; then

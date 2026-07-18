@@ -1,122 +1,124 @@
 # LAESim 的 WSL2、ROS Noetic 与 ns-3 集成
 
-本文说明如何在 Windows 上保留 UE4/AirSim 图形与物理仿真，同时把 ROS 和可选的 ns-3 网络仿真放到 WSL2。文中的主机路径、版本和测试结果均来自一次完整实测。
+本文说明如何在 Windows 中运行 LAESim/UE4，同时在 WSL2 中运行 ROS Noetic 和可选的 ns-3 网络仿真。所有路径均使用环境变量或通用占位符，不依赖某台电脑的用户名、盘符或目录结构。
 
-## 1. 最终结构
+## 1. 系统结构
 
 ```text
 Windows 11
-  UE 4.27 + LAESim/AirSim
-  C:\Users\<用户>\Documents\AirSim\settings.json
-                | AirSim RPC (WSL2 网关地址)
-                v
-H:\WSL\LAESim\ext4.vhdx
+  UE 4.27 + LAESim
+  %USERPROFILE%\Documents\AirSim\settings.json
+                 | AirSim RPC
+                 v
+WSL2 自定义发行版
   Ubuntu 20.04 + ROS Noetic
-  airsim_node
+  $HOME/LAESim/ros
+  $HOME/opt/ns-3.48
   laesim_network_bridge
-       | Backend=none  -> 理想网络，消息立即到达
-       ` Backend=ns3   -> ns-3.48 Wi-Fi ad hoc + OLSR/AODV
+       | Backend=none -> 理想网络，消息立即到达
+       ` Backend=ns3  -> ns-3 Wi-Fi ad hoc + OLSR/AODV
 ```
 
-WSL 的 Linux 文件系统保存在 `H:\WSL\LAESim\ext4.vhdx`，不会使用 C 盘的默认 WSL 发行版目录。本次实测 VHDX 约为 8 GB，后续编译缓存会继续增长。
+WSL2 发行版可以安装到任意空间充足的非系统盘。Windows 项目目录、WSL 虚拟磁盘目录和 Linux 主目录彼此独立，不要求使用相同盘符。
 
-## 2. 已验证版本
+## 2. 已验证的软件版本
 
-| 组件 | 版本或位置 |
+| 组件 | 版本 |
 | --- | --- |
-| Windows 仿真端 | UE 4.27，LAESim AirGround 六机配置 |
-| WSL | WSL2，发行版名 `LAESim` |
+| Windows | Windows 11 + WSL2 |
+| Unreal Engine | UE 4.27 |
 | Linux | Ubuntu 20.04 (focal) |
 | ROS | ROS Noetic |
-| AirSim ROS 工作空间 | `/home/pyq/LAESim/ros` |
-| ns-3 | `ns-3.48`，提交 `d2add90b452d600cfb4859baed8e9ea633519447` |
+| ns-3 | ns-3.48，提交 `d2add90b452d600cfb4859baed8e9ea633519447` |
 | ns-3 编译器 | GCC/G++ 11 |
-| AirSim ROS 编译器 | GCC/G++ 8 |
+| LAESim ROS 编译器 | GCC/G++ 8 |
 
-ROS Noetic 与 Ubuntu 20.04 都已离开标准支持周期。这一组合是为了兼容当前 AirSim ROS1 工程；新项目长期应评估 Ubuntu 22.04/24.04 与 ROS 2，但不要在本工程尚未迁移时直接替换。
+ROS Noetic 与 Ubuntu 20.04 已离开标准支持周期。当前组合用于兼容 LAESim 的 ROS1 工程；在项目完成 ROS 2 迁移前，不要直接用其他 Ubuntu 或 ROS 版本替换。
 
-## 3. 在 H 盘创建 LAESim WSL2
+## 3. 创建 LAESim WSL2 发行版
 
-### 3.1 准备 Ubuntu 20.04 rootfs
+### 3.1 定义本机参数
 
-本次使用的是一个干净 Ubuntu 20.04 WSL 发行版的导出文件：
+在 LAESim 仓库根目录打开管理员 PowerShell。先定义本机使用的参数：
 
 ```powershell
-wsl --export Formation-tracking H:\WSL\Formation-tracking\Ubuntu-20.04.tar
-Get-FileHash H:\WSL\Formation-tracking\Ubuntu-20.04.tar -Algorithm SHA256
+$DistroName = "LAESim"
+$LinuxUser = "laesim"
+$WslInstallRoot = Read-Host "请输入 WSL2 发行版存储目录，例如 D:\WSL\LAESim"
+$RootfsPath = Read-Host "请输入 Ubuntu 20.04 rootfs tar 文件路径"
+$RepoRoot = (Resolve-Path .).Path
 ```
 
-本次归档的 SHA256 为：
+- `$WslInstallRoot` 决定 `ext4.vhdx` 的存放位置，应选择空间充足的磁盘。
+- `$RootfsPath` 指向 Ubuntu 20.04 的 WSL rootfs 归档。
+- `$LinuxUser` 可以改为符合 Linux 用户名规则的其他名称。
 
-```text
-FB9EC23B9AC9D1FB1B09CA8FBC9924E288BAADE1E206887C9AB6DA42AE520CBC
+如果电脑中已有干净的 Ubuntu 20.04 WSL 发行版，可以导出为 rootfs：
+
+```powershell
+$SourceDistro = Read-Host "请输入现有 Ubuntu 20.04 发行版名称"
+wsl --export $SourceDistro $RootfsPath
 ```
 
-该哈希只用于识别本次实测归档，不是 Ubuntu 官方发布哈希。其他开发者可以从自己的干净 Ubuntu 20.04 WSL 导出，或者从微软的 Ubuntu 20.04 WSL 安装包中提取 `install.tar.gz`。rootfs 文件自身也应保存在 H 盘。
+也可以使用可信来源提供的 Ubuntu 20.04 WSL rootfs。使用下载文件时，应按发布方说明校验哈希，不要复用其他电脑生成的私有归档哈希。
 
-### 3.2 导入并设置默认用户
-
-在仓库根目录用管理员 PowerShell 执行：
+### 3.2 导入发行版
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\NetworkSim\scripts\create_laesim_wsl.ps1 `
-  -RootfsPath H:\WSL\Formation-tracking\Ubuntu-20.04.tar `
-  -InstallRoot H:\WSL\LAESim `
-  -DistroName LAESim `
-  -DefaultUser pyq
+  -RootfsPath $RootfsPath `
+  -InstallRoot $WslInstallRoot `
+  -DistroName $DistroName `
+  -DefaultUser $LinuxUser
 ```
 
-脚本会执行 `wsl --import ... --version 2`，创建用户（若不存在），并写入：
-
-```ini
-[boot]
-systemd=true
-
-[user]
-default=pyq
-
-[interop]
-appendWindowsPath=false
-```
-
-验证发行版和磁盘位置：
+脚本使用 `wsl --import --version 2` 导入发行版、创建默认用户，并启用 systemd。验证结果：
 
 ```powershell
 wsl -l -v
-Get-Item H:\WSL\LAESim\ext4.vhdx
-wsl -d LAESim -- id
+Get-Item (Join-Path $WslInstallRoot "ext4.vhdx")
+wsl -d $DistroName -- id
 ```
 
-`wsl -l -v` 应显示 `LAESim` 的 VERSION 为 `2`，`id` 应显示用户 `pyq`。
+`wsl -l -v` 中该发行版的 VERSION 应为 `2`，`id` 应显示 `$LinuxUser` 对应的非 root 用户。
 
-## 4. 安装 ROS Noetic 和编译 LAESim ROS
+## 4. 安装 ROS Noetic
 
-### 4.1 安装依赖
-
-本机访问 ROS 官方软件源曾超时，因此脚本默认使用中科大 ROS 镜像，并采用 FishROS 提供的密钥镜像和 `rosdepc` 作为网络故障回退。也可以先运行用户提供的 FishROS 安装器，但为了可重复性，建议项目安装使用已固定步骤的脚本。
+安装脚本位于 Windows 仓库中。先把 Windows 路径转换为当前 WSL 可识别的路径：
 
 ```powershell
-wsl -d LAESim -u root -- env TARGET_USER=pyq `
-  bash /mnt/h/LAESim/NetworkSim/scripts/bootstrap_wsl_ros.sh
+$RepoRootWsl = (wsl -d $DistroName -- wslpath -a $RepoRoot).Trim()
 ```
 
-如需换软件源：
+然后安装 ROS 和编译依赖：
 
 ```powershell
-wsl -d LAESim -u root -- env TARGET_USER=pyq `
+wsl -d $DistroName -u root -- env TARGET_USER=$LinuxUser `
+  bash "$RepoRootWsl/NetworkSim/scripts/bootstrap_wsl_ros.sh"
+```
+
+脚本默认使用中科大 ROS 镜像。需要使用 ROS 官方软件源时执行：
+
+```powershell
+wsl -d $DistroName -u root -- env TARGET_USER=$LinuxUser `
   ROS_APT_MIRROR=https://packages.ros.org/ros/ubuntu `
-  bash /mnt/h/LAESim/NetworkSim/scripts/bootstrap_wsl_ros.sh
+  bash "$RepoRootWsl/NetworkSim/scripts/bootstrap_wsl_ros.sh"
 ```
 
-### 4.2 克隆与编译
+`TARGET_USER` 必须是将来运行 LAESim 和 ROS 的非 root Linux 用户。
 
-源码建议放在 WSL 的 ext4 内，而不是 `/mnt/h`，以减少大量小文件编译时的跨文件系统开销：
+## 5. 在 WSL 中编译 LAESim ROS
+
+建议将用于 Linux 编译的源码克隆到 WSL 的 ext4 文件系统中。不要直接在 `/mnt/c`、`/mnt/d` 等 Windows 挂载目录中编译大量 Linux 小文件。
 
 ```bash
 wsl -d LAESim
-git clone https://github.com/SANIS-HITSZ/LAESim.git ~/LAESim
-cd ~/LAESim
+
+export LAESIM_HOME="${HOME}/LAESim"
+git clone https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
+cd "${LAESIM_HOME}"
 ./setup.sh
+
 cd ros
 source /opt/ros/noetic/setup.bash
 catkin_make \
@@ -125,86 +127,99 @@ catkin_make \
 source devel/setup.bash
 ```
 
-若 `setup.sh` 因网络问题未获得依赖，先确认以下目录存在，再重新编译：
+如果发行版名称不是 `LAESim`，把第一条命令中的名称替换为创建时设置的 `$DistroName`。如果目录已经克隆，使用 `git pull --ff-only` 更新，不要再次执行 `git clone`。
+
+编译前应确认以下依赖目录存在：
 
 ```text
-~/LAESim/AirLib/deps/eigen3
-~/LAESim/external/rpclib
+$HOME/LAESim/AirLib/deps/eigen3
+$HOME/LAESim/external/rpclib
 ```
 
-## 5. 验证 Windows UE 与 WSL ROS 联动
+## 6. 验证 Windows LAESim 与 WSL ROS
 
-### 5.1 Windows 端
+### 6.1 启动 Windows 仿真端
 
-1. 确认 `C:\Users\<用户>\Documents\AirSim\settings.json` 是需要测试的多机配置。
-2. 用 UE 4.27 打开 LAESim 环境。
-3. 点击 Play，等待场景和 AirSim RPC 服务完成启动。
+1. 将多机配置保存为 `%USERPROFILE%\Documents\AirSim\settings.json`。
+2. 使用 UE 4.27 打开 LAESim 环境。
+3. 点击 Play，等待场景和 AirSim RPC 服务启动。
+4. 根据 `settings.json` 中配置的 RPC 端口检查监听状态。
 
-本次六机配置使用了 `41451`、`41461`、`41471`、`41481` 等 RPC 端口。可以在 Windows PowerShell 检查：
+例如，默认 RPC 端口可通过 PowerShell 检查：
 
 ```powershell
 Test-NetConnection 127.0.0.1 -Port 41451
 ```
 
-### 5.2 WSL 端
+### 6.2 启动 WSL ROS
 
-WSL2 NAT 模式下不能把 Windows AirSim 当作 WSL 内的 `localhost`。从默认路由获取 Windows 主机地址：
+WSL2 使用 NAT 网络时，Windows 仿真端通常不能通过 WSL 内的 `localhost` 访问。应从 WSL 默认路由动态获取 Windows 主机地址，不要把某次运行得到的 IP 写死：
 
 ```bash
-export ROS_WS=~/LAESim/ros
-source /opt/ros/noetic/setup.bash
-source "$ROS_WS/devel/setup.bash"
+export LAESIM_HOME="${HOME}/LAESim"
+export ROS_WORKSPACE="${LAESIM_HOME}/ros"
 export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
 
+source /opt/ros/noetic/setup.bash
+source "${ROS_WORKSPACE}/devel/setup.bash"
 roscore
 ```
 
 另开一个 WSL 终端：
 
 ```bash
-source /opt/ros/noetic/setup.bash
-source ~/LAESim/ros/devel/setup.bash
+export ROS_WORKSPACE="${HOME}/LAESim/ros"
 export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
-roslaunch airsim_ros_pkgs airsim_node.launch host:="$WINDOWS_HOST"
+
+source /opt/ros/noetic/setup.bash
+source "${ROS_WORKSPACE}/devel/setup.bash"
+roslaunch airsim_ros_pkgs airsim_node.launch host:="${WINDOWS_HOST}"
 ```
 
-验证主题：
+验证 ROS 主题：
 
 ```bash
 rostopic list | grep /airsim_node
 rostopic hz /airsim_node/Car/odom_local_ned
 ```
 
-本次实测成功收到 `UAV`、`UAV2`、`UAV3`、`Car`、`Car2`、`Car3` 六个载具的位姿、GPS 和传感器主题，Car 状态约为 17 Hz。车载 TF 可能出现 `TF_REPEATED_DATA` 警告，这是重复时间戳告警，不代表 RPC 连接失败。
+主题名称取决于 `settings.json` 中的载具名称。能够持续收到配置中各载具的位姿、GPS 或传感器主题，即说明 Windows 与 WSL ROS 已连通。`TF_REPEATED_DATA` 表示重复时间戳，不等同于 RPC 连接失败。
 
-## 6. 安装与构建 ns-3
+## 7. 安装与构建 ns-3
 
-安装脚本固定 ns-3.48 的 tag 对象和提交，避免以后同名远端内容变化：
+在 WSL 内执行仓库脚本：
 
 ```bash
-wsl -d LAESim
-bash /mnt/h/LAESim/NetworkSim/scripts/bootstrap_ns3.sh
-bash /mnt/h/LAESim/NetworkSim/scripts/build_ns3_runner.sh
+export LAESIM_HOME="${HOME}/LAESim"
+bash "${LAESIM_HOME}/NetworkSim/scripts/bootstrap_ns3.sh"
+bash "${LAESIM_HOME}/NetworkSim/scripts/build_ns3_runner.sh"
 ```
 
-脚本会把 ns-3 放在 `~/opt/ns-3.48`，构建 examples/tests，运行 `hello-simulator` 和 `core-example-simulator`，然后编译 LAESim runner：
+默认目录如下，均相对于当前 Linux 用户的主目录：
 
 ```text
-~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner
+$HOME/opt/ns-3.48
+$HOME/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner
 ```
 
-独立后端冒烟测试：
+需要改用其他目录时，在运行两个脚本前设置同一个 `NS3_ROOT`：
+
+```bash
+export NS3_ROOT="${HOME}/simulators/ns-3.48"
+```
+
+运行后端冒烟测试：
 
 ```bash
 source /opt/ros/noetic/setup.bash
-python3 /mnt/h/LAESim/NetworkSim/tests/smoke_backend.py
+python3 "${HOME}/LAESim/NetworkSim/tests/smoke_backend.py"
 ```
 
-本次实测 1024 字节包的输出为：发送 1、到达 1、丢包率 0、平均时延 10 ms。
+测试应分别覆盖有效通信距离内成功送达，以及超出通信距离后丢包的情况。
 
-## 7. 可配置网络后端
+## 8. 配置可选网络后端
 
-在 AirSim `settings.json` 顶层加入：
+在 Windows 的 `%USERPROFILE%\Documents\AirSim\settings.json` 顶层加入：
 
 ```json
 "NetworkSimulation": {
@@ -219,30 +234,35 @@ python3 /mnt/h/LAESim/NetworkSim/tests/smoke_backend.py
 }
 ```
 
-`Backend` 的含义：
-
-| 值 | 行为 |
+| `Backend` | 行为 |
 | --- | --- |
-| `none` | 保持原有理想通信，ROS 消息立即转发，不计算时延、丢包和路由 |
-| `ns3` | 经过 ns-3 Wi-Fi ad hoc 网络；位置来自 AirSim odometry |
+| `none` | 保持理想通信，ROS 消息立即转发，不计算网络时延、丢包和路由 |
+| `ns3` | 消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置来自 LAESim odometry |
 
-当前 runner 支持 `olsr` 和 `aodv` 路由。`MaxRangeMeters` 是当前 MVP 的硬通信范围，便于稳定复现实验；后续可以替换为 Friis、LogDistance、Nakagami 等传播/衰落模型。
-`PacketTimeoutSeconds` 到期后，未送达包会被记为 `DROP` 并释放桥接器状态。
+当前 runner 支持 `olsr` 和 `aodv`。`MaxRangeMeters` 是当前实现使用的硬通信范围，`PacketTimeoutSeconds` 到期后未送达的包会被记录为 `DROP`。
 
-启动桥接器：
+## 9. 启动网络桥接器
+
+默认情况下，启动脚本会根据 Windows 的 `%USERPROFILE%` 自动定位 `Documents\AirSim\settings.json`：
 
 ```bash
-export SETTINGS=/mnt/c/Users/<Windows用户>/Documents/AirSim/settings.json
-export ROS_WORKSPACE=~/LAESim/ros
-export BACKEND=none    # 或 ns3；该环境变量会覆盖 settings.json
-bash /mnt/h/LAESim/NetworkSim/scripts/run_ros_network_bridge.sh
+export LAESIM_HOME="${HOME}/LAESim"
+export ROS_WORKSPACE="${LAESIM_HOME}/ros"
+export BACKEND=none  # 可改为 ns3；该变量会覆盖 settings.json
+bash "${LAESIM_HOME}/NetworkSim/scripts/run_ros_network_bridge.sh"
 ```
 
-不设置 `BACKEND` 时使用 `settings.json` 中的配置。
+不设置 `BACKEND` 时使用 `settings.json` 中的配置。如果配置文件放在自定义位置，先把 Windows 路径转换为 WSL 路径并显式设置 `SETTINGS`：
 
-## 8. ROS 消息接口
+```bash
+export SETTINGS="$(wslpath -u 'D:\path\to\settings.json')"
+```
 
-发送端向 `/network_sim/tx` 发布 `std_msgs/String`，内容是 JSON：
+上面的 `D:\path\to\settings.json` 只是格式示例，应替换为实际文件路径。
+
+## 10. ROS 消息接口与端到端测试
+
+发送端向 `/network_sim/tx` 发布 `std_msgs/String`，内容为 JSON：
 
 ```json
 {
@@ -271,39 +291,37 @@ bash /mnt/h/LAESim/NetworkSim/scripts/run_ros_network_bridge.sh
 
 ```bash
 source /opt/ros/noetic/setup.bash
-source ~/LAESim/ros/devel/setup.bash
-python3 /mnt/h/LAESim/NetworkSim/tests/ros_roundtrip_test.py
+source "${HOME}/LAESim/ros/devel/setup.bash"
+python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py"
 ```
 
-本次测试中，`none` 和 `ns3` 两种后端都完成了 `UAV -> Car` 的 ROS 往返；`none` 的仿真时间为 0，`ns3` 的输出带非零 ns-3 仿真时间。
+应分别用 `none` 和 `ns3` 后端测试。`none` 模式的网络仿真时间为 0；`ns3` 模式应返回非零仿真时间，链路不可达时应输出丢包结果。
 
-## 9. 图像与“真实网络栈”的边界
+## 11. 图像传输与网络栈边界
 
-ns-3 可以模拟承载图像的字节流，但不会替代 UE 生成画面，也不会自动把 `sensor_msgs/Image` 变成真实操作系统 socket 流量。当前集成采用“消息级网络仿真”：
+ns-3 可以模拟承载图像的字节流，但不会替代 UE 生成画面，也不会自动把 `sensor_msgs/Image` 转换成真实操作系统 socket 流量。当前集成采用消息级网络仿真：
 
-- UE/AirSim 仍生成真实仿真画面。
-- 应用把图像压缩、分片后，以每个分片的真实字节数提交给 `/network_sim/tx`。
+- UE/LAESim 生成仿真画面。
+- 应用压缩并分片图像，再按分片实际字节数提交给 `/network_sim/tx`。
 - ns-3 决定分片何时到达或是否丢失。
-- 接收应用按 `packet_id`/分片序号重组，再解码图像。
+- 接收应用根据数据包和分片序号重组并解码图像。
 
-当前单个 ns-3 包的上限为 60000 字节，大图像必须分片。此方式适合研究自组网对感知/协同算法的影响，也能取得时延、吞吐量、丢包率和路由变化指标。
+当前单个 ns-3 包上限为 60000 字节，大图像必须分片。这种方式适合研究自组织网络对感知和协同算法的影响，并可统计时延、吞吐量、丢包率和路由变化。
 
-如果必须让未经修改的 ROS/TCP/UDP 程序直接经过网络仿真，则需要 TAP/EMU 或 DCE 一类“真实网络栈/网络仿真接入”。该路线需要额外 Linux 网络接口、权限和时钟同步；WSL2 下部署复杂度明显更高，不属于当前 MVP。
+如果必须让未经修改的 ROS/TCP/UDP 程序直接经过网络仿真，需要进一步接入 TAP/EMU 或 DCE。这会增加 Linux 网络接口、权限和时钟同步要求，不属于当前集成范围。
 
-## 10. 当前限制与下一步
+## 12. 当前限制
 
 - runner 当前使用 IEEE 802.11g ad hoc、固定发送功率、RangePropagationLoss 和 OLSR/AODV。
-- AirSim 的 ROS 时钟与 ns-3 离散事件时钟目前是软同步：每个 ROS timer 推进固定 `StepMs`。
-- `METRICS` 已提供发送数、到达数、丢包率、吞吐量和平均时延，但尚未发布为 ROS 指标主题或落盘 CSV。
-- 路由变化尚未导出到 ROS；可通过 ns-3 routing table trace 增加。
-- 视频应增加编码、分片、重传策略和接收端缓冲，不能把一帧直接当成一个 UDP 包。
-- 当前 WSL 仍会使用少量 Windows 自身的 WSL 组件空间，但发行版的主要 Linux 磁盘和编译产物位于 H 盘。
+- ROS 时钟与 ns-3 离散事件时钟使用固定 `StepMs` 软同步。
+- 指标尚未发布为 ROS 指标主题或持久化为 CSV。
+- 路由变化尚未导出到 ROS。
+- 视频传输仍需补充编码、分片、重传和接收缓冲策略。
+- WSL 发行版的 `ext4.vhdx` 可以放在非系统盘，但 Windows 自身的 WSL 组件仍可能占用少量系统盘空间。
 
-建议下一阶段先固定一个实验场景和指标格式，再增加传播模型、网络指标 ROS topic/CSV、图像分片器，以及仿真时钟同步策略。
-
-## 11. 官方参考
+## 13. 官方参考
 
 - [Microsoft：导入任意 Linux 发行版供 WSL 使用](https://learn.microsoft.com/windows/wsl/use-custom-distro)
-- [ns-3 官方文档入口](https://www.nsnam.org/documentation/)
-- [ROS Noetic 在 Ubuntu 上的安装说明](https://wiki.ros.org/noetic/Installation/Ubuntu)
+- [ns-3 官方文档](https://www.nsnam.org/documentation/)
+- [ROS Noetic 安装说明](https://wiki.ros.org/noetic/Installation/Ubuntu)
 - [Ubuntu 官方云镜像](https://cloud-images.ubuntu.com/)

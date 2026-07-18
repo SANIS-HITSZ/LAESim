@@ -125,7 +125,7 @@ Boat 的 052B 默认模型不需要在 `settings.json` 里指定。源码仓库�
 4. 放好Plugins\AirSim之后，重新点击进入该UE项目，会弹窗显示需要新编译项目，点击编译即可，为该 UE 项目生成工程文件。
 5. 编译该项目的 `Development Editor`。
 6. 在 UE 里设置 `PlayerStart` 和 `AirSimGameMode`。
-7. 准备 `C:\Users\<用户名>\Documents\AirSim\settings.json`。
+7. 准备 `%USERPROFILE%\Documents\AirSim\settings.json`。
 
 如果只是想先验证官方自带 `Blocks` 示例环境，再额外运行：
 
@@ -153,7 +153,7 @@ set UNREAL_ENGINE_ROOT=D:\Epic\UE\UE_4.27
 Windows 侧真正生效的是这份文件：
 
 ```text
-C:\Users\<用户名>\Documents\AirSim\settings.json
+%USERPROFILE%\Documents\AirSim\settings.json
 ```
 
 如果需要现成模板，直接看：
