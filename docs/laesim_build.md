@@ -19,7 +19,7 @@ Visual Studio 工作负载、Unreal 基础环境和 AirSim 通用依赖可先参
 
 ```powershell
 $LaesimRoot = Join-Path $HOME "source\LAESim"
-git clone https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
+git clone --branch V1.4 https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
 Set-Location $LaesimRoot
 ```
 

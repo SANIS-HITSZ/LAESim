@@ -13,11 +13,17 @@
 <body class="laesim-landing">
   <header class="landing-header">
     <div class="landing-shell landing-header__inner">
-      <a class="landing-brand" href="{{ nav.homepage.url|url }}" aria-label="LAESim 首页">LAESim</a>
+      <div class="landing-identity">
+        <a class="landing-brand" href="{{ nav.homepage.url|url }}" aria-label="LAESim 首页">LAESim</a>
+        <span class="landing-institution">
+          <span>哈尔滨工业大学（深圳）</span>
+          <strong>广东省空天网络与智能感知实验室</strong>
+        </span>
+      </div>
       <nav class="landing-nav" aria-label="主导航">
         <a href="{{ 'documentation/'|url }}">文档</a>
         <a href="{{ 'laesim_features/'|url }}">核心特色</a>
-        <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
+        <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub</a>
       </nav>
     </div>
   </header>
@@ -27,9 +33,10 @@
   <footer class="landing-footer">
     <div class="landing-shell landing-footer__inner">
       <strong>LAESim</strong>
-      <span>基于 Microsoft AirSim 扩展，由 LAESim contributors 维护。</span>
+      <span class="landing-footer__institution">哈尔滨工业大学（深圳）<br />广东省空天网络与智能感知实验室</span>
+      <span class="landing-footer__note">基于 Microsoft AirSim 扩展，由 LAESim contributors 维护。</span>
       <a href="{{ 'documentation/'|url }}">文档</a>
-      <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
+      <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub</a>
     </div>
   </footer>
 </body>

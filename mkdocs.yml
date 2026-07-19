@@ -1,9 +1,9 @@
 site_name: LAESim 中文文档
 site_url: https://sanis-hitsz.github.io/LAESim/
-site_author: SANIS-HITSZ
+site_author: 哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室
 site_dir: build_docs
 repo_url: https://github.com/SANIS-HITSZ/LAESim
-edit_uri: edit/main/docs/
+edit_uri: edit/V1.4/docs/
 site_description: '支持空天地海混合载具、SceneMap 与可选 ns-3 自组网的多机仿真平台'
 
 markdown_extensions:
@@ -62,7 +62,7 @@ extra:
 extra_css:
   - stylesheets/laesim.css
 
-copyright: LAESim contributors; based on Microsoft AirSim
+copyright: 哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室；LAESim contributors；基于 Microsoft AirSim
 
 nav:
   - "首页": index.md
@@ -78,6 +78,6 @@ nav:
       - "AirSim API 文档": https://microsoft.github.io/AirSim/apis/
       - "ns-3 官方文档": https://www.nsnam.org/documentation/
   - "项目":
-      - "GitHub 仓库": https://github.com/SANIS-HITSZ/LAESim
+      - "GitHub 仓库": https://github.com/SANIS-HITSZ/LAESim/tree/V1.4
       - "提交问题": https://github.com/SANIS-HITSZ/LAESim/issues
-      - "更新记录": https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md
+      - "更新记录": https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CHANGELOG.md

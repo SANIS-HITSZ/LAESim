@@ -27,10 +27,10 @@ jobs:
       - name: Build LAESim Documentation
         run: bash ./build_docs.sh
 
-      # Only on commits to 'main' branch
+      # V1.4 is the active documentation branch.
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/V1.4' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build_docs

@@ -122,7 +122,7 @@ wsl -d $DistroName
 
 ```bash
 export LAESIM_HOME="${HOME}/LAESim"
-git clone https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
+git clone --branch V1.4 https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
 cd "${LAESIM_HOME}"
 ./setup.sh
 
