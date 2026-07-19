@@ -26,7 +26,7 @@ LAESim 在 Windows 中运行仿真场景，ROS Noetic 在 WSL2 中运行。ROS �
 - 两节点超过最大通信距离时，数据包丢失并输出丢包率。
 - ROS 消息在 `UAV` 与 `Car` 之间分别通过直连模式和 ns-3 模式完成往返传输。
 
-环境配置、启动命令和验证方法参见 [WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md)。
+环境配置、启动命令和验证方法参见[安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分](laesim_build.md#wsl-ros-ns3)。
 
 ## 扩展案例
 

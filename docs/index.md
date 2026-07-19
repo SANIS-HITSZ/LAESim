@@ -31,13 +31,13 @@ LAESim 可以保持原来的理想通信，也可以按配置启用 ns-3.48，�
 }
 ```
 
-将 `Backend` 改为 `ns3` 并启动 ROS 网络桥接器后，应用消息会经过 ns-3。参见[WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md)。
+将 `Backend` 改为 `ns3` 并启动 ROS 网络桥接器后，应用消息会经过 ns-3。参见[安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分](laesim_build.md#wsl-ros-ns3)。
 
 ## 开始使用
 
-1. 按[构建 LAESim](laesim_build.md)准备 Windows、UE 4.27 和 Visual Studio，并编译 LAESim 插件。
+1. 按[安装与构建 LAESim](laesim_build.md)准备 Windows、UE 4.27 和 Visual Studio，并编译 LAESim 插件。
 2. 按[使用 LAESim](laesim_use.md)选择混合载具模板、启动场景并验证 Python API 或 ROS。
-3. 需要研究通信网络时，再安装并启用[可选 ns-3 后端](laesim_wsl_ros_ns3.md)。
+3. 需要研究通信网络时，继续完成同一页面中的[WSL2、ROS 与 ns-3 安装](laesim_build.md#wsl-ros-ns3)。
 
 ## 与 AirSim 的关系
 

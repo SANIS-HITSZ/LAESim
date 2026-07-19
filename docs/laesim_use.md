@@ -112,7 +112,7 @@ python3 src/example/vehicle_state_monitor_ros.py
 }
 ```
 
-并启动 ROS 网络桥接器。完整配置和验证命令见[WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md)。
+并启动 ROS 网络桥接器。完整配置和验证命令见[安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分](laesim_build.md#wsl-ros-ns3)。
 
 ## Boat 使用边界
 

@@ -89,7 +89,7 @@ AirSim/UE 提供载具位置，ROS 网络桥接器把位置和应用消息交给
 - 通信范围内正常交付与范围外超时丢包
 - OLSR 两节点冒烟测试
 
-完整环境、接口和限制见[WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md)。
+完整环境、接口和限制见[安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分](laesim_build.md#wsl-ros-ns3)。
 
 ## 继承的 AirSim 能力
 

@@ -10,6 +10,10 @@ markdown_extensions:
   - toc:
       permalink: "#"
   - pymdownx.extra
+  - pymdownx.snippets:
+      base_path:
+        - .
+      check_paths: true
   - admonition
 
 # The repository retains upstream AirSim documents for source compatibility,
@@ -22,6 +26,8 @@ exclude_docs: |
   !laesim_use.md
   !laesim_wsl_ros_ns3.md
   !simulation_cases.md
+  includes/
+  includes/**
   !css/
   !css/**
   !js/
@@ -57,10 +63,8 @@ nav:
   - "首页": index.md
   - "认识 LAESim":
       - "核心特色": laesim_features.md
-      - "构建 LAESim": laesim_build.md
+      - "安装与构建 LAESim": laesim_build.md
       - "使用 LAESim": laesim_use.md
-  - "自组织网络":
-      - "WSL2、ROS 与 ns-3": laesim_wsl_ros_ns3.md
   - "仿真案例":
       - "案例概览": simulation_cases.md
   - "上游参考":

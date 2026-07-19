@@ -1,6 +1,8 @@
-# 构建 LAESim
+# 安装与构建 LAESim
 
-本页只说明 LAESim 的 Windows/UE 4.27 构建流程。Visual Studio 工作负载、Unreal 基础环境和 AirSim 通用依赖可先参考 [AirSim 官方 Windows 构建文档](https://microsoft.github.io/AirSim/build_windows/)。
+本页包含完整安装流程：先在 Windows 中构建 LAESim/UE 4.27 核心仿真器，再按需在 WSL2 中安装 ROS Noetic 和 ns-3。只使用 Windows Python API 时完成前半部分即可；需要 ROS 或自组织网络仿真时继续完成后半部分。
+
+Visual Studio 工作负载、Unreal 基础环境和 AirSim 通用依赖可先参考 [AirSim 官方 Windows 构建文档](https://microsoft.github.io/AirSim/build_windows/)。
 
 ## 环境要求
 
@@ -51,9 +53,9 @@ build.cmd --Release
 
 自动探测失败时指定 UE 根目录：
 
-```cmd
-set UNREAL_ENGINE_ROOT=E:\epgame\UE_4.27
-BuildAirSimRelease.bat
+```powershell
+$env:UNREAL_ENGINE_ROOT = Read-Host "请输入 UE 4.27 安装目录"
+.\BuildAirSimRelease.bat
 ```
 
 ## Boat 模型资源
@@ -102,4 +104,6 @@ Satellite 源码资产位于 `Unreal\Assets\Satellite\Models\Satellite`。构建
 - `settings.json` 使用 `AirGround` 时能同时生成无人机、汽车、船和卫星
 - 本机端口 `41451`、`41461`、`41471`、`41481`、`41491` 按配置监听
 
-构建完成后继续阅读[使用 LAESim](laesim_use.md)。
+完成 Windows/UE 构建后，可以先阅读[使用 LAESim](laesim_use.md)。需要 ROS 或 ns-3 时继续完成下面的可选环境安装。
+
+--8<-- "docs/includes/laesim_wsl_ros_ns3.md"
