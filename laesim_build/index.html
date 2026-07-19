@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_build/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_build/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
     <title>安装与构建 LAESim - LAESim 中文文档</title>
     <link rel="stylesheet" href="../css/theme.css" />
@@ -136,11 +136,11 @@
               </ul>
               <p class="caption"><span class="caption-text">项目</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub 仓库</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CHANGELOG.md">更新记录</a>
                   </li>
               </ul>
       </div>
@@ -160,7 +160,7 @@
           <li class="breadcrumb-item">文档</li>
       <li class="breadcrumb-item active">安装与构建 LAESim</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/laesim_build.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.4/docs/laesim_build.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -183,7 +183,7 @@
 <p>需要 ROS 或 ns-3 时，再准备 WSL2；它们不是 Windows 插件编译的前置条件。</p>
 <h2 id="_2">获取源码<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
 <pre class="highlight"><code class="language-powershell">$LaesimRoot = Join-Path $HOME "source\LAESim"
-git clone https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
+git clone --branch V1.4 https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
 Set-Location $LaesimRoot</code></pre>
 <p>若 PowerShell 禁止运行本地脚本，可仅为当前用户启用签名策略：</p>
 <pre class="highlight"><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
@@ -329,7 +329,7 @@ wsl -d $DistroName -- id</code></pre>
 <pre class="highlight"><code class="language-powershell">wsl -d $DistroName</code></pre>
 <p>进入 WSL 后执行：</p>
 <pre class="highlight"><code class="language-bash">export LAESIM_HOME="${HOME}/LAESim"
-git clone https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
+git clone --branch V1.4 https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
 cd "${LAESIM_HOME}"
 ./setup.sh
 
@@ -488,7 +488,7 @@ python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py"</code></pre>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>LAESim contributors; based on Microsoft AirSim</p>
+      <p>哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室；LAESim contributors；基于 Microsoft AirSim</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

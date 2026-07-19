@@ -56,10 +56,33 @@ body.laesim-landing {
   justify-content: space-between;
 }
 
+.landing-identity {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+}
+
 .landing-brand {
   color: var(--landing-ink);
   font-size: 22px;
   font-weight: 800;
+}
+
+.landing-institution {
+  border-left: 1px solid var(--landing-line);
+  color: var(--landing-muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  line-height: 1.45;
+  padding-left: 16px;
+  white-space: nowrap;
+}
+
+.landing-institution strong {
+  color: var(--landing-ink);
+  font-size: 12px;
 }
 
 .landing-nav {
@@ -114,12 +137,20 @@ body.laesim-landing {
 }
 
 .landing-kicker,
+.landing-affiliation,
 .landing-eyebrow {
   color: var(--landing-teal);
   font-size: 13px;
   font-weight: 800;
   margin: 0 0 14px;
   text-transform: uppercase;
+}
+
+.landing-affiliation {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-transform: none;
 }
 
 .landing-kicker {
@@ -508,6 +539,15 @@ body.laesim-landing {
   margin-right: auto;
 }
 
+.landing-footer__institution {
+  color: #fff;
+  line-height: 1.55;
+}
+
+.landing-footer__note {
+  max-width: 300px;
+}
+
 .landing-footer a {
   color: #fff;
 }
@@ -560,6 +600,10 @@ body.laesim-landing {
     display: none;
   }
 
+  .landing-institution {
+    display: none;
+  }
+
   .landing-hero {
     height: calc(100svh - 88px);
     min-height: 440px;
@@ -576,6 +620,12 @@ body.laesim-landing {
   .landing-hero__lead {
     font-size: 17px;
     line-height: 1.65;
+  }
+
+  .landing-affiliation {
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 310px;
   }
 
   .landing-hero__meta {
@@ -638,7 +688,8 @@ body.laesim-landing {
   }
 
   .landing-footer strong,
-  .landing-footer span {
+  .landing-footer__institution,
+  .landing-footer__note {
     flex-basis: 100%;
   }
 }
