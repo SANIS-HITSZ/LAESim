@@ -67,14 +67,9 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="laesim_features/">核心特色</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="laesim_build/">构建 LAESim</a>
+                  <li class="toctree-l1"><a class="reference internal" href="laesim_build/">安装与构建 LAESim</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="laesim_use/">使用 LAESim</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">自组织网络</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">仿真案例</span></p>
@@ -144,12 +139,12 @@
 <pre class="highlight"><code class="language-json">"NetworkSimulation": {
   "Backend": "none"
 }</code></pre>
-<p>将 <code>Backend</code> 改为 <code>ns3</code> 并启动 ROS 网络桥接器后，应用消息会经过 ns-3。参见<a href="laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>。</p>
+<p>将 <code>Backend</code> 改为 <code>ns3</code> 并启动 ROS 网络桥接器后，应用消息会经过 ns-3。参见<a href="laesim_build/#wsl-ros-ns3">安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分</a>。</p>
 <h2 id="_3">开始使用<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
 <ol>
-<li>按<a href="laesim_build/">构建 LAESim</a>准备 Windows、UE 4.27 和 Visual Studio，并编译 LAESim 插件。</li>
+<li>按<a href="laesim_build/">安装与构建 LAESim</a>准备 Windows、UE 4.27 和 Visual Studio，并编译 LAESim 插件。</li>
 <li>按<a href="laesim_use/">使用 LAESim</a>选择混合载具模板、启动场景并验证 Python API 或 ROS。</li>
-<li>需要研究通信网络时，再安装并启用<a href="laesim_wsl_ros_ns3/">可选 ns-3 后端</a>。</li>
+<li>需要研究通信网络时，继续完成同一页面中的<a href="laesim_build/#wsl-ros-ns3">WSL2、ROS 与 ns-3 安装</a>。</li>
 </ol>
 <h2 id="airsim">与 AirSim 的关系<a class="headerlink" href="#airsim" title="Permanent link">#</a></h2>
 <p>LAESim 基于 Microsoft AirSim 扩展，继承其仿真环境、传感器和 API 基础能力。通用 AirSim 功能不在本站重复维护，请直接查阅 <a href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>；本站只记录 LAESim 的构建、混合载具、Boat、Satellite、SceneMap、ROS 联动和 ns-3 集成。</p>
@@ -206,5 +201,5 @@
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2026-07-18 14:13:54.321809+00:00
+Build Date UTC : 2026-07-19 04:42:09.193676+00:00
 -->
