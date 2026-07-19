@@ -450,7 +450,7 @@ python3 "${HOME}/LAESim/NetworkSim/tests/smoke_backend.py"</code></pre>
 </tr>
 <tr>
 <td><code>ns3</code></td>
-<td>消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置来自 LAESim odometry</td>
+<td>消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置由配置出生偏移与 LAESim 局部 odometry 合成</td>
 </tr>
 </tbody>
 </table>
@@ -501,6 +501,7 @@ python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py"</code></pre>
 <ul>
 <li>runner 当前使用 IEEE 802.11g ad hoc、固定发送功率、RangePropagationLoss 和 OLSR/AODV。</li>
 <li>ROS 时钟与 ns-3 离散事件时钟使用固定 <code>StepMs</code> 软同步。</li>
+<li>自动出生偏移当前读取 <code>Vehicles.&lt;name&gt;.X/Y/Z</code>；使用 <code>StartOnSceneMap</code> 时应同时提供等价的 <code>X/Y/Z</code> 供网络桥接器定位。</li>
 <li>指标尚未发布为 ROS 指标主题或持久化为 CSV。</li>
 <li>路由变化尚未导出到 ROS。</li>
 <li>视频传输仍需补充编码、分片、重传和接收缓冲策略。</li>
