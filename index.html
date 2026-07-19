@@ -29,7 +29,7 @@
   </header>
   <main>
     <section class="landing-hero" aria-labelledby="landing-title">
-  <img class="landing-hero__image" src="assets/landing/laesim-scenemap.png" alt="LAESim SceneMap 场景中的卫星、无人机、车辆与舰船" />
+  <img class="landing-hero__image" src="assets/showcase/laesim-island-scenemap.png" alt="LAESim 岛屿 SceneMap 仿真场景全景" />
   <div class="landing-hero__shade" aria-hidden="true"></div>
   <div class="landing-shell landing-hero__content">
     <p class="landing-affiliation">哈尔滨工业大学（深圳） · 广东省空天网络与智能感知实验室</p>
@@ -56,8 +56,8 @@
 <section class="landing-section landing-section--fleet">
   <div class="landing-shell landing-feature">
     <figure class="landing-feature__media">
-      <img src="assets/landing/laesim-mixed-fleet.png" alt="LAESim 中同时运行的无人机、车辆与舰船" loading="lazy" />
-      <figcaption>同一场景中的多无人机、多车辆与多舰船</figcaption>
+      <img src="assets/showcase/laesim-air-space-sea-overview.png" alt="LAESim 场景中的卫星、无人机、车辆与舰船" loading="lazy" />
+      <figcaption>同一岛屿场景中的卫星、无人机、车辆与舰船</figcaption>
     </figure>
     <div class="landing-feature__copy">
       <p class="landing-eyebrow">统一载具体系</p>
@@ -90,6 +90,45 @@
       <b aria-hidden="true">→</b>
       <div><span>04</span><strong>运行任务</strong><small>按像素、米制坐标或 GPS 部署载具</small></div>
     </div>
+  </div>
+</section>
+
+<section class="landing-section landing-section--showcase">
+  <div class="landing-shell">
+    <div class="landing-section__heading">
+      <p class="landing-eyebrow">仿真画面</p>
+      <h2>从单类编队到多域协同</h2>
+      <p>以下画面均来自 LAESim 当前开发版本，用于展示不同类型载具在统一岛屿场景中的运行状态。</p>
+    </div>
+    <div class="landing-gallery">
+      <figure>
+        <img src="assets/showcase/laesim-uav-ground-team.png" alt="三架无人机与三辆车辆组成的空地协同编队" loading="lazy" />
+        <figcaption><strong>空地协同</strong><span>多无人机与多车辆联合部署</span></figcaption>
+      </figure>
+      <figure>
+        <img src="assets/showcase/laesim-satellite-formation.png" alt="两颗卫星在岛屿场景上空编队运行" loading="lazy" />
+        <figcaption><strong>空间载具</strong><span>卫星编队与三维运动控制</span></figcaption>
+      </figure>
+      <figure>
+        <img src="assets/showcase/laesim-ship-formation.png" alt="三艘舰船在海面编队运行" loading="lazy" />
+        <figcaption><strong>海上编队</strong><span>多舰船水面运动仿真</span></figcaption>
+      </figure>
+    </div>
+    <a class="landing-text-link" href="simulation_cases/">查看全部仿真案例 →</a>
+  </div>
+</section>
+
+<section class="landing-section landing-section--demo">
+  <div class="landing-shell landing-demo">
+    <div class="landing-demo__copy">
+      <p class="landing-eyebrow">视频演示</p>
+      <h2>查看 LAESim 场景运行效果</h2>
+      <p>通过实际录制画面了解岛屿环境、多类型载具和协同场景的整体效果。视频默认不自动播放，仅在用户操作后加载播放。</p>
+    </div>
+    <video class="landing-demo__video" controls preload="metadata" playsinline poster="assets/showcase/laesim-air-space-sea-overview.png">
+      <source src="assets/showcase/laesim-platform-demo.mp4" type="video/mp4" />
+      当前浏览器不支持 HTML5 视频播放。
+    </video>
   </div>
 </section>
 
