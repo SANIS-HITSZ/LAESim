@@ -1,10 +1,177 @@
 # 仿真案例
 
-本页汇总基于 LAESim 完成的空、地、海多载具协同仿真案例，以及可选的 ns-3 自组织网络实验。
+本页提供两个面向首次使用者的可复现实验。建议先完成异构载具实验，熟悉 `settings.json` 和 Python API，再进行 ns-3 网络实验。
 
-## 统一岛屿仿真场景
+| 实验 | 重点 | 环境 | 预计时间 |
+| --- | --- | --- | --- |
+| 实验一：无人机、汽车与船 | `AirGround`、载具配置、RPC 端口、Python API | Windows + UE 4.27 | 约 10 分钟 |
+| 实验二：LAESim 与 ns-3 | ROS 里程计、节点映射、范围内交付、范围外丢包 | Windows + WSL2 + ROS + ns-3 | 约 15 分钟 |
 
-当前开发场景以岛屿地形为基础，可在同一 Unreal Engine 世界中部署卫星、无人机、车辆和舰船。下图展示场景整体地形与可通行区域。
+完整示例统一维护在 [`Examples/quickstart`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.4/Examples/quickstart)，包含可直接复制的配置、运行脚本、预期结果和排查步骤。
+
+## 实验一：无人机、汽车与船异构仿真
+
+### 目标
+
+在同一个 `AirGround` 场景中创建 `UAV`、`Car`、`Boat`，使用各自的 RPC 端口同时发送控制并读取状态。该实验不需要 ROS 或 ns-3。
+
+核心配置如下，完整文件见 [`heterogeneous_fleet/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/settings.json)：
+
+```json
+{
+  "SimMode": "AirGround",
+  "ApiServerPortCar": 41461,
+  "ApiServerPortMultirotor": 41471,
+  "ApiServerPortBoat": 41481,
+  "Vehicles": {
+    "UAV":  { "VehicleType": "SimpleFlight", "X": 0, "Y": 0,  "Z": 0 },
+    "Car":  { "VehicleType": "PhysXCar",     "X": 0, "Y": -8, "Z": 0 },
+    "Boat": { "VehicleType": "SimpleBoat",  "X": 0, "Y": 8,  "Z": 0 }
+  }
+}
+```
+
+`Vehicles` 下的键是 API 使用的实例名；`VehicleType` 选择动力学和控制接口；`X/Y/Z` 是相对于场景原点的出生位置。Boat 使用简化平面三自由度模型，不要求场景具有真实水体。
+
+### 运行
+
+在仓库根目录打开 PowerShell，将实验配置复制为当前 AirSim 配置：
+
+```powershell
+$AirSimDir = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'AirSim'
+New-Item -ItemType Directory -Force $AirSimDir | Out-Null
+$Settings = Join-Path $AirSimDir 'settings.json'
+if (Test-Path $Settings) { Copy-Item $Settings "$Settings.backup" -Force }
+Copy-Item .\Examples\quickstart\heterogeneous_fleet\settings.json $Settings -Force
+py -3 -m pip install msgpack-rpc-python numpy opencv-contrib-python
+```
+
+先检查配置，无需启动 UE：
+
+```powershell
+py -3 .\Examples\quickstart\heterogeneous_fleet\run_experiment.py --check-only
+```
+
+看到 `configuration check passed` 后，在 UE 4.27 中打开 LAESim 场景并点击 **Play**，然后运行：
+
+```powershell
+py -3 .\Examples\quickstart\heterogeneous_fleet\run_experiment.py
+```
+
+脚本调用的关键 API 是：
+
+```python
+uav.takeoffAsync(vehicle_name="UAV").join()
+uav.moveByVelocityAsync(2, 0, 0, duration, vehicle_name="UAV")
+car.setCarControls(airsim.CarControls(throttle=0.55), "Car")
+boat.setBoatControls(airsim.BoatControls(throttle=0.70), "Boat")
+```
+
+运行约 8 秒后，脚本停止汽车和船并让无人机降落。终端应持续显示无人机局部 NED 坐标、汽车速度、船的纵向/横向速度。
+
+完整步骤和练习见[实验一 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/README.md)，完整代码见 [`run_experiment.py`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/run_experiment.py)。
+
+## 实验二：LAESim 节点与 ns-3 通信范围
+
+### 目标
+
+将 `settings.json` 中的 `UAV` 和 `Car` 自动映射为同名 ns-3 节点，通过 ROS 网络桥接器发送消息，并分别复现通信范围内全部交付和范围外全部丢包。
+
+```text
+LAESim odom_local_ned + settings X/Y/Z
+                    ↓
+             ROS 网络桥接器
+                    ↓ POSE / SEND
+         ns-3 Wi-Fi ad hoc + OLSR
+                    ↓ DELIVER
+          /network_sim/rx/Car
+```
+
+完整配置见 [`ns3_network/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/ns3_network/settings.json)，关键部分是：
+
+```json
+{
+  "Vehicles": {
+    "UAV": { "VehicleType": "SimpleFlight", "X": 0,  "Y": 0, "Z": -2 },
+    "Car": { "VehicleType": "PhysXCar",     "X": 20, "Y": 0, "Z": 0 }
+  },
+  "NetworkSimulation": {
+    "Backend": "ns3",
+    "Routing": "olsr",
+    "MaxRangeMeters": 100.0,
+    "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner"
+  }
+}
+```
+
+网络桥接器在启动时读取 `Vehicles`，为每个实例创建一个 ns-3 节点。AirSim 的 odometry 以各载具出生点为局部原点，因此桥接器会将配置中的 `X/Y/Z` 出生偏移加回局部里程计，再更新 ns-3 节点位置。
+
+### 启动链路
+
+先完成[安装与构建页面中的 WSL2、ROS 与 ns-3 步骤](laesim_build.md#wsl-ros-ns3)，在 Windows 仓库根目录复制实验配置：
+
+```powershell
+$AirSimDir = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'AirSim'
+New-Item -ItemType Directory -Force $AirSimDir | Out-Null
+$Settings = Join-Path $AirSimDir 'settings.json'
+if (Test-Path $Settings) { Copy-Item $Settings "$Settings.backup" -Force }
+Copy-Item .\Examples\quickstart\ns3_network\settings.json $Settings -Force
+```
+
+在 UE 中点击 **Play**，随后在 WSL2 中分别启动：
+
+```bash
+# 终端 A
+source /opt/ros/noetic/setup.bash
+roscore
+```
+
+```bash
+# 终端 B：连接 Windows LAESim
+export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
+source /opt/ros/noetic/setup.bash
+source "${HOME}/LAESim/ros/devel/setup.bash"
+roslaunch airsim_ros_pkgs airsim_node.launch host:="${WINDOWS_HOST}"
+```
+
+```bash
+# 终端 C：按 settings.json 启动 ns-3 桥接器
+export LAESIM_HOME="${HOME}/LAESim"
+export ROS_WORKSPACE="${LAESIM_HOME}/ros"
+unset BACKEND
+bash "${LAESIM_HOME}/NetworkSim/scripts/run_ros_network_bridge.sh"
+```
+
+`unset BACKEND` 很重要：已存在的 `BACKEND=none` 环境变量会覆盖配置文件。
+
+### 验证交付与丢包
+
+当 `MaxRangeMeters` 为 `100.0` 时运行：
+
+```bash
+source /opt/ros/noetic/setup.bash
+source "${HOME}/LAESim/ros/devel/setup.bash"
+python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
+  --expect delivered
+```
+
+预期 `sent: 5`、`delivered: 5`、`dropped: 0`，且返回的 `simulation_time_ns` 均大于 0。
+
+然后将 Windows 活动配置中的 `MaxRangeMeters` 改为 `5.0`，重启终端 C 的桥接器，再运行：
+
+```bash
+python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
+  --expect dropped
+```
+
+两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 `delivered: 0`、`dropped: 5`。完整步骤和排查见[实验二 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/ns3_network/README.md)。
+
+!!! note
+    普通 `/airsim_node/...` 话题不会自动经过 ns-3。需要受到时延和丢包影响的业务消息应发布到 `/network_sim/tx`，接收端订阅 `/network_sim/rx/<目标载具名>`。
+
+## 更多场景展示
+
+以下画面来自 LAESim 当前开发场景，用于展示统一岛屿环境和多类型载具能力。
 
 <figure class="laesim-media laesim-media--wide">
   <img src="../assets/showcase/laesim-island-scenemap.png" alt="LAESim 岛屿 SceneMap 仿真场景全景" loading="lazy" />
@@ -16,27 +183,11 @@
   <figcaption>空、天、地、海多类型载具的统一场景展示</figcaption>
 </figure>
 
-## 空地多机协同与 ROS 联动
-
-当前验证场景同时运行 3 架无人机和 3 辆车辆：
-
-| 载具类型 | 实例名称 |
-| --- | --- |
-| 无人机 | `UAV`、`UAV2`、`UAV3` |
-| 车辆 | `Car`、`Car2`、`Car3` |
-
-LAESim 在 Windows 中运行仿真场景，ROS Noetic 在 WSL2 中运行。ROS 节点可通过 AirSim RPC 获取各载具的状态和里程计数据。
-
-<figure class="laesim-media laesim-media--wide">
-  <img src="../assets/showcase/laesim-uav-ground-team.png" alt="三架无人机与三辆车辆组成的空地协同编队" loading="lazy" />
-  <figcaption>三架无人机与三辆车辆的空地协同场景</figcaption>
-</figure>
-
-## 卫星与舰船编队
-
-卫星和舰船作为 LAESim 的扩展载具，可以与无人机、车辆共享场景和任务时间线。当前画面用于验证载具生成、编队展示和基础运动能力。
-
 <div class="laesim-media-grid">
+  <figure class="laesim-media">
+    <img src="../assets/showcase/laesim-uav-ground-team.png" alt="三架无人机与三辆车辆组成的空地协同编队" loading="lazy" />
+    <figcaption>多无人机与多车辆空地协同</figcaption>
+  </figure>
   <figure class="laesim-media">
     <img src="../assets/showcase/laesim-satellite-formation.png" alt="两颗卫星在岛屿场景上空编队运行" loading="lazy" />
     <figcaption>卫星编队场景</figcaption>
@@ -55,22 +206,3 @@ LAESim 在 Windows 中运行仿真场景，ROS Noetic 在 WSL2 中运行。ROS �
 </video>
 
 视频时长约 41 秒，展示当前开发版本的岛屿环境与多类型载具运行效果。
-
-## 接入 ns-3 的通信实验
-
-同一场景可以选择两种网络模式：
-
-- `Backend: none`：不模拟自组织网络，消息直接传递。
-- `Backend: ns3`：由 ns-3 模拟节点间的无线链路、路由和数据包传输。
-
-当前已经验证以下情况：
-
-- 两节点在有效通信距离内使用 OLSR 路由，数据包成功送达并输出时延指标。
-- 两节点超过最大通信距离时，数据包丢失并输出丢包率。
-- ROS 消息在 `UAV` 与 `Car` 之间分别通过直连模式和 ns-3 模式完成往返传输。
-
-环境配置、启动命令和验证方法参见[安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分](laesim_build.md#wsl-ros-ns3)。
-
-## 扩展案例
-
-后续案例可以在本页继续增加，并将配置文件、启动脚本、实验参数和结果一并提交到 LAESim 仓库，以便其他贡献者复现。

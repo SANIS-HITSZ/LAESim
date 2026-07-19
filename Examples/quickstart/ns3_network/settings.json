@@ -1,0 +1,34 @@
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "AirGround",
+  "ClockType": "ScalableClock",
+  "ApiServerPortCV": 41451,
+  "ApiServerPortCar": 41461,
+  "ApiServerPortMultirotor": 41471,
+  "Vehicles": {
+    "UAV": {
+      "VehicleType": "SimpleFlight",
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": -2.0,
+      "Yaw": 0.0
+    },
+    "Car": {
+      "VehicleType": "PhysXCar",
+      "X": 20.0,
+      "Y": 0.0,
+      "Z": 0.0,
+      "Yaw": 0.0
+    }
+  },
+  "NetworkSimulation": {
+    "Backend": "ns3",
+    "StepMs": 20,
+    "Routing": "olsr",
+    "MaxRangeMeters": 100.0,
+    "TxPowerDbm": 16.0,
+    "WarmupSeconds": 3.0,
+    "PacketTimeoutSeconds": 2.0,
+    "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner"
+  }
+}

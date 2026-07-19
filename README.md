@@ -79,6 +79,7 @@ LAESim 保留两种可切换的通信模式：
 | `Multi_use/` | 无 ROS 控制、传感器和 SceneMap 工具 |
 | `ros/` | ROS Noetic 工作空间、消息、服务与示例 |
 | `NetworkSim/` | 可选 ns-3 runner、ROS 网络桥接器和测试 |
+| `Examples/quickstart/` | 异构载具与 ns-3 两个可复现入门实验 |
 | `how_to_use_settings/` | 单载具、混合载具、卫星和 SceneMap 配置模板 |
 | `docs/` | LAESim 中文文档与展示页内容 |
 
@@ -88,6 +89,7 @@ LAESim 保留两种可切换的通信模式：
 - [安装与构建 LAESim](https://sanis-hitsz.github.io/LAESim/laesim_build/)
 - [使用 LAESim](https://sanis-hitsz.github.io/LAESim/laesim_use/)
 - [仿真案例](https://sanis-hitsz.github.io/LAESim/simulation_cases/)
+- [快速入门实验](Examples/quickstart/README.md)
 - [Multi_use 使用说明](Multi_use/README_zh.md)
 - [ROS 示例说明](ros/src/example/README_zh.md)
 

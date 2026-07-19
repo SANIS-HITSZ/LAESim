@@ -7,7 +7,7 @@ import subprocess
 import uuid
 import re
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 
 MAX_PACKET_SIZE_BYTES = 60000
@@ -32,6 +32,33 @@ class Delivery:
     payload: str
     size_bytes: int
     simulation_time_ns: int
+
+
+def configured_vehicle_origins(settings: dict) -> Dict[str, Tuple[float, float, float]]:
+    """Return each vehicle's configured global NED spawn offset."""
+    vehicles = settings.get("Vehicles", {})
+    if not isinstance(vehicles, dict) or not vehicles:
+        raise ValueError("settings.json does not define any vehicles")
+
+    origins: Dict[str, Tuple[float, float, float]] = {}
+    for name, vehicle in vehicles.items():
+        if not isinstance(vehicle, dict):
+            raise ValueError(f"vehicle '{name}' must be a JSON object")
+        origins[name] = (
+            float(vehicle.get("X", 0.0)),
+            float(vehicle.get("Y", 0.0)),
+            float(vehicle.get("Z", 0.0)),
+        )
+    return origins
+
+
+def network_pose_from_local_ned(
+    origin: Tuple[float, float, float],
+    local_pose: Tuple[float, float, float],
+) -> Tuple[float, float, float]:
+    """Combine AirSim's configured origin and vehicle-local NED odometry."""
+    global_ned = tuple(origin[index] + local_pose[index] for index in range(3))
+    return global_ned[0], global_ned[1], -global_ned[2]
 
 
 def validate_request(request: PacketRequest, node_names: Iterable[str]) -> None:

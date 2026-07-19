@@ -1,0 +1,32 @@
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "AirGround",
+  "ClockType": "ScalableClock",
+  "ApiServerPortCV": 41451,
+  "ApiServerPortCar": 41461,
+  "ApiServerPortMultirotor": 41471,
+  "ApiServerPortBoat": 41481,
+  "Vehicles": {
+    "UAV": {
+      "VehicleType": "SimpleFlight",
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0,
+      "Yaw": 0.0
+    },
+    "Car": {
+      "VehicleType": "PhysXCar",
+      "X": 0.0,
+      "Y": -8.0,
+      "Z": 0.0,
+      "Yaw": 0.0
+    },
+    "Boat": {
+      "VehicleType": "SimpleBoat",
+      "X": 0.0,
+      "Y": 8.0,
+      "Z": 0.0,
+      "Yaw": 0.0
+    }
+  }
+}

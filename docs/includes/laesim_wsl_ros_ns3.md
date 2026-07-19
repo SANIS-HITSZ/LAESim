@@ -244,7 +244,7 @@ python3 "${HOME}/LAESim/NetworkSim/tests/smoke_backend.py"
 | `Backend` | 行为 |
 | --- | --- |
 | `none` | 保持理想通信，ROS 消息立即转发，不计算网络时延、丢包和路由 |
-| `ns3` | 消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置来自 LAESim odometry |
+| `ns3` | 消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置由配置出生偏移与 LAESim 局部 odometry 合成 |
 
 当前 runner 支持 `olsr` 和 `aodv`。`MaxRangeMeters` 是当前实现使用的硬通信范围，`PacketTimeoutSeconds` 到期后未送达的包会被记录为 `DROP`。
 
@@ -321,6 +321,7 @@ ns-3 可以模拟承载图像的字节流，但不会替代 UE 生成画面，�
 
 - runner 当前使用 IEEE 802.11g ad hoc、固定发送功率、RangePropagationLoss 和 OLSR/AODV。
 - ROS 时钟与 ns-3 离散事件时钟使用固定 `StepMs` 软同步。
+- 自动出生偏移当前读取 `Vehicles.<name>.X/Y/Z`；使用 `StartOnSceneMap` 时应同时提供等价的 `X/Y/Z` 供网络桥接器定位。
 - 指标尚未发布为 ROS 指标主题或持久化为 CSV。
 - 路由变化尚未导出到 ROS。
 - 视频传输仍需补充编码、分片、重传和接收缓冲策略。

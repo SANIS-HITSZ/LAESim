@@ -12,14 +12,19 @@ import rospy
 from nav_msgs.msg import Odometry
 from std_msgs.msg import String
 
-from network_backend import Delivery, PacketRequest, create_backend
+from network_backend import (
+    Delivery,
+    PacketRequest,
+    configured_vehicle_origins,
+    create_backend,
+    network_pose_from_local_ned,
+)
 
 
 class RosNetworkBridge:
     def __init__(self, settings: dict, backend_override: str = ""):
-        self.vehicle_names = list(settings.get("Vehicles", {}).keys())
-        if not self.vehicle_names:
-            raise ValueError("settings.json does not define any vehicles")
+        self.vehicle_origins = configured_vehicle_origins(settings)
+        self.vehicle_names = list(self.vehicle_origins.keys())
 
         self.config = settings.get("NetworkSimulation", {})
         self.step_ms = float(self.config.get("StepMs", 20.0))
@@ -45,8 +50,12 @@ class RosNetworkBridge:
 
     def _odom_callback(self, message: Odometry, vehicle_name: str) -> None:
         position = message.pose.pose.position
+        network_pose = network_pose_from_local_ned(
+            self.vehicle_origins[vehicle_name],
+            (position.x, position.y, position.z),
+        )
         with self.lock:
-            self.latest_poses[vehicle_name] = (position.x, position.y, -position.z)
+            self.latest_poses[vehicle_name] = network_pose
 
     def _tx_callback(self, message: String) -> None:
         try:
