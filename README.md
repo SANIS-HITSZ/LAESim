@@ -6,7 +6,7 @@
 
 [项目展示页](https://sanis-hitsz.github.io/LAESim/) · [项目文档](https://sanis-hitsz.github.io/LAESim/documentation/) · [安装与构建](https://sanis-hitsz.github.io/LAESim/laesim_build/) · [仿真案例](https://sanis-hitsz.github.io/LAESim/simulation_cases/)
 
-![LAESim SceneMap 场景中的卫星、无人机、车辆与舰船](docs/assets/landing/laesim-scenemap.png)
+![LAESim 岛屿场景中的卫星、无人机、车辆与舰船](docs/assets/showcase/laesim-air-space-sea-overview.png)
 
 LAESim 基于 Microsoft AirSim 和 Unreal Engine 4.27 扩展，面向无人机、车辆、舰船与卫星协同任务。项目将多类型载具、图片地图、Python/ROS 接口和可选 ns-3 自组织网络仿真组织在同一套场景配置与实验流程中。
 

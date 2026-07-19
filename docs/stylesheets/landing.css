@@ -345,6 +345,72 @@ body.laesim-landing {
   border-top: 1px solid var(--landing-line);
 }
 
+.landing-section--showcase {
+  border-bottom: 1px solid var(--landing-line);
+}
+
+.landing-gallery {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 48px 0 28px;
+}
+
+.landing-gallery figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.landing-gallery img {
+  aspect-ratio: 16 / 10;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.landing-gallery figcaption {
+  border-bottom: 1px solid var(--landing-line);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 0;
+}
+
+.landing-gallery figcaption strong {
+  font-size: 15px;
+}
+
+.landing-gallery figcaption span {
+  color: var(--landing-muted);
+  font-size: 13px;
+}
+
+.landing-section--demo {
+  background: #f6f7f4;
+  border-bottom: 1px solid var(--landing-line);
+}
+
+.landing-demo {
+  align-items: center;
+  display: grid;
+  gap: 64px;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+}
+
+.landing-demo__copy > p:not(.landing-eyebrow) {
+  color: var(--landing-muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.landing-demo__video {
+  aspect-ratio: 16 / 9;
+  background: #11191c;
+  display: block;
+  object-fit: contain;
+  width: 100%;
+}
+
 .landing-section__heading {
   max-width: 790px;
 }
@@ -554,6 +620,7 @@ body.laesim-landing {
 
 @media (max-width: 900px) {
   .landing-feature,
+  .landing-demo,
   .landing-workflow {
     gap: 46px;
     grid-template-columns: 1fr;
@@ -573,6 +640,10 @@ body.laesim-landing {
 
   .landing-network-flow > b {
     display: none;
+  }
+
+  .landing-gallery {
+    grid-template-columns: 1fr 1fr;
   }
 
   .landing-cta__inner {
@@ -660,6 +731,10 @@ body.laesim-landing {
 
   .landing-feature__media img {
     aspect-ratio: 4 / 3;
+  }
+
+  .landing-gallery {
+    grid-template-columns: 1fr;
   }
 
   .landing-pipeline {
