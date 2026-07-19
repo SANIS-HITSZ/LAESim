@@ -1,44 +1,117 @@
-# LAESim
+---
+template: landing.html
+title: LAESim
+---
 
-LAESim 是面向空天地海协同研究的多载具仿真平台。在同一个 UE 4.27 场景和同一份 `settings.json` 中，可以同时运行无人机、车辆、船和卫星，并通过 Python API 或 ROS 对不同类型载具进行控制和状态采集。
+<section class="landing-hero" aria-labelledby="landing-title">
+  <img class="landing-hero__image" src="assets/landing/laesim-scenemap.png" alt="LAESim SceneMap 场景中的卫星、无人机、车辆与舰船" />
+  <div class="landing-hero__shade" aria-hidden="true"></div>
+  <div class="landing-shell landing-hero__content">
+    <p class="landing-kicker">空天地海协同仿真平台</p>
+    <h1 id="landing-title">LAESim</h1>
+    <p class="landing-hero__lead">在同一个 Unreal Engine 场景中组织无人机、车辆、舰船与卫星，并把 ROS 算法和 ns-3 自组织网络纳入同一套可复现实验流程。</p>
+    <div class="landing-actions">
+      <a class="landing-button landing-button--primary" href="documentation/">进入文档</a>
+      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim">查看 GitHub</a>
+    </div>
+    <p class="landing-hero__meta">UE 4.27 · Python API · ROS Noetic · ns-3.48</p>
+  </div>
+</section>
 
-<img alt="LAESim 空地协同多机仿真场景" src="https://github.com/user-attachments/assets/b6abd8e5-756e-46b6-a82c-31d273962cd5" />
+<section class="landing-facts" aria-label="LAESim 核心能力概览">
+  <div class="landing-shell landing-facts__grid">
+    <div><strong>4</strong><span>类协同载具</span></div>
+    <div><strong>5</strong><span>个独立 RPC 端口</span></div>
+    <div><strong>2</strong><span>种通信后端</span></div>
+    <div><strong>1</strong><span>套统一场景配置</span></div>
+  </div>
+</section>
 
-## 核心扩展
+<section class="landing-section landing-section--fleet">
+  <div class="landing-shell landing-feature">
+    <figure class="landing-feature__media">
+      <img src="assets/landing/laesim-mixed-fleet.png" alt="LAESim 中同时运行的无人机、车辆与舰船" loading="lazy" />
+      <figcaption>同一场景中的多无人机、多车辆与多舰船</figcaption>
+    </figure>
+    <div class="landing-feature__copy">
+      <p class="landing-eyebrow">统一载具体系</p>
+      <h2>从单类仿真扩展到空天地海协同</h2>
+      <p>LAESim 的 <code>AirGround</code> 模式允许不同载具共享场景、传感器与任务时间线，同时保持各自独立的控制接口和 RPC 端口。</p>
+      <ul class="landing-checklist">
+        <li><strong>无人机</strong><span>SimpleFlight 与多机控制</span></li>
+        <li><strong>车辆</strong><span>PhysXCar 与地面任务</span></li>
+        <li><strong>舰船</strong><span>简化三自由度水面运动</span></li>
+        <li><strong>卫星</strong><span>三维速度控制与空间协同</span></li>
+      </ul>
+      <a class="landing-text-link" href="laesim_features/">查看载具与接口 →</a>
+    </div>
+  </div>
+</section>
 
-### 空天地海混合载具
+<section class="landing-section landing-section--map">
+  <div class="landing-shell">
+    <div class="landing-section__heading">
+      <p class="landing-eyebrow">SceneMap</p>
+      <h2>让卫星图成为可计算的仿真场景</h2>
+      <p>将图片加载为可碰撞平面地图，建立像素、局部米制坐标与 GPS 之间的转换关系，让载具按真实地理位置出生和协同。</p>
+    </div>
+    <div class="landing-pipeline" aria-label="SceneMap 数据流程">
+      <div><span>01</span><strong>导入图片</strong><small>任意长宽比的卫星图或任务地图</small></div>
+      <b aria-hidden="true">→</b>
+      <div><span>02</span><strong>设置比例尺</strong><small>定义每个像素对应的实际距离</small></div>
+      <b aria-hidden="true">→</b>
+      <div><span>03</span><strong>GPS 配准</strong><small>通过 GeoReference 对齐经纬度</small></div>
+      <b aria-hidden="true">→</b>
+      <div><span>04</span><strong>运行任务</strong><small>按像素、米制坐标或 GPS 部署载具</small></div>
+    </div>
+  </div>
+</section>
 
-原版 AirSim 的常用运行模式通常在 `Multirotor` 与 `Car` 之间选择。LAESim 新增 `AirGround` 混合模式和 Boat 载具链路，使以下对象能够出现在同一个仿真场景中：
+<section class="landing-section landing-section--network">
+  <div class="landing-shell">
+    <div class="landing-section__heading landing-section__heading--light">
+      <p class="landing-eyebrow">ROS + ns-3</p>
+      <h2>把通信条件带入协同算法</h2>
+      <p>保留理想通信作为基线，或启用 ns-3 模拟 Wi-Fi ad hoc、OLSR/AODV、时延、吞吐量与丢包。</p>
+    </div>
+    <div class="landing-network-flow" aria-label="LAESim 与 ROS、ns-3 的集成关系">
+      <div><small>Windows</small><strong>LAESim / UE4</strong><span>物理、画面、传感器与载具位置</span></div>
+      <b aria-hidden="true">→</b>
+      <div><small>WSL2</small><strong>ROS Noetic</strong><span>控制、状态和协同应用消息</span></div>
+      <b aria-hidden="true">→</b>
+      <div><small>可选后端</small><strong>ns-3.48</strong><span>无线链路、路由和网络指标</span></div>
+    </div>
+    <div class="landing-network-actions">
+      <a class="landing-button landing-button--light" href="laesim_build/#wsl-ros-ns3">查看集成与安装</a>
+      <a class="landing-text-link landing-text-link--light" href="simulation_cases/">查看验证案例 →</a>
+    </div>
+  </div>
+</section>
 
-- 多架 `SimpleFlight` 无人机
-- 多辆 `PhysXCar` 汽车
-- 多艘 `SimpleBoat` 或 `PhysXBoat` 船
-- 多颗 `SimpleSatellite` 卫星
+<section class="landing-section landing-section--workflow">
+  <div class="landing-shell landing-workflow">
+    <div>
+      <p class="landing-eyebrow">可复现工程</p>
+      <h2>从源码构建到实验验证</h2>
+    </div>
+    <ol>
+      <li><span>1</span><div><strong>选择配置</strong><p>从混合载具、SceneMap 和传感器模板开始。</p></div></li>
+      <li><span>2</span><div><strong>启动场景</strong><p>在 UE 4.27 中运行 LAESim 并确认各 RPC 端口。</p></div></li>
+      <li><span>3</span><div><strong>连接算法</strong><p>使用 Python API，或在 WSL2 中连接 ROS Noetic。</p></div></li>
+      <li><span>4</span><div><strong>加入网络</strong><p>按实验需要在理想通信与 ns-3 后端之间切换。</p></div></li>
+    </ol>
+  </div>
+</section>
 
-不同类型载具拥有独立 RPC 端口，并共享相机、IMU、GPS、Lidar、Python API 和 ROS 接口。参见[核心特色](laesim_features.md)。
-
-### SceneMap 图片地图
-
-LAESim 可以把卫星图或其他图片加载为 UE 中的可碰撞平面地图，按像素比例尺建立坐标系，并通过 `GeoReference` 完成 GPS 配准。载具既可以在启动时按像素、米制坐标或经纬度出生，也可以通过 Python API 或 ROS 在运行时加载地图、查询状态和转换坐标。
-
-### 可选 ns-3 自组织网络
-
-LAESim 可以保持原来的理想通信，也可以按配置启用 ns-3.48，对 Wi-Fi ad hoc、OLSR/AODV 路由、时延、吞吐量和丢包进行离散事件仿真：
-
-```json
-"NetworkSimulation": {
-  "Backend": "none"
-}
-```
-
-将 `Backend` 改为 `ns3` 并启动 ROS 网络桥接器后，应用消息会经过 ns-3。参见[安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分](laesim_build.md#wsl-ros-ns3)。
-
-## 开始使用
-
-1. 按[安装与构建 LAESim](laesim_build.md)准备 Windows、UE 4.27 和 Visual Studio，并编译 LAESim 插件。
-2. 按[使用 LAESim](laesim_use.md)选择混合载具模板、启动场景并验证 Python API 或 ROS。
-3. 需要研究通信网络时，继续完成同一页面中的[WSL2、ROS 与 ns-3 安装](laesim_build.md#wsl-ros-ns3)。
-
-## 与 AirSim 的关系
-
-LAESim 基于 Microsoft AirSim 扩展，继承其仿真环境、传感器和 API 基础能力。通用 AirSim 功能不在本站重复维护，请直接查阅 [AirSim 官方文档](https://microsoft.github.io/AirSim/)；本站只记录 LAESim 的构建、混合载具、Boat、Satellite、SceneMap、ROS 联动和 ns-3 集成。
+<section class="landing-cta">
+  <div class="landing-shell landing-cta__inner">
+    <div>
+      <p class="landing-eyebrow">开始使用 LAESim</p>
+      <h2>构建你的空天地海协同场景</h2>
+    </div>
+    <div class="landing-actions">
+      <a class="landing-button landing-button--primary" href="documentation/">阅读文档</a>
+      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim">获取源码</a>
+    </div>
+  </div>
+</section>

@@ -4,7 +4,7 @@ site_author: SANIS-HITSZ
 site_dir: build_docs
 repo_url: https://github.com/SANIS-HITSZ/LAESim
 edit_uri: edit/main/docs/
-site_description: '支持空地海混合载具与可选 ns-3 自组网的多机仿真平台'
+site_description: '支持空天地海混合载具、SceneMap 与可选 ns-3 自组网的多机仿真平台'
 
 markdown_extensions:
   - toc:
@@ -21,11 +21,14 @@ markdown_extensions:
 exclude_docs: |
   *
   !index.md
+  !documentation.md
   !laesim_features.md
   !laesim_build.md
   !laesim_use.md
   !laesim_wsl_ros_ns3.md
   !simulation_cases.md
+  !assets/
+  !assets/**
   includes/
   includes/**
   !css/
@@ -36,11 +39,13 @@ exclude_docs: |
   !img/**
   !stylesheets/
   !stylesheets/laesim.css
+  !stylesheets/landing.css
 
 remote_branch: gh-pages
 
 theme:
   name: readthedocs
+  custom_dir: theme_overrides
   locale: zh_CN
   include_homepage_in_sidebar: true
   prev_next_buttons_location: bottom
@@ -61,7 +66,8 @@ copyright: LAESim contributors; based on Microsoft AirSim
 
 nav:
   - "首页": index.md
-  - "认识 LAESim":
+  - "文档":
+      - "文档概览": documentation.md
       - "核心特色": laesim_features.md
       - "安装与构建 LAESim": laesim_build.md
       - "使用 LAESim": laesim_use.md

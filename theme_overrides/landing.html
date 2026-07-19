@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{{ config.site_description }}" />
+  <meta name="author" content="{{ config.site_author }}" />
+  {% if page and page.canonical_url %}<link rel="canonical" href="{{ page.canonical_url }}" />{% endif %}
+  <link rel="shortcut icon" href="{{ 'img/favicon.ico'|url }}" />
+  <link rel="stylesheet" href="{{ 'stylesheets/landing.css'|url }}" />
+  <title>LAESim｜空天地海协同仿真平台</title>
+</head>
+<body class="laesim-landing">
+  <header class="landing-header">
+    <div class="landing-shell landing-header__inner">
+      <a class="landing-brand" href="{{ nav.homepage.url|url }}" aria-label="LAESim 首页">LAESim</a>
+      <nav class="landing-nav" aria-label="主导航">
+        <a href="{{ 'documentation/'|url }}">文档</a>
+        <a href="{{ 'laesim_features/'|url }}">核心特色</a>
+        <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    {{ page.content }}
+  </main>
+  <footer class="landing-footer">
+    <div class="landing-shell landing-footer__inner">
+      <strong>LAESim</strong>
+      <span>基于 Microsoft AirSim 扩展，由 LAESim contributors 维护。</span>
+      <a href="{{ 'documentation/'|url }}">文档</a>
+      <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
+    </div>
+  </footer>
+</body>
+</html>
