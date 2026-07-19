@@ -29,6 +29,18 @@ Set-Location $LaesimRoot
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 
+### 可选：导出可移植源码
+
+需要把一份不含本机编译缓存的源码交付给其他开发者时，可以使用仓库提供的导出脚本：
+
+```powershell
+$PortableRoot = Read-Host "请输入可移植源码输出目录"
+powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 `
+  -DestinationRoot $PortableRoot
+```
+
+该流程用于制作干净源码副本，不替代 Git 分支、发布标签或正式构建验证。
+
 ## 编译 LAESim 插件
 
 推荐入口：
@@ -42,6 +54,14 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```cmd
 build.cmd --Release
 ```
+
+也可以打开 Visual Studio 2019/2022 的 `x64 Native Tools Command Prompt`，在仓库根目录手动执行：
+
+```cmd
+build.cmd --Release
+```
+
+两种入口生成相同的 Release 产物；`BuildAirSimRelease.bat` 额外负责定位 Visual Studio 并初始化 x64 编译环境。
 
 构建结束后，LAESim 插件位于：
 
@@ -103,6 +123,42 @@ Satellite 源码资产位于 `Unreal\Assets\Satellite\Models\Satellite`。构建
 - UE 能加载 AirSim/LAESim 插件并进入 Play
 - `settings.json` 使用 `AirGround` 时能同时生成无人机、汽车、船和卫星
 - 本机端口 `41451`、`41461`、`41471`、`41481`、`41491` 按配置监听
+
+## 常见 Windows 构建问题
+
+### 找不到 `Eigen/Dense`
+
+出现以下错误通常表示 Eigen 下载或解压中断，虽然 `AirLib\deps\eigen3` 目录存在，但实际头文件不完整：
+
+```text
+error C1083: 无法打开包括文件: "Eigen/Dense"
+```
+
+先检查真正的头文件：
+
+```powershell
+Test-Path .\AirLib\deps\eigen3\Eigen\Dense
+```
+
+返回 `False` 时清理残缺目录并重新构建：
+
+```powershell
+Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force
+.\BuildAirSimRelease.bat
+```
+
+### 依赖压缩包下载中断
+
+`Invoke-WebRequest` 报意外 EOF、连接关闭或解压时报“找不到中央目录结尾记录”，通常表示代理或网络导致 zip 不完整。清理临时文件后重试：
+
+```powershell
+Remove-Item -LiteralPath .\eigen3.zip -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath .\suv_download_tmp -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force -ErrorAction SilentlyContinue
+.\BuildAirSimRelease.bat
+```
+
+`car_assets.zip` 失败时通常会回退到默认车辆模型；Eigen 下载失败会阻止 AirLib 编译，应先解决网络或代理问题。
 
 完成 Windows/UE 构建后，可以先阅读[使用 LAESim](laesim_use.md)。需要 ROS 或 ns-3 时继续完成下面的可选环境安装。
 
