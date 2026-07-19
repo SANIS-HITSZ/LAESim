@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_wsl_ros_ns3/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/documentation/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>WSL2、ROS 与 ns-3 文档已合并 - LAESim 中文文档</title>
+    <title>文档概览 - LAESim 中文文档</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,9 +13,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "WSL2\u3001ROS \u4e0e ns-3 \u6587\u6863\u5df2\u5408\u5e76";
-        var mkdocs_page_input_path = "laesim_wsl_ros_ns3.md";
-        var mkdocs_page_url = "/LAESim/laesim_wsl_ros_ns3/";
+        var mkdocs_page_name = "\u6587\u6863\u6982\u89c8";
+        var mkdocs_page_input_path = "documentation.md";
+        var mkdocs_page_url = "/LAESim/documentation/";
       </script>
     
     <!--[if lt IE 9]>
@@ -48,8 +48,16 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">文档</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../documentation/">文档概览</a>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">文档概览</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">从这里开始</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">核心组成</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">上游资料</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../laesim_features/">核心特色</a>
                   </li>
@@ -95,9 +103,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">WSL2、ROS 与 ns-3 文档已合并</li>
+          <li class="breadcrumb-item">文档</li>
+      <li class="breadcrumb-item active">文档概览</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/laesim_wsl_ros_ns3.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/documentation.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -105,14 +114,55 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="wsl2ros-ns-3">WSL2、ROS 与 ns-3 文档已合并<a class="headerlink" href="#wsl2ros-ns-3" title="Permanent link">#</a></h1>
-<p>本页内容已并入<a href="../laesim_build/#wsl-ros-ns3">安装与构建 LAESim</a>，浏览器将自动跳转到对应章节。</p>
-<script>
-window.location.replace("../laesim_build/#wsl-ros-ns3");
-</script>
+                <h1 id="laesim">LAESim 文档<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
+<p>LAESim 文档面向仿真平台使用者和贡献者，集中记录项目自身的混合载具、SceneMap、构建流程、ROS/ns-3 集成与可复现实验。AirSim 通用 API、传感器和飞控内容直接引用上游官方文档。</p>
+<h2 id="_1">从这里开始<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>目标</th>
+<th>文档入口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>了解 LAESim 相比 AirSim 增加了什么</td>
+<td><a href="../laesim_features/">核心特色</a></td>
+</tr>
+<tr>
+<td>在 Windows 中构建 UE 4.27 插件</td>
+<td><a href="../laesim_build/">安装与构建 LAESim</a></td>
+</tr>
+<tr>
+<td>安装 WSL2、ROS Noetic 和 ns-3</td>
+<td><a href="../laesim_build/#wsl-ros-ns3">WSL2、ROS 与 ns-3</a></td>
+</tr>
+<tr>
+<td>选择配置并启动混合载具场景</td>
+<td><a href="../laesim_use/">使用 LAESim</a></td>
+</tr>
+<tr>
+<td>查看已验证的协同与通信实验</td>
+<td><a href="../simulation_cases/">仿真案例</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="_2">核心组成<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
+<ul>
+<li><code>AirGround</code> 混合模式：在同一场景运行无人机、车辆、舰船和卫星。</li>
+<li>SceneMap：导入图片地图，支持比例尺、GPS 配准和坐标转换。</li>
+<li>Python/ROS 接口：控制载具并采集状态、相机、IMU、GPS 和 Lidar。</li>
+<li>可选 ns-3 后端：模拟 Wi-Fi ad hoc、路由、时延、吞吐量与丢包。</li>
+</ul>
+<h2 id="_3">上游资料<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<p>LAESim 基于 Microsoft AirSim 扩展。通用功能参见 <a href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>，网络模型与模块参见 <a href="https://www.nsnam.org/documentation/">ns-3 官方文档</a>。</p>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href=".." class="btn btn-neutral float-left" title="首页"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../laesim_features/" class="btn btn-neutral float-right" title="核心特色">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -139,6 +189,10 @@ window.location.replace("../laesim_build/#wsl-ros-ns3");
         </span>
     
     
+      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../laesim_features/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -1,205 +1,147 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="zh_CN" >
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="支持空地海混合载具与可选 ns-3 自组网的多机仿真平台" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/" />
-      <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>LAESim 中文文档</title>
-    <link rel="stylesheet" href="css/theme.css" />
-    <link rel="stylesheet" href="css/theme_extra.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
-        <link href="stylesheets/laesim.css" rel="stylesheet" />
-    
-      <script>
-        // Current page data
-        var mkdocs_page_name = "\u9996\u9875";
-        var mkdocs_page_input_path = "index.md";
-        var mkdocs_page_url = "/LAESim/";
-      </script>
-    
-    <!--[if lt IE 9]>
-      <script src="js/html5shiv.min.js"></script>
-    <![endif]-->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-      <script>hljs.highlightAll();</script> 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="支持空天地海混合载具、SceneMap 与可选 ns-3 自组网的多机仿真平台" />
+  <meta name="author" content="SANIS-HITSZ" />
+  <link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/" />
+  <link rel="shortcut icon" href="img/favicon.ico" />
+  <link rel="stylesheet" href="stylesheets/landing.css" />
+  <title>LAESim｜空天地海协同仿真平台</title>
 </head>
-
-<body class="wy-body-for-nav" role="document">
-
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
-      <div class="wy-side-nav-search">
-          <a href="." class="icon icon-home"> LAESim 中文文档
-        </a>
-        <div class="version">
-          main
-        </div><div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
-  </form>
-</div>
-      </div>
-
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">首页</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_1">核心扩展</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_2">空天地海混合载具</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#scenemap">SceneMap 图片地图</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#ns-3">可选 ns-3 自组织网络</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_3">开始使用</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#airsim">与 AirSim 的关系</a>
-    </li>
-    </ul>
-                </li>
-              </ul>
-              <p class="caption"><span class="caption-text">认识 LAESim</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="laesim_features/">核心特色</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="laesim_build/">安装与构建 LAESim</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="laesim_use/">使用 LAESim</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">仿真案例</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="simulation_cases/">案例概览</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">上游参考</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/apis/">AirSim API 文档</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://www.nsnam.org/documentation/">ns-3 官方文档</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">项目</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
-                  </li>
-              </ul>
-      </div>
-    </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href=".">LAESim 中文文档</a>
-        
+<body class="laesim-landing">
+  <header class="landing-header">
+    <div class="landing-shell landing-header__inner">
+      <a class="landing-brand" href="." aria-label="LAESim 首页">LAESim</a>
+      <nav class="landing-nav" aria-label="主导航">
+        <a href="documentation/">文档</a>
+        <a href="laesim_features/">核心特色</a>
+        <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
       </nav>
-      <div class="wy-nav-content">
-        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">首页</li>
-    <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/index.md" class="icon icon-github"> Edit on GitHub</a>
-    </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-            <div class="section" itemprop="articleBody">
-              
-                <h1 id="laesim">LAESim<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
-<p>LAESim 是面向空天地海协同研究的多载具仿真平台。在同一个 UE 4.27 场景和同一份 <code>settings.json</code> 中，可以同时运行无人机、车辆、船和卫星，并通过 Python API 或 ROS 对不同类型载具进行控制和状态采集。</p>
-<p><img alt="LAESim 空地协同多机仿真场景" src="https://github.com/user-attachments/assets/b6abd8e5-756e-46b6-a82c-31d273962cd5" /></p>
-<h2 id="_1">核心扩展<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
-<h3 id="_2">空天地海混合载具<a class="headerlink" href="#_2" title="Permanent link">#</a></h3>
-<p>原版 AirSim 的常用运行模式通常在 <code>Multirotor</code> 与 <code>Car</code> 之间选择。LAESim 新增 <code>AirGround</code> 混合模式和 Boat 载具链路，使以下对象能够出现在同一个仿真场景中：</p>
-<ul>
-<li>多架 <code>SimpleFlight</code> 无人机</li>
-<li>多辆 <code>PhysXCar</code> 汽车</li>
-<li>多艘 <code>SimpleBoat</code> 或 <code>PhysXBoat</code> 船</li>
-<li>多颗 <code>SimpleSatellite</code> 卫星</li>
-</ul>
-<p>不同类型载具拥有独立 RPC 端口，并共享相机、IMU、GPS、Lidar、Python API 和 ROS 接口。参见<a href="laesim_features/">核心特色</a>。</p>
-<h3 id="scenemap">SceneMap 图片地图<a class="headerlink" href="#scenemap" title="Permanent link">#</a></h3>
-<p>LAESim 可以把卫星图或其他图片加载为 UE 中的可碰撞平面地图，按像素比例尺建立坐标系，并通过 <code>GeoReference</code> 完成 GPS 配准。载具既可以在启动时按像素、米制坐标或经纬度出生，也可以通过 Python API 或 ROS 在运行时加载地图、查询状态和转换坐标。</p>
-<h3 id="ns-3">可选 ns-3 自组织网络<a class="headerlink" href="#ns-3" title="Permanent link">#</a></h3>
-<p>LAESim 可以保持原来的理想通信，也可以按配置启用 ns-3.48，对 Wi-Fi ad hoc、OLSR/AODV 路由、时延、吞吐量和丢包进行离散事件仿真：</p>
-<pre class="highlight"><code class="language-json">"NetworkSimulation": {
-  "Backend": "none"
-}</code></pre>
-<p>将 <code>Backend</code> 改为 <code>ns3</code> 并启动 ROS 网络桥接器后，应用消息会经过 ns-3。参见<a href="laesim_build/#wsl-ros-ns3">安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分</a>。</p>
-<h2 id="_3">开始使用<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
-<ol>
-<li>按<a href="laesim_build/">安装与构建 LAESim</a>准备 Windows、UE 4.27 和 Visual Studio，并编译 LAESim 插件。</li>
-<li>按<a href="laesim_use/">使用 LAESim</a>选择混合载具模板、启动场景并验证 Python API 或 ROS。</li>
-<li>需要研究通信网络时，继续完成同一页面中的<a href="laesim_build/#wsl-ros-ns3">WSL2、ROS 与 ns-3 安装</a>。</li>
-</ol>
-<h2 id="airsim">与 AirSim 的关系<a class="headerlink" href="#airsim" title="Permanent link">#</a></h2>
-<p>LAESim 基于 Microsoft AirSim 扩展，继承其仿真环境、传感器和 API 基础能力。通用 AirSim 功能不在本站重复维护，请直接查阅 <a href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>；本站只记录 LAESim 的构建、混合载具、Boat、Satellite、SceneMap、ROS 联动和 ns-3 集成。</p>
-              
-            </div>
-          </div><footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="laesim_features/" class="btn btn-neutral float-right" title="核心特色">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <!-- Copyright etc -->
-      <p>LAESim contributors; based on Microsoft AirSim</p>
+  </header>
+  <main>
+    <section class="landing-hero" aria-labelledby="landing-title">
+  <img class="landing-hero__image" src="assets/landing/laesim-scenemap.png" alt="LAESim SceneMap 场景中的卫星、无人机、车辆与舰船" />
+  <div class="landing-hero__shade" aria-hidden="true"></div>
+  <div class="landing-shell landing-hero__content">
+    <p class="landing-kicker">空天地海协同仿真平台</p>
+    <h1 id="landing-title">LAESim</h1>
+    <p class="landing-hero__lead">在同一个 Unreal Engine 场景中组织无人机、车辆、舰船与卫星，并把 ROS 算法和 ns-3 自组织网络纳入同一套可复现实验流程。</p>
+    <div class="landing-actions">
+      <a class="landing-button landing-button--primary" href="documentation/">进入文档</a>
+      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim">查看 GitHub</a>
+    </div>
+    <p class="landing-hero__meta">UE 4.27 · Python API · ROS Noetic · ns-3.48</p>
   </div>
+</section>
 
-  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-</footer>
-          
-        </div>
-      </div>
-
-    </section>
-
+<section class="landing-facts" aria-label="LAESim 核心能力概览">
+  <div class="landing-shell landing-facts__grid">
+    <div><strong>4</strong><span>类协同载具</span></div>
+    <div><strong>5</strong><span>个独立 RPC 端口</span></div>
+    <div><strong>2</strong><span>种通信后端</span></div>
+    <div><strong>1</strong><span>套统一场景配置</span></div>
   </div>
+</section>
 
-  <div class="rst-versions" role="note" aria-label="Versions">
-  <span class="rst-current-version" data-toggle="rst-current-version">
-    
-        <span>
-          <a href="https://github.com/SANIS-HITSZ/LAESim" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
-        </span>
-    
-    
-    
-      <span><a href="laesim_features/" style="color: #fcfcfc">Next &raquo;</a></span>
-    
-  </span>
-</div>
-    <script src="js/jquery-3.6.0.min.js"></script>
-    <script>var base_url = ".";</script>
-    <script src="js/theme_extra.js"></script>
-    <script src="js/theme.js"></script>
-      <script src="search/main.js"></script>
-    <script>
-        jQuery(function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        });
-    </script>
+<section class="landing-section landing-section--fleet">
+  <div class="landing-shell landing-feature">
+    <figure class="landing-feature__media">
+      <img src="assets/landing/laesim-mixed-fleet.png" alt="LAESim 中同时运行的无人机、车辆与舰船" loading="lazy" />
+      <figcaption>同一场景中的多无人机、多车辆与多舰船</figcaption>
+    </figure>
+    <div class="landing-feature__copy">
+      <p class="landing-eyebrow">统一载具体系</p>
+      <h2>从单类仿真扩展到空天地海协同</h2>
+      <p>LAESim 的 <code>AirGround</code> 模式允许不同载具共享场景、传感器与任务时间线，同时保持各自独立的控制接口和 RPC 端口。</p>
+      <ul class="landing-checklist">
+        <li><strong>无人机</strong><span>SimpleFlight 与多机控制</span></li>
+        <li><strong>车辆</strong><span>PhysXCar 与地面任务</span></li>
+        <li><strong>舰船</strong><span>简化三自由度水面运动</span></li>
+        <li><strong>卫星</strong><span>三维速度控制与空间协同</span></li>
+      </ul>
+      <a class="landing-text-link" href="laesim_features/">查看载具与接口 →</a>
+    </div>
+  </div>
+</section>
 
+<section class="landing-section landing-section--map">
+  <div class="landing-shell">
+    <div class="landing-section__heading">
+      <p class="landing-eyebrow">SceneMap</p>
+      <h2>让卫星图成为可计算的仿真场景</h2>
+      <p>将图片加载为可碰撞平面地图，建立像素、局部米制坐标与 GPS 之间的转换关系，让载具按真实地理位置出生和协同。</p>
+    </div>
+    <div class="landing-pipeline" aria-label="SceneMap 数据流程">
+      <div><span>01</span><strong>导入图片</strong><small>任意长宽比的卫星图或任务地图</small></div>
+      <b aria-hidden="true">→</b>
+      <div><span>02</span><strong>设置比例尺</strong><small>定义每个像素对应的实际距离</small></div>
+      <b aria-hidden="true">→</b>
+      <div><span>03</span><strong>GPS 配准</strong><small>通过 GeoReference 对齐经纬度</small></div>
+      <b aria-hidden="true">→</b>
+      <div><span>04</span><strong>运行任务</strong><small>按像素、米制坐标或 GPS 部署载具</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-section landing-section--network">
+  <div class="landing-shell">
+    <div class="landing-section__heading landing-section__heading--light">
+      <p class="landing-eyebrow">ROS + ns-3</p>
+      <h2>把通信条件带入协同算法</h2>
+      <p>保留理想通信作为基线，或启用 ns-3 模拟 Wi-Fi ad hoc、OLSR/AODV、时延、吞吐量与丢包。</p>
+    </div>
+    <div class="landing-network-flow" aria-label="LAESim 与 ROS、ns-3 的集成关系">
+      <div><small>Windows</small><strong>LAESim / UE4</strong><span>物理、画面、传感器与载具位置</span></div>
+      <b aria-hidden="true">→</b>
+      <div><small>WSL2</small><strong>ROS Noetic</strong><span>控制、状态和协同应用消息</span></div>
+      <b aria-hidden="true">→</b>
+      <div><small>可选后端</small><strong>ns-3.48</strong><span>无线链路、路由和网络指标</span></div>
+    </div>
+    <div class="landing-network-actions">
+      <a class="landing-button landing-button--light" href="laesim_build/#wsl-ros-ns3">查看集成与安装</a>
+      <a class="landing-text-link landing-text-link--light" href="simulation_cases/">查看验证案例 →</a>
+    </div>
+  </div>
+</section>
+
+<section class="landing-section landing-section--workflow">
+  <div class="landing-shell landing-workflow">
+    <div>
+      <p class="landing-eyebrow">可复现工程</p>
+      <h2>从源码构建到实验验证</h2>
+    </div>
+    <ol>
+      <li><span>1</span><div><strong>选择配置</strong><p>从混合载具、SceneMap 和传感器模板开始。</p></div></li>
+      <li><span>2</span><div><strong>启动场景</strong><p>在 UE 4.27 中运行 LAESim 并确认各 RPC 端口。</p></div></li>
+      <li><span>3</span><div><strong>连接算法</strong><p>使用 Python API，或在 WSL2 中连接 ROS Noetic。</p></div></li>
+      <li><span>4</span><div><strong>加入网络</strong><p>按实验需要在理想通信与 ns-3 后端之间切换。</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="landing-cta">
+  <div class="landing-shell landing-cta__inner">
+    <div>
+      <p class="landing-eyebrow">开始使用 LAESim</p>
+      <h2>构建你的空天地海协同场景</h2>
+    </div>
+    <div class="landing-actions">
+      <a class="landing-button landing-button--primary" href="documentation/">阅读文档</a>
+      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim">获取源码</a>
+    </div>
+  </div>
+</section>
+  </main>
+  <footer class="landing-footer">
+    <div class="landing-shell landing-footer__inner">
+      <strong>LAESim</strong>
+      <span>基于 Microsoft AirSim 扩展，由 LAESim contributors 维护。</span>
+      <a href="documentation/">文档</a>
+      <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
+    </div>
+  </footer>
 </body>
 </html>
-
-<!--
-MkDocs version : 1.6.1
-Build Date UTC : 2026-07-19 04:42:09.193676+00:00
--->
