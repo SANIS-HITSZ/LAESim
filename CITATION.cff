@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "如果您在研究中使用 LAESim，请引用所使用的软件版本；平台论文公开后请优先引用论文。"
+type: software
+title: "LAESim: An Air-Space-Ground-Sea Collaborative Multi-Vehicle Simulation Platform"
+version: "1.4"
+authors:
+  - family-names: "Ping"
+    given-names: "Yuqi"
+    email: "pingyq@stu.hit.edu.cn"
+    affiliation: "Guangdong Provincial Aerospace Network and Intelligent Sensing Laboratory, Harbin Institute of Technology, Shenzhen"
+  - family-names: "Wu"
+    given-names: "Junwei"
+    email: "220210419@stu.hit.edu.cn"
+    affiliation: "Guangdong Provincial Aerospace Network and Intelligent Sensing Laboratory, Harbin Institute of Technology, Shenzhen"
+repository-code: "https://github.com/SANIS-HITSZ/LAESim"
+url: "https://sanis-hitsz.github.io/LAESim/"
+keywords:
+  - "multi-vehicle simulation"
+  - "air-ground collaboration"
+  - "unmanned systems"
+  - "ROS"
+  - "ns-3"

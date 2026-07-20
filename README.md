@@ -109,6 +109,23 @@ V1.4 已验证以下链路：
 
 LAESim 基于 [Microsoft AirSim](https://github.com/microsoft/AirSim) 扩展。仓库主体许可见 [LICENSE](LICENSE)；[`NetworkSim/ns3/laesim-ns3-runner.cc`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/NetworkSim/ns3/laesim-ns3-runner.cc) 声明为 `GPL-2.0-only`，并依赖同为 GPLv2 体系的 ns-3。分发或修改相关代码时应分别遵循对应许可。
 
+## 项目团队
+
+**开发与维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室**
+
+| 角色 | 姓名 | 联系方式 |
+| --- | --- | --- |
+| 实验室负责人 | 张霆廷 | [zhangtt@hit.edu.cn](mailto:zhangtt@hit.edu.cn) |
+| 实验室负责人 | 梁天豪 | [liangth@hit.edu.cn](mailto:liangth@hit.edu.cn) |
+| 主要贡献者 | 平雨奇 | [pingyq@stu.hit.edu.cn](mailto:pingyq@stu.hit.edu.cn) |
+| 主要贡献者 | 吴俊炜 | [220210419@stu.hit.edu.cn](mailto:220210419@stu.hit.edu.cn) |
+
+本表按角色分组，不表示贡献排序。团队名单与署名原则见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
+
+## 引用
+
+在论文、报告或其他项目中使用 LAESim 时，请引用所使用的版本，并在方法或实验环境中提供仓库链接。机器可读的引用信息见 [CITATION.cff](CITATION.cff)。平台论文公开后，将在该文件中增加论文的 `preferred-citation`。
+
 ## 维护与贡献
 
-项目由哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室维护。问题反馈和功能讨论请通过 [GitHub Issues](https://github.com/SANIS-HITSZ/LAESim/issues) 提交；当前开发和文档修改以 `V1.4` 分支为准。
+问题反馈和功能讨论请优先通过 [GitHub Issues](https://github.com/SANIS-HITSZ/LAESim/issues) 提交，代码与文档改进请通过 Pull Requests 参与；当前开发和文档修改以 `V1.4` 分支为准。
