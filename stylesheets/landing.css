@@ -565,6 +565,50 @@ body.laesim-landing {
   margin-top: 6px;
 }
 
+.landing-section--team {
+  background: #f6f7f4;
+  border-top: 1px solid var(--landing-line);
+}
+
+.landing-team__grid {
+  display: grid;
+  gap: 64px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 48px;
+}
+
+.landing-team__group {
+  border-top: 3px solid var(--landing-teal);
+  padding-top: 20px;
+}
+
+.landing-team__role {
+  color: var(--landing-muted);
+  font-size: 13px;
+  font-weight: 800;
+  margin: 0 0 18px;
+}
+
+.landing-team__names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 42px;
+}
+
+.landing-team__names strong {
+  color: var(--landing-ink);
+  font-size: 24px;
+}
+
+.landing-team__links {
+  border-top: 1px solid var(--landing-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  margin-top: 42px;
+  padding-top: 24px;
+}
+
 .landing-cta {
   background: #edf4f3;
   border-top: 1px solid var(--landing-line);
@@ -644,6 +688,10 @@ body.laesim-landing {
 
   .landing-gallery {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .landing-team__grid {
+    gap: 40px;
   }
 
   .landing-cta__inner {
@@ -735,6 +783,14 @@ body.laesim-landing {
 
   .landing-gallery {
     grid-template-columns: 1fr;
+  }
+
+  .landing-team__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-team__names strong {
+    font-size: 21px;
   }
 
   .landing-pipeline {
