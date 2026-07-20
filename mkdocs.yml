@@ -79,5 +79,7 @@ nav:
       - "ns-3 官方文档": https://www.nsnam.org/documentation/
   - "项目":
       - "GitHub 仓库": https://github.com/SANIS-HITSZ/LAESim/tree/V1.4
+      - "团队与联系": https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md
+      - "引用 LAESim": https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CITATION.cff
       - "提交问题": https://github.com/SANIS-HITSZ/LAESim/issues
       - "更新记录": https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CHANGELOG.md
