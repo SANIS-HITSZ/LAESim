@@ -7,11 +7,11 @@ authors:
   - family-names: "Ping"
     given-names: "Yuqi"
     email: "pingyq@stu.hit.edu.cn"
-    affiliation: "Guangdong Provincial Aerospace Network and Intelligent Sensing Laboratory, Harbin Institute of Technology, Shenzhen"
+    affiliation: "Guangdong Provincial Key Laboratory of Aerospace Network and Intelligent Sensing, Harbin Institute of Technology, Shenzhen"
   - family-names: "Wu"
     given-names: "Junwei"
     email: "220210419@stu.hit.edu.cn"
-    affiliation: "Guangdong Provincial Aerospace Network and Intelligent Sensing Laboratory, Harbin Institute of Technology, Shenzhen"
+    affiliation: "Guangdong Provincial Key Laboratory of Aerospace Network and Intelligent Sensing, Harbin Institute of Technology, Shenzhen"
 repository-code: "https://github.com/SANIS-HITSZ/LAESim"
 url: "https://sanis-hitsz.github.io/LAESim/"
 keywords:

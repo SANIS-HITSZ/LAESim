@@ -1,6 +1,6 @@
 site_name: LAESim 中文文档
 site_url: https://sanis-hitsz.github.io/LAESim/
-site_author: 哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室
+site_author: 哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室
 site_dir: build_docs
 repo_url: https://github.com/SANIS-HITSZ/LAESim
 edit_uri: edit/V1.4/docs/
@@ -62,7 +62,7 @@ extra:
 extra_css:
   - stylesheets/laesim.css
 
-copyright: 哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室；LAESim contributors；基于 Microsoft AirSim
+copyright: 哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室；LAESim contributors；基于 Microsoft AirSim
 
 nav:
   - "首页": index.md

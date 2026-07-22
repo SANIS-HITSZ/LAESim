@@ -7,7 +7,7 @@ title: LAESim
   <img class="landing-hero__image" src="assets/showcase/laesim-island-scenemap.png" alt="LAESim 岛屿 SceneMap 仿真场景全景" />
   <div class="landing-hero__shade" aria-hidden="true"></div>
   <div class="landing-shell landing-hero__content">
-    <p class="landing-affiliation">哈尔滨工业大学（深圳） · 广东省空天网络与智能感知实验室</p>
+    <p class="landing-affiliation">哈尔滨工业大学（深圳） · 广东省空天网络与智能感知重点实验室</p>
     <p class="landing-kicker">空天地海协同仿真平台</p>
     <h1 id="landing-title">LAESim</h1>
     <p class="landing-hero__lead">在同一个 Unreal Engine 场景中组织无人机、车辆、舰船与卫星，并把 ROS 算法和 ns-3 自组织网络纳入同一套可复现实验流程。</p>
@@ -147,8 +147,8 @@ title: LAESim
   <div class="landing-shell">
     <div class="landing-section__heading">
       <p class="landing-eyebrow">团队与联系</p>
-      <h2 id="team-title">由空天网络与智能感知实验室开发维护</h2>
-      <p>LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室持续开发，欢迎试用、反馈问题并开展科研合作。</p>
+      <h2 id="team-title">由空天网络与智能感知重点实验室开发维护</h2>
+      <p>LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室持续开发，欢迎试用、反馈问题并开展科研合作。</p>
     </div>
     <div class="landing-team__grid">
       <section class="landing-team__group" aria-labelledby="team-leads">

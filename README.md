@@ -2,7 +2,7 @@
 
 面向空天地海协同研究的多载具仿真平台
 
-**维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室**
+**维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室**
 
 [项目展示页](https://sanis-hitsz.github.io/LAESim/) · [项目文档](https://sanis-hitsz.github.io/LAESim/documentation/) · [安装与构建](https://sanis-hitsz.github.io/LAESim/laesim_build/) · [仿真案例](https://sanis-hitsz.github.io/LAESim/simulation_cases/)
 
@@ -113,7 +113,7 @@ LAESim 基于 [Microsoft AirSim](https://github.com/microsoft/AirSim) 扩展。�
 
 ## 项目团队
 
-**开发与维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知实验室**
+**开发与维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室**
 
 | 角色 | 姓名 | 联系方式 |
 | --- | --- | --- |
