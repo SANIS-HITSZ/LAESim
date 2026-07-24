@@ -4,7 +4,7 @@ name: Documentation Build & Deploy
 on: [push, pull_request, workflow_dispatch]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -26,11 +26,3 @@ jobs:
 
       - name: Build LAESim Documentation
         run: bash ./build_docs.sh
-
-      # Only on commits to 'main' branch
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build_docs
