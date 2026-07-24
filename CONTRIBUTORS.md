@@ -17,6 +17,7 @@
 | --- | --- |
 | 平雨奇 | [pingyq@stu.hit.edu.cn](mailto:pingyq@stu.hit.edu.cn) |
 | 吴俊炜 | [220210419@stu.hit.edu.cn](mailto:220210419@stu.hit.edu.cn) |
+| 雷光宇 | [guangyulei@stu.hit.edu.cn](mailto:guangyulei@stu.hit.edu.cn) |
 
 ## 署名原则
 

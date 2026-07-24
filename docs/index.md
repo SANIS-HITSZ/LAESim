@@ -163,6 +163,7 @@ title: LAESim
         <div class="landing-team__names">
           <strong>平雨奇</strong>
           <strong>吴俊炜</strong>
+          <strong>雷光宇</strong>
         </div>
       </section>
     </div>
