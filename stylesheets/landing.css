@@ -56,10 +56,33 @@ body.laesim-landing {
   justify-content: space-between;
 }
 
+.landing-identity {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+}
+
 .landing-brand {
   color: var(--landing-ink);
   font-size: 22px;
   font-weight: 800;
+}
+
+.landing-institution {
+  border-left: 1px solid var(--landing-line);
+  color: var(--landing-muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  line-height: 1.45;
+  padding-left: 16px;
+  white-space: nowrap;
+}
+
+.landing-institution strong {
+  color: var(--landing-ink);
+  font-size: 12px;
 }
 
 .landing-nav {
@@ -114,12 +137,20 @@ body.laesim-landing {
 }
 
 .landing-kicker,
+.landing-affiliation,
 .landing-eyebrow {
   color: var(--landing-teal);
   font-size: 13px;
   font-weight: 800;
   margin: 0 0 14px;
   text-transform: uppercase;
+}
+
+.landing-affiliation {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14px;
+  margin-bottom: 12px;
+  text-transform: none;
 }
 
 .landing-kicker {
@@ -314,6 +345,72 @@ body.laesim-landing {
   border-top: 1px solid var(--landing-line);
 }
 
+.landing-section--showcase {
+  border-bottom: 1px solid var(--landing-line);
+}
+
+.landing-gallery {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 48px 0 28px;
+}
+
+.landing-gallery figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.landing-gallery img {
+  aspect-ratio: 16 / 10;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.landing-gallery figcaption {
+  border-bottom: 1px solid var(--landing-line);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 14px 0;
+}
+
+.landing-gallery figcaption strong {
+  font-size: 15px;
+}
+
+.landing-gallery figcaption span {
+  color: var(--landing-muted);
+  font-size: 13px;
+}
+
+.landing-section--demo {
+  background: #f6f7f4;
+  border-bottom: 1px solid var(--landing-line);
+}
+
+.landing-demo {
+  align-items: center;
+  display: grid;
+  gap: 64px;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+}
+
+.landing-demo__copy > p:not(.landing-eyebrow) {
+  color: var(--landing-muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.landing-demo__video {
+  aspect-ratio: 16 / 9;
+  background: #11191c;
+  display: block;
+  object-fit: contain;
+  width: 100%;
+}
+
 .landing-section__heading {
   max-width: 790px;
 }
@@ -468,6 +565,50 @@ body.laesim-landing {
   margin-top: 6px;
 }
 
+.landing-section--team {
+  background: #f6f7f4;
+  border-top: 1px solid var(--landing-line);
+}
+
+.landing-team__grid {
+  display: grid;
+  gap: 64px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 48px;
+}
+
+.landing-team__group {
+  border-top: 3px solid var(--landing-teal);
+  padding-top: 20px;
+}
+
+.landing-team__role {
+  color: var(--landing-muted);
+  font-size: 13px;
+  font-weight: 800;
+  margin: 0 0 18px;
+}
+
+.landing-team__names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 42px;
+}
+
+.landing-team__names strong {
+  color: var(--landing-ink);
+  font-size: 24px;
+}
+
+.landing-team__links {
+  border-top: 1px solid var(--landing-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 32px;
+  margin-top: 42px;
+  padding-top: 24px;
+}
+
 .landing-cta {
   background: #edf4f3;
   border-top: 1px solid var(--landing-line);
@@ -508,12 +649,22 @@ body.laesim-landing {
   margin-right: auto;
 }
 
+.landing-footer__institution {
+  color: #fff;
+  line-height: 1.55;
+}
+
+.landing-footer__note {
+  max-width: 300px;
+}
+
 .landing-footer a {
   color: #fff;
 }
 
 @media (max-width: 900px) {
   .landing-feature,
+  .landing-demo,
   .landing-workflow {
     gap: 46px;
     grid-template-columns: 1fr;
@@ -533,6 +684,14 @@ body.laesim-landing {
 
   .landing-network-flow > b {
     display: none;
+  }
+
+  .landing-gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .landing-team__grid {
+    gap: 40px;
   }
 
   .landing-cta__inner {
@@ -560,6 +719,10 @@ body.laesim-landing {
     display: none;
   }
 
+  .landing-institution {
+    display: none;
+  }
+
   .landing-hero {
     height: calc(100svh - 88px);
     min-height: 440px;
@@ -576,6 +739,12 @@ body.laesim-landing {
   .landing-hero__lead {
     font-size: 17px;
     line-height: 1.65;
+  }
+
+  .landing-affiliation {
+    font-size: 12px;
+    line-height: 1.6;
+    max-width: 310px;
   }
 
   .landing-hero__meta {
@@ -612,6 +781,18 @@ body.laesim-landing {
     aspect-ratio: 4 / 3;
   }
 
+  .landing-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-team__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-team__names strong {
+    font-size: 21px;
+  }
+
   .landing-pipeline {
     grid-template-columns: 1fr;
   }
@@ -638,7 +819,8 @@ body.laesim-landing {
   }
 
   .landing-footer strong,
-  .landing-footer span {
+  .landing-footer__institution,
+  .landing-footer__note {
     flex-basis: 100%;
   }
 }

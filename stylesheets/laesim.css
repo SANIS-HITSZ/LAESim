@@ -150,6 +150,47 @@ body {
   max-width: 100%;
 }
 
+.rst-content .laesim-media {
+  margin: 24px 0;
+}
+
+.rst-content .laesim-media img {
+  display: block;
+  width: 100%;
+}
+
+.rst-content .laesim-media figcaption {
+  color: #637078;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.rst-content .laesim-media-grid {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.rst-content .laesim-media-grid .laesim-media {
+  margin: 12px 0 24px;
+  min-width: 0;
+}
+
+.rst-content .laesim-media-grid img {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.rst-content .laesim-video {
+  aspect-ratio: 16 / 9;
+  background: #11191c;
+  display: block;
+  margin: 24px 0;
+  max-width: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+
 .wy-nav-top {
   background: var(--laesim-teal);
 }
@@ -176,5 +217,9 @@ footer {
   .rst-content table.docutils {
     display: block;
     overflow-x: auto;
+  }
+
+  .rst-content .laesim-media-grid {
+    grid-template-columns: 1fr;
   }
 }
