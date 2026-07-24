@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_build/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_build/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
     <title>安装与构建 LAESim - LAESim 中文文档</title>
     <link rel="stylesheet" href="../css/theme.css" />
@@ -58,10 +58,6 @@
     <li class="toctree-l2"><a class="reference internal" href="#_1">环境要求</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_2">获取源码</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_3">可选：导出可移植源码</a>
-    </li>
-        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#laesim_1">编译 LAESim 插件</a>
         <ul>
@@ -75,15 +71,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#ue_1">接入自己的 UE 工程</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_4">构建验证</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#windows">常见 Windows 构建问题</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#eigendense">找不到 Eigen/Dense</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_5">依赖压缩包下载中断</a>
-    </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">构建验证</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#wsl2ros-noetic-ns-3">WSL2、ROS Noetic 与 ns-3</a>
         <ul>
@@ -148,15 +136,11 @@
               </ul>
               <p class="caption"><span class="caption-text">项目</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub 仓库</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md">团队与联系</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CITATION.cff">引用 LAESim</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CHANGELOG.md">更新记录</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
                   </li>
               </ul>
       </div>
@@ -176,7 +160,7 @@
           <li class="breadcrumb-item">文档</li>
       <li class="breadcrumb-item active">安装与构建 LAESim</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.4/docs/laesim_build.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/laesim_build.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -199,24 +183,15 @@
 <p>需要 ROS 或 ns-3 时，再准备 WSL2；它们不是 Windows 插件编译的前置条件。</p>
 <h2 id="_2">获取源码<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
 <pre class="highlight"><code class="language-powershell">$LaesimRoot = Join-Path $HOME "source\LAESim"
-git clone --branch V1.4 https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
+git clone https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
 Set-Location $LaesimRoot</code></pre>
 <p>若 PowerShell 禁止运行本地脚本，可仅为当前用户启用签名策略：</p>
 <pre class="highlight"><code class="language-powershell">Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code></pre>
-<h3 id="_3">可选：导出可移植源码<a class="headerlink" href="#_3" title="Permanent link">#</a></h3>
-<p>需要把一份不含本机编译缓存的源码交付给其他开发者时，可以使用仓库提供的导出脚本：</p>
-<pre class="highlight"><code class="language-powershell">$PortableRoot = Read-Host "请输入可移植源码输出目录"
-powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 `
-  -DestinationRoot $PortableRoot</code></pre>
-<p>该流程用于制作干净源码副本，不替代 Git 分支、发布标签或正式构建验证。</p>
 <h2 id="laesim_1">编译 LAESim 插件<a class="headerlink" href="#laesim_1" title="Permanent link">#</a></h2>
 <p>推荐入口：</p>
 <pre class="highlight"><code class="language-powershell">.\BuildAirSimRelease.bat</code></pre>
 <p>该脚本会查找 Visual Studio 开发环境，然后调用：</p>
 <pre class="highlight"><code class="language-cmd">build.cmd --Release</code></pre>
-<p>也可以打开 Visual Studio 2019/2022 的 <code>x64 Native Tools Command Prompt</code>，在仓库根目录手动执行：</p>
-<pre class="highlight"><code class="language-cmd">build.cmd --Release</code></pre>
-<p>两种入口生成相同的 Release 产物；<code>BuildAirSimRelease.bat</code> 额外负责定位 Visual Studio 并初始化 x64 编译环境。</p>
 <p>构建结束后，LAESim 插件位于：</p>
 <pre class="highlight"><code class="language-text">&lt;LAESim 源码目录&gt;\Unreal\Plugins\AirSim</code></pre>
 <h3 id="ue">UE 安装在非标准目录<a class="headerlink" href="#ue" title="Permanent link">#</a></h3>
@@ -243,7 +218,7 @@ powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 `
 <p>只验证仓库自带 Blocks 场景时，可以额外运行：</p>
 <pre class="highlight"><code class="language-powershell">.\Unreal\Environments\Blocks\BuildBlocksEditor.bat</code></pre>
 <p>该脚本只构建 Blocks 示例，不替代 LAESim 插件构建。</p>
-<h2 id="_4">构建验证<a class="headerlink" href="#_4" title="Permanent link">#</a></h2>
+<h2 id="_3">构建验证<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
 <p>至少确认以下结果：</p>
 <ul>
 <li><code>Unreal\Plugins\AirSim\Binaries</code> 已生成插件二进制</li>
@@ -251,22 +226,6 @@ powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 `
 <li><code>settings.json</code> 使用 <code>AirGround</code> 时能同时生成无人机、汽车、船和卫星</li>
 <li>本机端口 <code>41451</code>、<code>41461</code>、<code>41471</code>、<code>41481</code>、<code>41491</code> 按配置监听</li>
 </ul>
-<h2 id="windows">常见 Windows 构建问题<a class="headerlink" href="#windows" title="Permanent link">#</a></h2>
-<h3 id="eigendense">找不到 <code>Eigen/Dense</code><a class="headerlink" href="#eigendense" title="Permanent link">#</a></h3>
-<p>出现以下错误通常表示 Eigen 下载或解压中断，虽然 <code>AirLib\deps\eigen3</code> 目录存在，但实际头文件不完整：</p>
-<pre class="highlight"><code class="language-text">error C1083: 无法打开包括文件: "Eigen/Dense"</code></pre>
-<p>先检查真正的头文件：</p>
-<pre class="highlight"><code class="language-powershell">Test-Path .\AirLib\deps\eigen3\Eigen\Dense</code></pre>
-<p>返回 <code>False</code> 时清理残缺目录并重新构建：</p>
-<pre class="highlight"><code class="language-powershell">Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force
-.\BuildAirSimRelease.bat</code></pre>
-<h3 id="_5">依赖压缩包下载中断<a class="headerlink" href="#_5" title="Permanent link">#</a></h3>
-<p><code>Invoke-WebRequest</code> 报意外 EOF、连接关闭或解压时报“找不到中央目录结尾记录”，通常表示代理或网络导致 zip 不完整。清理临时文件后重试：</p>
-<pre class="highlight"><code class="language-powershell">Remove-Item -LiteralPath .\eigen3.zip -Force -ErrorAction SilentlyContinue
-Remove-Item -LiteralPath .\suv_download_tmp -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force -ErrorAction SilentlyContinue
-.\BuildAirSimRelease.bat</code></pre>
-<p><code>car_assets.zip</code> 失败时通常会回退到默认车辆模型；Eigen 下载失败会阻止 AirLib 编译，应先解决网络或代理问题。</p>
 <p>完成 Windows/UE 构建后，可以先阅读<a href="../laesim_use/">使用 LAESim</a>。需要 ROS 或 ns-3 时继续完成下面的可选环境安装。</p>
 <p><a id="wsl-ros-ns3"></a></p>
 <h2 id="wsl2ros-noetic-ns-3">WSL2、ROS Noetic 与 ns-3<a class="headerlink" href="#wsl2ros-noetic-ns-3" title="Permanent link">#</a></h2>
@@ -370,7 +329,7 @@ wsl -d $DistroName -- id</code></pre>
 <pre class="highlight"><code class="language-powershell">wsl -d $DistroName</code></pre>
 <p>进入 WSL 后执行：</p>
 <pre class="highlight"><code class="language-bash">export LAESIM_HOME="${HOME}/LAESim"
-git clone --branch V1.4 https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
+git clone https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
 cd "${LAESIM_HOME}"
 ./setup.sh
 
@@ -454,7 +413,7 @@ python3 "${HOME}/LAESim/NetworkSim/tests/smoke_backend.py"</code></pre>
 </tr>
 <tr>
 <td><code>ns3</code></td>
-<td>消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置由配置出生偏移与 LAESim 局部 odometry 合成</td>
+<td>消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置来自 LAESim odometry</td>
 </tr>
 </tbody>
 </table>
@@ -505,7 +464,6 @@ python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py"</code></pre>
 <ul>
 <li>runner 当前使用 IEEE 802.11g ad hoc、固定发送功率、RangePropagationLoss 和 OLSR/AODV。</li>
 <li>ROS 时钟与 ns-3 离散事件时钟使用固定 <code>StepMs</code> 软同步。</li>
-<li>自动出生偏移当前读取 <code>Vehicles.&lt;name&gt;.X/Y/Z</code>；使用 <code>StartOnSceneMap</code> 时应同时提供等价的 <code>X/Y/Z</code> 供网络桥接器定位。</li>
 <li>指标尚未发布为 ROS 指标主题或持久化为 CSV。</li>
 <li>路由变化尚未导出到 ROS。</li>
 <li>视频传输仍需补充编码、分片、重传和接收缓冲策略。</li>
@@ -530,7 +488,7 @@ python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py"</code></pre>
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室；LAESim contributors；基于 Microsoft AirSim</p>
+      <p>LAESim contributors; based on Microsoft AirSim</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

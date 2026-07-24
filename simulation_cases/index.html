@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/simulation_cases/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="SANIS-HITSZ" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/simulation_cases/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
     <title>案例概览 - LAESim 中文文档</title>
     <link rel="stylesheet" href="../css/theme.css" />
@@ -62,27 +62,11 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">案例概览</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#_2">实验一：无人机、汽车与船异构仿真</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_3">目标</a>
+    <li class="toctree-l2"><a class="reference internal" href="#ros">空地多机协同与 ROS 联动</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_4">运行</a>
+    <li class="toctree-l2"><a class="reference internal" href="#ns-3">接入 ns-3 的通信实验</a>
     </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#laesim-ns-3">实验二：LAESim 节点与 ns-3 通信范围</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#_5">目标</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_6">启动链路</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#_7">验证交付与丢包</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_8">更多场景展示</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_9">场景视频演示</a>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">扩展案例</a>
     </li>
     </ul>
                   </li>
@@ -98,15 +82,11 @@
               </ul>
               <p class="caption"><span class="caption-text">项目</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub 仓库</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md">团队与联系</a>
-                  </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CITATION.cff">引用 LAESim</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim">GitHub 仓库</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CHANGELOG.md">更新记录</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/main/CHANGELOG.md">更新记录</a>
                   </li>
               </ul>
       </div>
@@ -126,7 +106,7 @@
           <li class="breadcrumb-item">仿真案例</li>
       <li class="breadcrumb-item active">案例概览</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.4/docs/simulation_cases.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/main/docs/simulation_cases.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -135,162 +115,43 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">仿真案例<a class="headerlink" href="#_1" title="Permanent link">#</a></h1>
-<p>本页提供两个面向首次使用者的可复现实验。建议先完成异构载具实验，熟悉 <code>settings.json</code> 和 Python API，再进行 ns-3 网络实验。</p>
+<p>本页汇总基于 LAESim 完成的空、地、海多载具协同仿真案例，以及可选的 ns-3 自组织网络实验。</p>
+<h2 id="ros">空地多机协同与 ROS 联动<a class="headerlink" href="#ros" title="Permanent link">#</a></h2>
+<p>当前验证场景同时运行 3 架无人机和 3 辆车辆：</p>
 <table>
 <thead>
 <tr>
-<th>实验</th>
-<th>重点</th>
-<th>环境</th>
-<th>预计时间</th>
+<th>载具类型</th>
+<th>实例名称</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>实验一：无人机、汽车与船</td>
-<td><code>AirGround</code>、载具配置、RPC 端口、Python API</td>
-<td>Windows + UE 4.27</td>
-<td>约 10 分钟</td>
+<td>无人机</td>
+<td><code>UAV</code>、<code>UAV2</code>、<code>UAV3</code></td>
 </tr>
 <tr>
-<td>实验二：LAESim 与 ns-3</td>
-<td>ROS 里程计、节点映射、范围内交付、范围外丢包</td>
-<td>Windows + WSL2 + ROS + ns-3</td>
-<td>约 15 分钟</td>
+<td>车辆</td>
+<td><code>Car</code>、<code>Car2</code>、<code>Car3</code></td>
 </tr>
 </tbody>
 </table>
-<p>完整示例统一维护在 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4/Examples/quickstart"><code>Examples/quickstart</code></a>，包含可直接复制的配置、运行脚本、预期结果和排查步骤。</p>
-<h2 id="_2">实验一：无人机、汽车与船异构仿真<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
-<h3 id="_3">目标<a class="headerlink" href="#_3" title="Permanent link">#</a></h3>
-<p>在同一个 <code>AirGround</code> 场景中创建 <code>UAV</code>、<code>Car</code>、<code>Boat</code>，使用各自的 RPC 端口同时发送控制并读取状态。该实验不需要 ROS 或 ns-3。</p>
-<p>核心配置如下，完整文件见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/settings.json"><code>heterogeneous_fleet/settings.json</code></a>：</p>
-<pre class="highlight"><code class="language-json">{
-  "SimMode": "AirGround",
-  "ApiServerPortCar": 41461,
-  "ApiServerPortMultirotor": 41471,
-  "ApiServerPortBoat": 41481,
-  "Vehicles": {
-    "UAV":  { "VehicleType": "SimpleFlight", "X": 0, "Y": 0,  "Z": 0 },
-    "Car":  { "VehicleType": "PhysXCar",     "X": 0, "Y": -8, "Z": 0 },
-    "Boat": { "VehicleType": "SimpleBoat",  "X": 0, "Y": 8,  "Z": 0 }
-  }
-}</code></pre>
-<p><code>Vehicles</code> 下的键是 API 使用的实例名；<code>VehicleType</code> 选择动力学和控制接口；<code>X/Y/Z</code> 是相对于场景原点的出生位置。Boat 使用简化平面三自由度模型，不要求场景具有真实水体。</p>
-<h3 id="_4">运行<a class="headerlink" href="#_4" title="Permanent link">#</a></h3>
-<p>在仓库根目录打开 PowerShell，将实验配置复制为当前 AirSim 配置：</p>
-<pre class="highlight"><code class="language-powershell">$AirSimDir = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'AirSim'
-New-Item -ItemType Directory -Force $AirSimDir | Out-Null
-$Settings = Join-Path $AirSimDir 'settings.json'
-if (Test-Path $Settings) { Copy-Item $Settings "$Settings.backup" -Force }
-Copy-Item .\Examples\quickstart\heterogeneous_fleet\settings.json $Settings -Force
-py -3 -m pip install msgpack-rpc-python numpy opencv-contrib-python</code></pre>
-<p>先检查配置，无需启动 UE：</p>
-<pre class="highlight"><code class="language-powershell">py -3 .\Examples\quickstart\heterogeneous_fleet\run_experiment.py --check-only</code></pre>
-<p>看到 <code>configuration check passed</code> 后，在 UE 4.27 中打开 LAESim 场景并点击 <strong>Play</strong>，然后运行：</p>
-<pre class="highlight"><code class="language-powershell">py -3 .\Examples\quickstart\heterogeneous_fleet\run_experiment.py</code></pre>
-<p>脚本调用的关键 API 是：</p>
-<pre class="highlight"><code class="language-python">uav.takeoffAsync(vehicle_name="UAV").join()
-uav.moveByVelocityAsync(2, 0, 0, duration, vehicle_name="UAV")
-car.setCarControls(airsim.CarControls(throttle=0.55), "Car")
-boat.setBoatControls(airsim.BoatControls(throttle=0.70), "Boat")</code></pre>
-<p>运行约 8 秒后，脚本停止汽车和船并让无人机降落。终端应持续显示无人机局部 NED 坐标、汽车速度、船的纵向/横向速度。</p>
-<p>完整步骤和练习见<a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/README.md">实验一 README</a>，完整代码见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/run_experiment.py"><code>run_experiment.py</code></a>。</p>
-<h2 id="laesim-ns-3">实验二：LAESim 节点与 ns-3 通信范围<a class="headerlink" href="#laesim-ns-3" title="Permanent link">#</a></h2>
-<h3 id="_5">目标<a class="headerlink" href="#_5" title="Permanent link">#</a></h3>
-<p>将 <code>settings.json</code> 中的 <code>UAV</code> 和 <code>Car</code> 自动映射为同名 ns-3 节点，通过 ROS 网络桥接器发送消息，并分别复现通信范围内全部交付和范围外全部丢包。</p>
-<pre class="highlight"><code class="language-text">LAESim odom_local_ned + settings X/Y/Z
-                    ↓
-             ROS 网络桥接器
-                    ↓ POSE / SEND
-         ns-3 Wi-Fi ad hoc + OLSR
-                    ↓ DELIVER
-          /network_sim/rx/Car</code></pre>
-<p>完整配置见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/ns3_network/settings.json"><code>ns3_network/settings.json</code></a>，关键部分是：</p>
-<pre class="highlight"><code class="language-json">{
-  "Vehicles": {
-    "UAV": { "VehicleType": "SimpleFlight", "X": 0,  "Y": 0, "Z": -2 },
-    "Car": { "VehicleType": "PhysXCar",     "X": 20, "Y": 0, "Z": 0 }
-  },
-  "NetworkSimulation": {
-    "Backend": "ns3",
-    "Routing": "olsr",
-    "MaxRangeMeters": 100.0,
-    "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner"
-  }
-}</code></pre>
-<p>网络桥接器在启动时读取 <code>Vehicles</code>，为每个实例创建一个 ns-3 节点。AirSim 的 odometry 以各载具出生点为局部原点，因此桥接器会将配置中的 <code>X/Y/Z</code> 出生偏移加回局部里程计，再更新 ns-3 节点位置。</p>
-<h3 id="_6">启动链路<a class="headerlink" href="#_6" title="Permanent link">#</a></h3>
-<p>先完成<a href="../laesim_build/#wsl-ros-ns3">安装与构建页面中的 WSL2、ROS 与 ns-3 步骤</a>，在 Windows 仓库根目录复制实验配置：</p>
-<pre class="highlight"><code class="language-powershell">$AirSimDir = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'AirSim'
-New-Item -ItemType Directory -Force $AirSimDir | Out-Null
-$Settings = Join-Path $AirSimDir 'settings.json'
-if (Test-Path $Settings) { Copy-Item $Settings "$Settings.backup" -Force }
-Copy-Item .\Examples\quickstart\ns3_network\settings.json $Settings -Force</code></pre>
-<p>在 UE 中点击 <strong>Play</strong>，随后在 WSL2 中分别启动：</p>
-<pre class="highlight"><code class="language-bash"># 终端 A
-source /opt/ros/noetic/setup.bash
-roscore</code></pre>
-<pre class="highlight"><code class="language-bash"># 终端 B：连接 Windows LAESim
-export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
-source /opt/ros/noetic/setup.bash
-source "${HOME}/LAESim/ros/devel/setup.bash"
-roslaunch airsim_ros_pkgs airsim_node.launch host:="${WINDOWS_HOST}"</code></pre>
-<pre class="highlight"><code class="language-bash"># 终端 C：按 settings.json 启动 ns-3 桥接器
-export LAESIM_HOME="${HOME}/LAESim"
-export ROS_WORKSPACE="${LAESIM_HOME}/ros"
-unset BACKEND
-bash "${LAESIM_HOME}/NetworkSim/scripts/run_ros_network_bridge.sh"</code></pre>
-<p><code>unset BACKEND</code> 很重要：已存在的 <code>BACKEND=none</code> 环境变量会覆盖配置文件。</p>
-<h3 id="_7">验证交付与丢包<a class="headerlink" href="#_7" title="Permanent link">#</a></h3>
-<p>当 <code>MaxRangeMeters</code> 为 <code>100.0</code> 时运行：</p>
-<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
-source "${HOME}/LAESim/ros/devel/setup.bash"
-python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
-  --expect delivered</code></pre>
-<p>预期 <code>sent: 5</code>、<code>delivered: 5</code>、<code>dropped: 0</code>，且返回的 <code>simulation_time_ns</code> 均大于 0。</p>
-<p>然后将 Windows 活动配置中的 <code>MaxRangeMeters</code> 改为 <code>5.0</code>，重启终端 C 的桥接器，再运行：</p>
-<pre class="highlight"><code class="language-bash">python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
-  --expect dropped</code></pre>
-<p>两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 <code>delivered: 0</code>、<code>dropped: 5</code>。完整步骤和排查见<a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/ns3_network/README.md">实验二 README</a>。</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>普通 <code>/airsim_node/...</code> 话题不会自动经过 ns-3。需要受到时延和丢包影响的业务消息应发布到 <code>/network_sim/tx</code>，接收端订阅 <code>/network_sim/rx/&lt;目标载具名&gt;</code>。</p>
-</div>
-<h2 id="_8">更多场景展示<a class="headerlink" href="#_8" title="Permanent link">#</a></h2>
-<p>以下画面来自 LAESim 当前开发场景，用于展示统一岛屿环境和多类型载具能力。</p>
-<figure class="laesim-media laesim-media--wide">
-  <img src="../assets/showcase/laesim-island-scenemap.png" alt="LAESim 岛屿 SceneMap 仿真场景全景" loading="lazy" />
-  <figcaption>LAESim 岛屿场景全景</figcaption>
-</figure>
-
-<figure class="laesim-media laesim-media--wide">
-  <img src="../assets/showcase/laesim-air-space-sea-overview.png" alt="卫星、无人机、车辆与舰船同时出现在 LAESim 场景中" loading="lazy" />
-  <figcaption>空、天、地、海多类型载具的统一场景展示</figcaption>
-</figure>
-
-<div class="laesim-media-grid">
-  <figure class="laesim-media">
-    <img src="../assets/showcase/laesim-uav-ground-team.png" alt="三架无人机与三辆车辆组成的空地协同编队" loading="lazy" />
-    <figcaption>多无人机与多车辆空地协同</figcaption>
-  </figure>
-  <figure class="laesim-media">
-    <img src="../assets/showcase/laesim-satellite-formation.png" alt="两颗卫星在岛屿场景上空编队运行" loading="lazy" />
-    <figcaption>卫星编队场景</figcaption>
-  </figure>
-  <figure class="laesim-media">
-    <img src="../assets/showcase/laesim-ship-formation.png" alt="三艘舰船在海面编队运行" loading="lazy" />
-    <figcaption>舰船编队场景</figcaption>
-  </figure>
-</div>
-
-<h2 id="_9">场景视频演示<a class="headerlink" href="#_9" title="Permanent link">#</a></h2>
-<video class="laesim-video" controls preload="metadata" playsinline poster="../assets/showcase/laesim-air-space-sea-overview.png">
-  <source src="../assets/showcase/laesim-platform-demo.mp4" type="video/mp4" />
-  当前浏览器不支持 HTML5 视频播放。
-</video>
-
-<p>视频时长约 41 秒，展示当前开发版本的岛屿环境与多类型载具运行效果。</p>
+<p>LAESim 在 Windows 中运行仿真场景，ROS Noetic 在 WSL2 中运行。ROS 节点可通过 AirSim RPC 获取各载具的状态和里程计数据。</p>
+<h2 id="ns-3">接入 ns-3 的通信实验<a class="headerlink" href="#ns-3" title="Permanent link">#</a></h2>
+<p>同一场景可以选择两种网络模式：</p>
+<ul>
+<li><code>Backend: none</code>：不模拟自组织网络，消息直接传递。</li>
+<li><code>Backend: ns3</code>：由 ns-3 模拟节点间的无线链路、路由和数据包传输。</li>
+</ul>
+<p>当前已经验证以下情况：</p>
+<ul>
+<li>两节点在有效通信距离内使用 OLSR 路由，数据包成功送达并输出时延指标。</li>
+<li>两节点超过最大通信距离时，数据包丢失并输出丢包率。</li>
+<li>ROS 消息在 <code>UAV</code> 与 <code>Car</code> 之间分别通过直连模式和 ns-3 模式完成往返传输。</li>
+</ul>
+<p>环境配置、启动命令和验证方法参见<a href="../laesim_build/#wsl-ros-ns3">安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分</a>。</p>
+<h2 id="_2">扩展案例<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
+<p>后续案例可以在本页继续增加，并将配置文件、启动脚本、实验参数和结果一并提交到 LAESim 仓库，以便其他贡献者复现。</p>
               
             </div>
           </div><footer>
@@ -302,7 +163,7 @@ python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
 
   <div role="contentinfo">
     <!-- Copyright etc -->
-      <p>哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室；LAESim contributors；基于 Microsoft AirSim</p>
+      <p>LAESim contributors; based on Microsoft AirSim</p>
   </div>
 
   Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.

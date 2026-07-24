@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="支持空天地海混合载具、SceneMap 与可选 ns-3 自组网的多机仿真平台" />
-  <meta name="author" content="哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室" />
+  <meta name="author" content="SANIS-HITSZ" />
   <link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/" />
   <link rel="shortcut icon" href="img/favicon.ico" />
   <link rel="stylesheet" href="stylesheets/landing.css" />
@@ -13,32 +13,25 @@
 <body class="laesim-landing">
   <header class="landing-header">
     <div class="landing-shell landing-header__inner">
-      <div class="landing-identity">
-        <a class="landing-brand" href="." aria-label="LAESim 首页">LAESim</a>
-        <span class="landing-institution">
-          <span>哈尔滨工业大学（深圳）</span>
-          <strong>广东省空天网络与智能感知重点实验室</strong>
-        </span>
-      </div>
+      <a class="landing-brand" href="." aria-label="LAESim 首页">LAESim</a>
       <nav class="landing-nav" aria-label="主导航">
         <a href="documentation/">文档</a>
         <a href="laesim_features/">核心特色</a>
-        <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub</a>
+        <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
       </nav>
     </div>
   </header>
   <main>
     <section class="landing-hero" aria-labelledby="landing-title">
-  <img class="landing-hero__image" src="assets/showcase/laesim-island-scenemap.png" alt="LAESim 岛屿 SceneMap 仿真场景全景" />
+  <img class="landing-hero__image" src="assets/landing/laesim-scenemap.png" alt="LAESim SceneMap 场景中的卫星、无人机、车辆与舰船" />
   <div class="landing-hero__shade" aria-hidden="true"></div>
   <div class="landing-shell landing-hero__content">
-    <p class="landing-affiliation">哈尔滨工业大学（深圳） · 广东省空天网络与智能感知重点实验室</p>
     <p class="landing-kicker">空天地海协同仿真平台</p>
     <h1 id="landing-title">LAESim</h1>
     <p class="landing-hero__lead">在同一个 Unreal Engine 场景中组织无人机、车辆、舰船与卫星，并把 ROS 算法和 ns-3 自组织网络纳入同一套可复现实验流程。</p>
     <div class="landing-actions">
       <a class="landing-button landing-button--primary" href="documentation/">进入文档</a>
-      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">查看 GitHub</a>
+      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim">查看 GitHub</a>
     </div>
     <p class="landing-hero__meta">UE 4.27 · Python API · ROS Noetic · ns-3.48</p>
   </div>
@@ -56,8 +49,8 @@
 <section class="landing-section landing-section--fleet">
   <div class="landing-shell landing-feature">
     <figure class="landing-feature__media">
-      <img src="assets/showcase/laesim-air-space-sea-overview.png" alt="LAESim 场景中的卫星、无人机、车辆与舰船" loading="lazy" />
-      <figcaption>同一岛屿场景中的卫星、无人机、车辆与舰船</figcaption>
+      <img src="assets/landing/laesim-mixed-fleet.png" alt="LAESim 中同时运行的无人机、车辆与舰船" loading="lazy" />
+      <figcaption>同一场景中的多无人机、多车辆与多舰船</figcaption>
     </figure>
     <div class="landing-feature__copy">
       <p class="landing-eyebrow">统一载具体系</p>
@@ -90,45 +83,6 @@
       <b aria-hidden="true">→</b>
       <div><span>04</span><strong>运行任务</strong><small>按像素、米制坐标或 GPS 部署载具</small></div>
     </div>
-  </div>
-</section>
-
-<section class="landing-section landing-section--showcase">
-  <div class="landing-shell">
-    <div class="landing-section__heading">
-      <p class="landing-eyebrow">仿真画面</p>
-      <h2>从单类编队到多域协同</h2>
-      <p>以下画面均来自 LAESim 当前开发版本，用于展示不同类型载具在统一岛屿场景中的运行状态。</p>
-    </div>
-    <div class="landing-gallery">
-      <figure>
-        <img src="assets/showcase/laesim-uav-ground-team.png" alt="三架无人机与三辆车辆组成的空地协同编队" loading="lazy" />
-        <figcaption><strong>空地协同</strong><span>多无人机与多车辆联合部署</span></figcaption>
-      </figure>
-      <figure>
-        <img src="assets/showcase/laesim-satellite-formation.png" alt="两颗卫星在岛屿场景上空编队运行" loading="lazy" />
-        <figcaption><strong>空间载具</strong><span>卫星编队与三维运动控制</span></figcaption>
-      </figure>
-      <figure>
-        <img src="assets/showcase/laesim-ship-formation.png" alt="三艘舰船在海面编队运行" loading="lazy" />
-        <figcaption><strong>海上编队</strong><span>多舰船水面运动仿真</span></figcaption>
-      </figure>
-    </div>
-    <a class="landing-text-link" href="simulation_cases/">查看全部仿真案例 →</a>
-  </div>
-</section>
-
-<section class="landing-section landing-section--demo">
-  <div class="landing-shell landing-demo">
-    <div class="landing-demo__copy">
-      <p class="landing-eyebrow">视频演示</p>
-      <h2>查看 LAESim 场景运行效果</h2>
-      <p>通过实际录制画面了解岛屿环境、多类型载具和协同场景的整体效果。</p>
-    </div>
-    <video class="landing-demo__video" controls preload="metadata" playsinline poster="assets/showcase/laesim-air-space-sea-overview.png">
-      <source src="assets/showcase/laesim-platform-demo.mp4" type="video/mp4" />
-      当前浏览器不支持 HTML5 视频播放。
-    </video>
   </div>
 </section>
 
@@ -168,36 +122,6 @@
   </div>
 </section>
 
-<section class="landing-section landing-section--team" id="team" aria-labelledby="team-title">
-  <div class="landing-shell">
-    <div class="landing-section__heading">
-      <p class="landing-eyebrow">团队与联系</p>
-      <h2 id="team-title">由空天网络与智能感知重点实验室开发维护</h2>
-      <p>LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室持续开发，欢迎试用、反馈问题并开展科研合作。</p>
-    </div>
-    <div class="landing-team__grid">
-      <section class="landing-team__group" aria-labelledby="team-leads">
-        <p class="landing-team__role" id="team-leads">实验室负责人</p>
-        <div class="landing-team__names">
-          <strong>张霆廷</strong>
-          <strong>梁天豪</strong>
-        </div>
-      </section>
-      <section class="landing-team__group" aria-labelledby="team-contributors">
-        <p class="landing-team__role" id="team-contributors">主要贡献者</p>
-        <div class="landing-team__names">
-          <strong>平雨奇</strong>
-          <strong>吴俊炜</strong>
-        </div>
-      </section>
-    </div>
-    <div class="landing-team__links">
-      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md">查看团队与联系方式 →</a>
-      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/issues">提出问题或合作建议 →</a>
-    </div>
-  </div>
-</section>
-
 <section class="landing-cta">
   <div class="landing-shell landing-cta__inner">
     <div>
@@ -206,7 +130,7 @@
     </div>
     <div class="landing-actions">
       <a class="landing-button landing-button--primary" href="documentation/">阅读文档</a>
-      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">获取源码</a>
+      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim">获取源码</a>
     </div>
   </div>
 </section>
@@ -214,11 +138,9 @@
   <footer class="landing-footer">
     <div class="landing-shell landing-footer__inner">
       <strong>LAESim</strong>
-      <span class="landing-footer__institution">哈尔滨工业大学（深圳）<br />广东省空天网络与智能感知重点实验室</span>
-      <span class="landing-footer__note">基于 Microsoft AirSim 扩展，由 LAESim contributors 维护。</span>
-      <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md">团队</a>
+      <span>基于 Microsoft AirSim 扩展，由 LAESim contributors 维护。</span>
       <a href="documentation/">文档</a>
-      <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub</a>
+      <a href="https://github.com/SANIS-HITSZ/LAESim">GitHub</a>
     </div>
   </footer>
 </body>
