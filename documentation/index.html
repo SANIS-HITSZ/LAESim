@@ -34,7 +34,7 @@
           <a href=".." class="icon icon-home"> LAESim 中文文档
         </a>
         <div class="version">
-          main
+          V1.5
         </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -65,10 +65,24 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../laesim_use/">使用 LAESim</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">天基任务</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../space_mission_bridge/">任务桥接与分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../space_delivery_checklist/">交付检查清单</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">仿真案例</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../simulation_cases/">案例概览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">版本</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../v1_5_sync_notes/">V1.5 基线同步说明</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">上游参考</span></p>
@@ -82,15 +96,15 @@
               </ul>
               <p class="caption"><span class="caption-text">项目</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub 仓库</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">GitHub 仓库</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md">团队与联系</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CONTRIBUTORS.md">团队与联系</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CITATION.cff">引用 LAESim</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CITATION.cff">引用 LAESim</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CHANGELOG.md">更新记录</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CHANGELOG.md">更新记录</a>
                   </li>
               </ul>
       </div>
@@ -110,7 +124,7 @@
           <li class="breadcrumb-item">文档</li>
       <li class="breadcrumb-item active">文档概览</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.4/docs/documentation.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.5/docs/documentation.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -119,7 +133,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="laesim">LAESim 文档<a class="headerlink" href="#laesim" title="Permanent link">#</a></h1>
-<p>LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室维护。本文档面向仿真平台使用者和贡献者，集中记录项目自身的混合载具、SceneMap、构建流程、ROS/ns-3 集成与可复现实验。AirSim 通用 API、传感器和飞控内容直接引用上游官方文档。</p>
+<p>LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室维护。本文档面向仿真平台使用者和贡献者，集中记录项目自身的混合载具、SceneMap、天基任务、构建流程、ROS/ns-3 集成与可复现实验。AirSim 通用 API、传感器和飞控内容直接引用上游官方文档。</p>
 <h2 id="_1">从这里开始<a class="headerlink" href="#_1" title="Permanent link">#</a></h2>
 <table>
 <thead>
@@ -139,11 +153,15 @@
 </tr>
 <tr>
 <td>安装 WSL2、ROS Noetic 和 ns-3</td>
-<td><a href="../laesim_build/#wsl-ros-ns3">WSL2、ROS 与 ns-3</a></td>
+<td><a href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a></td>
 </tr>
 <tr>
 <td>选择配置并启动混合载具场景</td>
 <td><a href="../laesim_use/">使用 LAESim</a></td>
+</tr>
+<tr>
+<td>运行轨道、覆盖、星地和星间任务</td>
+<td><a href="../space_mission_bridge/">天基任务桥接</a></td>
 </tr>
 <tr>
 <td>查看已验证的协同与通信实验</td>
@@ -156,7 +174,8 @@
 <li><code>AirGround</code> 混合模式：在同一场景运行无人机、车辆、舰船和卫星。</li>
 <li>SceneMap：导入图片地图，支持比例尺、GPS 配准和坐标转换。</li>
 <li>Python/ROS 接口：控制载具并采集状态、相机、IMU、GPS 和 Lidar。</li>
-<li>可选 ns-3 后端：模拟 Wi-Fi ad hoc、路由、时延、吞吐量与丢包。</li>
+<li>天基任务桥接：处理 TLE/星历、多星多目标 access、覆盖窗口和 UE 显示同步。</li>
+<li>可选 ns-3 后端：模拟 Wi-Fi ad hoc、路由，以及按真实斜距计算的星地/星间逻辑链路。</li>
 </ul>
 <h2 id="_3">上游资料<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
 <p>LAESim 基于 Microsoft AirSim 扩展。通用功能参见 <a href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>，网络模型与模块参见 <a href="https://www.nsnam.org/documentation/">ns-3 官方文档</a>。</p>

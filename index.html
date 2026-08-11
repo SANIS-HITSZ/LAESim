@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="支持空天地海混合载具、SceneMap 与可选 ns-3 自组网的多机仿真平台" />
+  <meta name="description" content="支持空天地海混合载具、SceneMap、天基任务分析与可选 ns-3 网络仿真的多机平台" />
   <meta name="author" content="哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室" />
   <link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/" />
   <link rel="shortcut icon" href="img/favicon.ico" />
@@ -35,10 +35,10 @@
     <p class="landing-affiliation">哈尔滨工业大学（深圳） · 广东省空天网络与智能感知重点实验室</p>
     <p class="landing-kicker">空天地海协同仿真平台</p>
     <h1 id="landing-title">LAESim</h1>
-    <p class="landing-hero__lead">在同一个 Unreal Engine 场景中组织无人机、车辆、舰船与卫星，并把 ROS 算法和 ns-3 自组织网络纳入同一套可复现实验流程。</p>
+    <p class="landing-hero__lead">在同一个 Unreal Engine 场景中组织无人机、车辆、舰船与卫星，并把天基任务分析、ROS 算法和 ns-3 网络纳入同一套可复现实验流程。</p>
     <div class="landing-actions">
       <a class="landing-button landing-button--primary" href="documentation/">进入文档</a>
-      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">查看 GitHub</a>
+      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">查看 GitHub</a>
     </div>
     <p class="landing-hero__meta">UE 4.27 · Python API · ROS Noetic · ns-3.48</p>
   </div>
@@ -67,7 +67,7 @@
         <li><strong>无人机</strong><span>SimpleFlight 与多机控制</span></li>
         <li><strong>车辆</strong><span>PhysXCar 与地面任务</span></li>
         <li><strong>舰船</strong><span>简化三自由度水面运动</span></li>
-        <li><strong>卫星</strong><span>三维速度控制与空间协同</span></li>
+        <li><strong>卫星</strong><span>显示模型、真实轨道与任务分析</span></li>
       </ul>
       <a class="landing-text-link" href="laesim_features/">查看载具与接口 →</a>
     </div>
@@ -90,6 +90,23 @@
       <b aria-hidden="true">→</b>
       <div><span>04</span><strong>运行任务</strong><small>按像素、米制坐标或 GPS 部署载具</small></div>
     </div>
+  </div>
+</section>
+
+<section class="landing-section landing-section--workflow">
+  <div class="landing-shell landing-workflow">
+    <div>
+      <p class="landing-eyebrow">天基任务</p>
+      <h2>真实任务几何与 UE 演示坐标解耦</h2>
+      <p>TLE/SGP4、CSV 或可选 Orekit 后端负责真实星历、可见窗口、覆盖与重访；UE 中的卫星模型只显示缩放轨迹，NetworkSim 使用真实斜距完成链路预算。</p>
+      <a class="landing-text-link" href="space_mission_bridge/">查看天基任务桥接 →</a>
+    </div>
+    <ol>
+      <li><span>1</span><div><strong>轨道传播</strong><p>读取 TLE 或外部星历，生成统一时标下的卫星状态。</p></div></li>
+      <li><span>2</span><div><strong>任务分析</strong><p>计算多目标 access、覆盖窗口、重访与最佳卫星。</p></div></li>
+      <li><span>3</span><div><strong>显示同步</strong><p>按可控比例驱动 UE 中的 SimpleSatellite。</p></div></li>
+      <li><span>4</span><div><strong>通信联动</strong><p>按真实斜距、SNR、带宽和误码模型控制星地与星间链路。</p></div></li>
+    </ol>
   </div>
 </section>
 
@@ -137,7 +154,7 @@
     <div class="landing-section__heading landing-section__heading--light">
       <p class="landing-eyebrow">ROS + ns-3</p>
       <h2>把通信条件带入协同算法</h2>
-      <p>保留理想通信作为基线，或启用 ns-3 模拟 Wi-Fi ad hoc、OLSR/AODV、时延、吞吐量与丢包。</p>
+      <p>保留理想通信作为基线，或启用 ns-3 模拟 Wi-Fi ad hoc、OLSR/AODV；星地与星间业务可改用真实斜距逻辑链路。</p>
     </div>
     <div class="landing-network-flow" aria-label="LAESim 与 ROS、ns-3 的集成关系">
       <div><small>Windows</small><strong>LAESim / UE4</strong><span>物理、画面、传感器与载具位置</span></div>
@@ -147,7 +164,7 @@
       <div><small>可选后端</small><strong>ns-3.48</strong><span>无线链路、路由和网络指标</span></div>
     </div>
     <div class="landing-network-actions">
-      <a class="landing-button landing-button--light" href="laesim_build/#wsl-ros-ns3">查看集成与安装</a>
+      <a class="landing-button landing-button--light" href="laesim_wsl_ros_ns3/">查看集成与安装</a>
       <a class="landing-text-link landing-text-link--light" href="simulation_cases/">查看验证案例 →</a>
     </div>
   </div>
@@ -193,7 +210,7 @@
       </section>
     </div>
     <div class="landing-team__links">
-      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md">查看团队与联系方式 →</a>
+      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CONTRIBUTORS.md">查看团队与联系方式 →</a>
       <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/issues">提出问题或合作建议 →</a>
     </div>
   </div>
@@ -207,7 +224,7 @@
     </div>
     <div class="landing-actions">
       <a class="landing-button landing-button--primary" href="documentation/">阅读文档</a>
-      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">获取源码</a>
+      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">获取源码</a>
     </div>
   </div>
 </section>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh_CN" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/space_mission_bridge/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>任务桥接与分析 - LAESim 中文文档</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../stylesheets/laesim.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u4efb\u52a1\u6865\u63a5\u4e0e\u5206\u6790";
+        var mkdocs_page_input_path = "space_mission_bridge.md";
+        var mkdocs_page_url = "/LAESim/space_mission_bridge/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> LAESim 中文文档
+        </a>
+        <div class="version">
+          V1.5
+        </div><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">首页</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">文档</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../documentation/">文档概览</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_features/">核心特色</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_build/">安装与构建 LAESim</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_use/">使用 LAESim</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">天基任务</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">任务桥接与分析</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1">1. 总体架构</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2">2. 坐标与尺度</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3">3. 快速验证</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-tlesgp4">4. TLE/SGP4</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#5">5. 常用参数</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#6-ros">6. ROS 接口</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#61">6.1 多卫星实时运行与切换</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#62">6.2 星间链路与多跳中继</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#7">7. 任务分析</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#71">7.1 传感器、侧摆、驻留与区域约束</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#72">7.2 统一场景时钟、暂停与单步</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#8-networksimns-3">8. 与 NetworkSim/ns-3 实时联动</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#tle">真实 TLE 一键演示</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">多星可视化与交付脚本</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#9">9. 专业后端接口</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#orekit">Orekit</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#gmat">GMAT</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#basilisk">Basilisk</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#10">10. 开发环境验证状态</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#11">11. 官方入口</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#12">12. 交付状态与可选扩展</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../space_delivery_checklist/">交付检查清单</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">仿真案例</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../simulation_cases/">案例概览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">版本</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../v1_5_sync_notes/">V1.5 基线同步说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">上游参考</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://microsoft.github.io/AirSim/apis/">AirSim API 文档</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://www.nsnam.org/documentation/">ns-3 官方文档</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">GitHub 仓库</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CONTRIBUTORS.md">团队与联系</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CITATION.cff">引用 LAESim</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CHANGELOG.md">更新记录</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">LAESim 中文文档</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">天基任务</li>
+      <li class="breadcrumb-item active">任务桥接与分析</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.5/docs/space_mission_bridge.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">天基任务桥接说明<a class="headerlink" href="#_1" title="Permanent link">#</a></h1>
+<p>本文说明如何在不依赖商业授权软件的情况下，把卫星轨道、星下点、可见性和任务几何量接入 LAESim。设计目标是让 Python 后端负责天基任务计算，LAESim/UE 负责演示性显示、相机和传感器挂载。</p>
+<h2 id="1">1. 总体架构<a class="headerlink" href="#1" title="Permanent link">#</a></h2>
+<pre class="highlight"><code class="language-text">TLE / CSV / Mock
+  -&gt; Multi_use/space_mission_bridge.py
+  -&gt; LAESim PythonClient / AirSim RPC
+  -&gt; simSetVehiclePose
+  -&gt; UE 里的 SimpleSatellite 模型</code></pre>
+<p>第一阶段覆盖这些功能面：</p>
+<ul>
+<li>TLE/SGP4 轨道传播：通过 <code>sgp4</code> 包读取 TLE 并计算卫星位置。</li>
+<li>CSV/mock 数据源：没有额外依赖时也能做冒烟测试和演示。</li>
+<li>坐标转换：经纬高、ECEF、局部 NED、缩放后的 LAESim 显示坐标。</li>
+<li>任务可见性：对固定目标输出方位角、仰角、距离和是否满足最小仰角阈值。</li>
+<li>ROS 输出：发布卫星真值和每个目标的 Access 状态。</li>
+</ul>
+<p>第二阶段增加任务分析脚本，用于多颗卫星、多类目标、覆盖窗口、重访时间、可见时间段报告和 ns-3 联动接口文件。第三阶段继续补充星座批量载入、区域网格覆盖、访问约束、GeoJSON 导出、Orekit 升起/落下事件检测、基础传感器视场和星地链路预算，使输出形态更接近专业任务分析软件。它仍不是完整的航天任务分析平台；轨道机动优化、高保真姿态动力学、专业雷达和 EOIR 属于可选后续能力。</p>
+<h2 id="2">2. 坐标与尺度<a class="headerlink" href="#2" title="Permanent link">#</a></h2>
+<p>真实轨道采用地球尺度，LEO 高度通常是数百公里。UE/AirSim 更适合局部米级场景，因此桥接脚本区分两套坐标：</p>
+<ul>
+<li>真实计算坐标：经纬高、ECEF、局部 NED，保持真实米制。</li>
+<li>UE 显示坐标：按比例缩放后的 LAESim NED，只用于视觉显示。</li>
+</ul>
+<p>默认缩放：</p>
+<pre class="highlight"><code class="language-text">LAESim_X = Real_North * 0.001
+LAESim_Y = Real_East  * 0.001
+LAESim_Z = -max(80, (Altitude - ReferenceAltitude) * 0.001)</code></pre>
+<p>例如 500 km 高度默认显示成约 500 m。真实距离、覆盖和链路可见性应以桥接脚本输出为准，不建议用 UE 中模型之间的几何距离代表真实星地距离。</p>
+<h2 id="3">3. 快速验证<a class="headerlink" href="#3" title="Permanent link">#</a></h2>
+<p>先复制模板：</p>
+<pre class="highlight"><code class="language-powershell">cd &lt;LAESim 源码目录&gt;
+Copy-Item .\how_to_use_settings\settings_space_mission_bridge.json "$env:USERPROFILE\Documents\AirSim\settings.json"</code></pre>
+<p>不依赖第三方包的 CSV 回放：</p>
+<pre class="highlight"><code class="language-powershell">conda activate &lt;AirSim Python环境名&gt;
+python .\Multi_use\space_mission_bridge.py --provider csv --csv .\Multi_use\space_mission_sample.csv --vehicle Satellite --rate 1</code></pre>
+<p>不连接 UE，只检查计算链路：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_mission_bridge.py --provider mock --vehicle Satellite --target Island:22.591164:113.975317:0 --rate 2 --duration 5 --no-airsim --print-every 1</code></pre>
+<h2 id="4-tlesgp4">4. TLE/SGP4<a class="headerlink" href="#4-tlesgp4" title="Permanent link">#</a></h2>
+<p>TLE 模式需要安装 <code>sgp4</code> 包：</p>
+<pre class="highlight"><code class="language-powershell">conda activate &lt;AirSim Python环境名&gt;
+pip install sgp4</code></pre>
+<p>使用示例 TLE：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_mission_bridge.py --provider tle --tle .\Multi_use\space_mission_sample.tle --vehicle Satellite --rate 2</code></pre>
+<p>指定目标并输出可见性：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_mission_bridge.py --provider tle --tle .\Multi_use\space_mission_sample.tle --target Island:22.591164:113.975317:0:ground --rate 2 --print-every 1</code></pre>
+<p>注意：当前 TLE 模式使用 SGP4 输出 TEME 坐标，并用 GMST 做 MVP 级地固转换，适合演示和工程验证；如果后续需要高精度地球定向参数、摄动建模、事件检测和覆盖统计，建议升级为 Orekit 后端。</p>
+<h2 id="5">5. 常用参数<a class="headerlink" href="#5" title="Permanent link">#</a></h2>
+<ul>
+<li><code>--provider tle/csv/mock</code>：选择轨道来源。</li>
+<li><code>--tle</code>：TLE 文件路径。</li>
+<li><code>--satellite-name</code> / <code>--satellite-index</code>：从多星 TLE 文件中选择卫星。</li>
+<li><code>--display-mode scaled-ned</code>：默认，水平和高度都按比例缩放。</li>
+<li><code>--display-mode fixed-overhead</code>：卫星固定在场景上方，适合只想表现“天上有卫星”。</li>
+<li><code>--display-mode subpoint-only</code>：水平显示星下点运动，高度固定。</li>
+<li><code>--horizontal-scale</code>：真实水平 NED 到 UE 显示 NED 的比例。</li>
+<li><code>--vertical-scale</code>：真实高度到 UE 显示高度的比例。</li>
+<li><code>--min-display-altitude</code>：防止卫星显示太低。</li>
+<li><code>--yaw-mode course</code>：按星下点运动方向给模型偏航。</li>
+<li><code>--clock-speed</code>：任务时间推进倍率。</li>
+<li><code>--target NAME:LAT:LON[:ALT[:KIND]]</code>：增加一个任务目标，输出可见性、方位、仰角、距离。</li>
+<li><code>--min-elevation-deg</code>：Access 的最小仰角阈值。</li>
+<li><code>--mission-report-jsonl</code>：把每帧星历和 Access 状态写成 JSONL。</li>
+</ul>
+<h2 id="6-ros">6. ROS 接口<a class="headerlink" href="#6-ros" title="Permanent link">#</a></h2>
+<p>新增 ROS 消息：</p>
+<pre class="highlight"><code class="language-text">airsim_ros_pkgs/SpaceSatelliteState
+airsim_ros_pkgs/SpaceAccessState</code></pre>
+<p>话题：</p>
+<pre class="highlight"><code class="language-text">/space/&lt;vehicle&gt;/space_satellite_state
+/space/&lt;vehicle&gt;/state
+/space/&lt;vehicle&gt;/access/&lt;target&gt;</code></pre>
+<p>运行 ROS 版 CSV 回放：</p>
+<pre class="highlight"><code class="language-bash">cd "$HOME/LAESim/ros"
+source devel/setup.bash
+python3 src/example/space_mission_bridge_ros.py --provider csv --csv ../Multi_use/space_mission_sample.csv --vehicle Satellite</code></pre>
+<p>如果要同时驱动 UE 里的卫星模型：</p>
+<pre class="highlight"><code class="language-bash">python3 src/example/space_mission_bridge_ros.py --provider csv --csv ../Multi_use/space_mission_sample.csv --vehicle Satellite --drive-laesim --host &lt;Windows主机IP&gt;</code></pre>
+<p>发布目标 Access 状态：</p>
+<pre class="highlight"><code class="language-bash">python3 src/example/space_mission_bridge_ros.py --provider mock --vehicle Satellite --target Island:22.591164:113.975317:0</code></pre>
+<p>将 LAESim 中正在运动的载具作为动态目标：</p>
+<pre class="highlight"><code class="language-bash">python3 src/example/space_mission_bridge_ros.py \
+  --provider tle \
+  --tle ../Multi_use/space_mission_sample.tle \
+  --vehicle Satellite \
+  --target-vehicle Car:ground \
+  --target-vehicle Boat:sea \
+  --target-vehicle UAV:air</code></pre>
+<p><code>--target-vehicle VEHICLE[:KIND]</code> 会订阅 <code>/airsim_node/&lt;vehicle&gt;/global_gps</code>。这里使用 <code>global_gps</code>，而不是直接使用 <code>odom_local_ned</code>：AirSim 多载具的 local odometry 以各自 starting point 为原点，直接比较会遗漏 settings 初始偏移；<code>global_gps</code> 已包含统一地理原点和车辆初始位置。动态 GPS 超过 <code>--dynamic-target-max-age</code> 未更新时，access 会变为 <code>valid=false</code>，避免继续使用陈旧位置。</p>
+<p>完整多星模板位于 <code>how_to_use_settings/settings_space_dynamic_targets.json</code>，其中配置了 <code>UAV</code>、<code>UAV2</code>、<code>Car</code>、<code>Boat</code>、<code>Satellite</code>、<code>Satellite2</code>、<code>Satellite3</code>，以及三颗卫星到四类目标的 12 条 <code>SpaceAccessPolicy</code> 规则。</p>
+<h3 id="61">6.1 多卫星实时运行与切换<a class="headerlink" href="#61" title="Permanent link">#</a></h3>
+<p><code>space_constellation_bridge_ros.py</code> 同时传播多份 TLE，并把每颗卫星映射到独立的 <code>SimpleSatellite</code> 载具。原来的 <code>space_mission_bridge_ros.py</code> 保持单星入口，不受影响。</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
+<p>默认下载并校验三颗当前 TLE：<code>Satellite:25544</code>、<code>Satellite2:25338</code>、<code>Satellite3:39084</code>。可按任务替换目录号和目标：</p>
+<pre class="highlight"><code class="language-bash">SATELLITES="Satellite:25544,Satellite2:48274,Satellite3:39084" \
+TARGET_VEHICLES="UAV:air,Car:ground,Boat:sea" CLOCK_SPEED=120 \
+  bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
+<p>每颗卫星继续发布原有接口：</p>
+<pre class="highlight"><code class="language-text">/space/&lt;SatelliteN&gt;/state
+/space/&lt;SatelliteN&gt;/space_satellite_state
+/space/&lt;SatelliteN&gt;/access/&lt;target&gt;</code></pre>
+<p>多星桥额外发布：</p>
+<pre class="highlight"><code class="language-text">/space/selection/&lt;target&gt;
+/space/constellation/state</code></pre>
+<p><code>/space/selection/&lt;target&gt;</code> 是 <code>std_msgs/String</code> JSON。候选卫星按仰角从高到低排序，仰角相同时选择真实斜距更短者；<code>--selection-hysteresis-deg</code> 和 <code>--selection-min-hold-s</code> 用于抑制频繁切换。消息包含当前/上一颗卫星、候选列表、切换次数、捕获次数和本次中断时间。</p>
+<p>运行摘要写入 <code>.runtime/constellation_demo/space_constellation_summary.json</code>，包括：</p>
+<ul>
+<li><code>handover_count</code>：目标业务链路在不同卫星之间的切换次数。</li>
+<li><code>outage_count</code>：没有可用卫星的覆盖空窗次数。</li>
+<li><code>last_interruption_s</code>：最近一次重新捕获前的中断时间。</li>
+<li><code>mean_revisit_s</code> / <code>max_revisit_s</code>：已完成覆盖空窗的平均/最大持续时间。</li>
+<li><code>selection_events</code>：每次捕获、切换或进入空窗时的场景时间和卫星名称。</li>
+</ul>
+<p>在多星桥与 NetworkSim 都运行时，可让测试程序始终从当前最佳卫星向目标发包：</p>
+<pre class="highlight"><code class="language-bash">python3 NetworkSim/tests/ros_constellation_handover_test.py \
+  --target Car --duration 60</code></pre>
+<p>加 <code>--require-handover</code> 后，测试期间至少发生一次卫星切换才算通过。场景时间倍率较高时，60 秒墙钟时间可能已覆盖数小时轨道过程。</p>
+<h3 id="62">6.2 星间链路与多跳中继<a class="headerlink" href="#62" title="Permanent link">#</a></h3>
+<p>多星一键脚本默认传入 <code>--publish-isl</code>。星座桥根据每颗卫星的真实地理位置计算星间距离，并发布三组双向 ISL access：</p>
+<pre class="highlight"><code class="language-text">/space/Satellite/access/Satellite2
+/space/Satellite/access/Satellite3
+/space/Satellite2/access/Satellite3</code></pre>
+<p>默认最大星间作用距离为 5000 km，可通过环境变量修改：</p>
+<pre class="highlight"><code class="language-bash">MAX_ISL_RANGE_M=4000000 PUBLISH_ISL=1 \
+  bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
+<p>当前 ISL 判据只包含有效几何和最大作用距离，不加入日照、阴影等额外条件。逐帧 <code>isl_links</code> 记录会写入 <code>space_constellation_runtime.jsonl</code>。</p>
+<p>应用在 <code>/network_sim/tx</code> 数据包中增加 <code>route</code>，即可显式指定星间中继：</p>
+<pre class="highlight"><code class="language-json">{
+  "packet_id": "relay-0001",
+  "src": "Satellite",
+  "dst": "Car",
+  "route": ["Satellite", "Satellite2", "Car"],
+  "size_bytes": 1024,
+  "payload": "mission-data"
+}</code></pre>
+<p>NetworkSim 会逐跳检查 <code>SpaceAccessPolicy</code>。任一跳不可见、状态缺失或过期时，<code>/network_sim/drop</code> 会增加 <code>route</code> 和 <code>failed_hop</code>；所有跳可用时，ns-3 runner 对各有向链路分别排队并按存储转发顺序调度。成功结果包含：</p>
+<pre class="highlight"><code class="language-text">link_type=satellite_route
+route_hop_count
+route_nodes
+true_range_m                 # 各跳真实距离之和
+propagation_delay_ns         # 各跳传播时延之和
+serialization_delay_ns       # 各跳串行化时延之和
+packet_error_rate            # 各跳联合包错误率</code></pre>
+<p>自动验证：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/tests/ros_constellation_integration_test.sh</code></pre>
+<p>当前验收用例 <code>Satellite -&gt; Satellite2 -&gt; Car</code> 为两跳、总斜距 1500 km，返回传播时延约 5.003 ms、串行化时延 8.192 ms、总 ns-3 时延约 13.195 ms。</p>
+<h2 id="7">7. 任务分析<a class="headerlink" href="#7" title="Permanent link">#</a></h2>
+<p><code>Multi_use/space_mission_analyzer.py</code> 用于离线统计多星多目标任务窗口。输入是 mission JSON：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_mission_analyzer.py --mission .\Multi_use\space_mission.example.json --out .\Multi_use\space_mission_report --print-summary</code></pre>
+<p>输出文件：</p>
+<pre class="highlight"><code class="language-text">space_mission_report_summary.json
+space_mission_report_windows.csv
+space_mission_report_samples.csv
+space_mission_report_network_links.json
+space_mission_report_geojson.json
+space_mission_report_area_coverage.csv</code></pre>
+<p>含义：</p>
+<ul>
+<li><code>summary.json</code>：每个目标点和目标组的窗口数量、累计可见时长、覆盖比例、空间覆盖率和重访时间。</li>
+<li><code>windows.csv</code>：每颗卫星对每个目标的可见开始、结束、持续时间、最大仰角、最近距离和窗口计算方法。</li>
+<li><code>samples.csv</code>：每个时间步的仰角、方位角、距离和 access 状态。</li>
+<li><code>network_links.json</code>：把可见窗口转换成通信链路启停时间，供后续与 <code>NetworkSim</code> / ns-3 联动。</li>
+<li><code>geojson.json</code>：导出卫星末帧位置、目标点、区域网格点和窗口要素，便于在 GIS/Web 地图工具中查看。</li>
+<li><code>area_coverage.csv</code>：按场景时间、卫星和区域统计当前覆盖点数、瞬时覆盖率及区域阈值是否满足。</li>
+</ul>
+<p>mission JSON 支持点目标、区域网格目标和访问约束：</p>
+<pre class="highlight"><code class="language-json">{
+  "analysis": {
+    "start_time": "2026-07-23T00:00:00Z",
+    "duration_s": 300,
+    "step_s": 30,
+    "min_elevation_deg": 5
+  },
+  "satellites": [
+    {
+      "name": "Satellite",
+      "provider": "csv",
+      "csv": "space_mission_sample.csv"
+    }
+  ],
+  "targets": [
+    {
+      "name": "Island",
+      "kind": "ground",
+      "latitude_deg": 22.591164,
+      "longitude_deg": 113.975317,
+      "altitude_m": 0,
+      "min_elevation_deg": 5
+    },
+    {
+      "name": "SeaArea",
+      "kind": "sea",
+      "type": "area_grid",
+      "center_latitude_deg": 22.50,
+      "center_longitude_deg": 114.05,
+      "width_km": 8,
+      "height_km": 6,
+      "spacing_km": 2
+    }
+  ]
+}</code></pre>
+<p>星座批量载入可以使用 <code>constellations</code>：</p>
+<pre class="highlight"><code class="language-json">{
+  "constellations": [
+    {
+      "name_prefix": "Sat",
+      "provider": "tle",
+      "tle": "my_constellation.tle",
+      "count": 8
+    }
+  ]
+}</code></pre>
+<p>安装 Orekit 后，可以使用事件检测定位窗口边界，而不是把边界限制在固定 <code>step_s</code> 采样点上。可直接运行已提供的 24 小时示例：</p>
+<pre class="highlight"><code class="language-powershell">conda activate laesim_space
+$env:PYTHONNOUSERSITE="1"
+python .\Multi_use\space_mission_analyzer.py --mission .\Multi_use\space_mission_orekit.example.json --out .\Multi_use\space_mission_orekit_report --print-summary</code></pre>
+<p>相关 mission 配置：</p>
+<pre class="highlight"><code class="language-json">{
+  "analysis": {
+    "access_window_method": "orekit-events",
+    "event_max_check_s": 60,
+    "event_threshold_s": 0.1
+  },
+  "orekit_data": "../../orekit-data.zip",
+  "satellites": [
+    {
+      "name": "Satellite",
+      "provider": "orekit-tle",
+      "tle": "space_mission_sample.tle"
+    }
+  ]
+}</code></pre>
+<ul>
+<li><code>access_window_method=auto</code>：<code>orekit-tle</code> 使用 Orekit 事件检测，其他 provider 使用步长采样；这是默认行为。</li>
+<li><code>access_window_method=sampled</code>：所有窗口都按 <code>step_s</code> 采样生成。</li>
+<li><code>access_window_method=orekit-events</code>：已配置 Orekit 的卫星使用事件检测，其他 provider 仍使用采样。</li>
+<li><code>event_max_check_s</code>：Orekit 搜索事件根的最大检查间隔。</li>
+<li><code>event_threshold_s</code>：窗口边界收敛阈值，单位为秒。</li>
+</ul>
+<p>当目标同时配置 <code>max_range_m</code> 时，当前版本会退回采样法处理“仰角 + 最大距离”的组合约束，并在 summary 的 <code>orekit_event_fallbacks</code> 中说明原因。<code>windows.csv</code> 的 <code>method</code> 列可用于确认每个窗口实际采用 <code>sampled</code> 还是 <code>orekit-events</code>。</p>
+<h3 id="71">7.1 传感器、侧摆、驻留与区域约束<a class="headerlink" href="#71" title="Permanent link">#</a></h3>
+<p>专用示例：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_mission_analyzer.py `
+  --mission .\Multi_use\space_mission_constraints.example.json `
+  --out .\Multi_use\space_mission_constraints_report `
+  --print-summary</code></pre>
+<p>每个点目标或 <code>area_grid</code> 可配置：</p>
+<pre class="highlight"><code class="language-json">{
+  "min_elevation_deg": 5,
+  "max_range_m": 1800000,
+  "sensor_pointing_mode": "target-track",
+  "sensor_half_angle_deg": 2,
+  "side_look_angle_deg": 0,
+  "max_off_nadir_deg": 35,
+  "min_dwell_s": 30,
+  "min_area_coverage_fraction": 0.6
+}</code></pre>
+<ul>
+<li><code>sensor_pointing_mode=none</code>：兼容默认行为，不施加传感器视场约束。</li>
+<li><code>nadir</code>：传感器波束中心指向星下点，目标离轴角等于目标视线的离天底角。</li>
+<li><code>side-look</code>：波束中心按 <code>side_look_angle_deg</code> 侧摆，当前使用“离天底角差”作为圆锥视场近似。</li>
+<li><code>target-track</code>：波束中心跟踪目标，传感器离轴角为 0，但目标真实离天底角仍必须小于 <code>max_off_nadir_deg</code>。</li>
+<li><code>sensor_half_angle_deg</code>：传感器圆锥半视场角。</li>
+<li><code>max_off_nadir_deg</code>：平台或载荷允许的最大侧摆能力。</li>
+<li><code>min_dwell_s</code>：几何窗口短于该值时，不进入最终窗口和 network link 报告，并记录到 <code>dwell_rejections</code>。</li>
+<li><code>min_area_coverage_fraction</code>：区域网格在一个采样时刻必须达到的覆盖率阈值；逐时结果见 <code>area_coverage.csv</code>。</li>
+</ul>
+<p><code>samples.csv</code> 新增 <code>off_nadir_deg</code>、<code>sensor_off_axis_deg</code> 和 <code>constraint_reason</code>，可判断样本是因仰角、距离、侧摆还是视场被拒绝。带最大距离、侧摆或传感器视场的 Orekit 任务会退回组合约束采样；最小驻留时间在窗口生成后统一过滤。</p>
+<p>实时单星/多星桥也支持相同的全局参数：</p>
+<pre class="highlight"><code class="language-bash">--max-range-m 1800000 \
+--max-off-nadir-deg 35 \
+--sensor-pointing-mode target-track \
+--sensor-half-angle-deg 2</code></pre>
+<p>实时 CLI 参数对该进程的全部目标生效；需要每个目标使用不同约束时，使用 mission JSON 做离线任务分析。当前约束集不加入日照、阴影或太阳高度条件。</p>
+<h3 id="72">7.2 统一场景时钟、暂停与单步<a class="headerlink" href="#72" title="Permanent link">#</a></h3>
+<p>需要确定性复现任务时，可由 <code>space_sim_clock.py</code> 统一发布 <code>/clock</code>。天基实时桥通过 <code>--clock-source ros</code> 使用该时间，NetworkSim 在 <code>UnifiedClock.Enabled=true</code> 时也只按 <code>/clock</code> 的正向增量推进 ns-3。默认配置保持 <code>Enabled=false</code>，原有墙钟驱动方式不受影响。</p>
+<p>在 WSL 中启动：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+source /opt/ros/noetic/setup.bash
+source ros/devel/setup.bash
+
+python3 ros/src/example/space_sim_clock.py \
+  --start-time 2026-07-23T00:00:00Z --rate 60</code></pre>
+<p>天基桥使用同一时间轴时增加：</p>
+<pre class="highlight"><code class="language-bash">--clock-source ros --clock-topic /clock</code></pre>
+<p>另开终端发送控制命令：</p>
+<pre class="highlight"><code class="language-bash">python3 ros/src/example/space_clock_control.py pause
+python3 ros/src/example/space_clock_control.py step --seconds 10
+python3 ros/src/example/space_clock_control.py set_rate --rate 120
+python3 ros/src/example/space_clock_control.py resume
+python3 ros/src/example/space_clock_control.py reset</code></pre>
+<p>相关话题：</p>
+<pre class="highlight"><code class="language-text">/clock                 rosgraph_msgs/Clock，统一场景时刻
+/space_clock/control   std_msgs/String，JSON 控制命令
+/space_clock/status    std_msgs/String，暂停、倍率和当前时刻</code></pre>
+<p>边界说明：</p>
+<ul>
+<li><code>/clock</code> 统一的是天基任务计算和 ns-3 离散事件时间，不会自动暂停或单步 UE4 物理世界。</li>
+<li>不要为了这个功能给 AirSim ROS wrapper 全局设置 <code>/use_sim_time=true</code>；两个桥接器会显式订阅 <code>/clock</code>。</li>
+<li>严格按场景时刻查询应使用 <code>tle</code> 或 <code>orekit-tle</code> provider。CSV provider 当前按行顺序回放，不适合验证任意时刻跳转。</li>
+<li>ns-3 时间不能倒退。执行 <code>reset</code> 或 <code>set_time</code> 回到更早时刻后，应重启 NetworkSim bridge，才能获得可重复的网络事件时间轴。</li>
+</ul>
+<p>自动验收：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/tests/ros_unified_clock_integration_test.sh</code></pre>
+<p>该测试使用独立 ROS master，不需要启动 UE。当前固定验收结果为：暂停期间状态不前进，单步 2 秒后 TLE 状态精确从 <code>00:00:00</code> 变为 <code>00:00:02</code>，同一时钟还会释放等待中的 ns-3 数据包。</p>
+<h2 id="8-networksimns-3">8. 与 NetworkSim/ns-3 实时联动<a class="headerlink" href="#8-networksimns-3" title="Permanent link">#</a></h2>
+<p>离线的 <code>network_links.json</code> 适合任务排程；实时演示使用 ROS access 话题控制 NetworkSim。数据流如下：</p>
+<pre class="highlight"><code class="language-text">space_mission_bridge_ros.py
+  -&gt; /space/Satellite/access/Car
+  -&gt; SpaceAccessPolicy
+  -&gt; access=true  时将 /network_sim/tx 交给 none/ns3 后端
+  -&gt; access=false 时发布 /network_sim/drop</code></pre>
+<p>在 <code>settings.json</code> 的 <code>NetworkSimulation</code> 中配置：</p>
+<pre class="highlight"><code class="language-json">"SpaceAccessPolicy": {
+  "Enabled": true,
+  "FailMode": "closed",
+  "MaxStateAgeSeconds": 2.0,
+  "Rules": [
+    {
+      "Source": "Satellite",
+      "Destination": "Car",
+      "AccessTopic": "/space/Satellite/access/Car",
+      "Bidirectional": true
+    }
+  ]
+}</code></pre>
+<p><code>Source</code> 和 <code>Destination</code> 必须都是 <code>settings.json/Vehicles</code> 中的载具名。<code>Bidirectional=true</code> 表示同一个 access 状态同时控制上下行。<code>FailMode=closed</code> 时，状态尚未收到、无效或超过 <code>MaxStateAgeSeconds</code> 都会阻断；调试阶段可以改为 <code>open</code>。</p>
+<p>首次启用前，在 WSL 的 <code>ros</code> 工作空间重新运行 <code>catkin_make</code>，并用 <code>rosmsg show airsim_ros_pkgs/SpaceAccessState</code> 确认自定义消息已经生成。若 WSL 使用 <code>/home/&lt;user&gt;/LAESim</code> 副本，应先把 Windows 工程中的当前 <code>ros/src</code> 和 <code>NetworkSim</code> 同步过去。</p>
+<p>先启动 ROS 天基桥接并确保发布目标名与目标载具名一致：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+source /opt/ros/noetic/setup.bash
+source ros/devel/setup.bash
+python3 ros/src/example/space_mission_bridge_ros.py \
+  --provider mock \
+  --vehicle Satellite \
+  --target Car:22.591164:113.975317:0:ground</code></pre>
+<p>这个 mock 配置的卫星位于目标上空，默认 <code>--min-elevation-deg 5</code> 时应可见。再启动 NetworkSim bridge 并验证投递：</p>
+<pre class="highlight"><code class="language-bash">bash "${HOME}/LAESim/NetworkSim/scripts/run_ros_network_bridge.sh"
+python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py" --source Satellite --destination Car</code></pre>
+<p>要稳定验证阻断，停止并重新启动天基桥接，把门限改为 <code>89.9</code> 度：</p>
+<pre class="highlight"><code class="language-bash">python3 ros/src/example/space_mission_bridge_ros.py \
+  --provider mock \
+  --vehicle Satellite \
+  --target Car:22.591164:113.975317:0:ground \
+  --min-elevation-deg 89.9
+
+python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py" --source Satellite --destination Car --expect-drop</code></pre>
+<p><code>--expect-drop</code> 会监听 <code>/network_sim/drop</code>，输出 <code>drop_stage</code> 和 <code>drop_reason</code>。天基策略阻断使用 <code>drop_stage=space_access_policy</code> 并附带仰角和真实星地距离；通过策略后又在网络内部丢失的包使用 <code>drop_stage=ns3</code>，并附带网络拓扑距离、路由协议和 ns-3 仿真时间。两类距离属于不同坐标与模型，不能直接混用。</p>
+<h3 id="tle">真实 TLE 一键演示<a class="headerlink" href="#tle" title="Permanent link">#</a></h3>
+<p>在 UE 已进入 Play、AirSim ROS wrapper 正常发布配置中的载具话题后，可以用一条命令启动单星真实 TLE、动态目标、UE 卫星显示和 ns-3 门控：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/scripts/run_tle_space_network_demo.sh</code></pre>
+<p>首次使用需要安装轻量 Python 依赖：</p>
+<pre class="highlight"><code class="language-bash">python3 -m pip install --user sgp4 msgpack-rpc-python</code></pre>
+<p>脚本默认行为如下：</p>
+<ul>
+<li>从 CelesTrak 刷新 NORAD <code>25544</code> 的当前 ISS TLE，并校验两行数据的校验和。</li>
+<li>检查 TLE 历元与场景时间；超过 14 天时拒绝正式演示，避免把陈旧 TLE 当作实时星历。</li>
+<li>自动搜索参考点未来 48 小时内的下一次可见窗口，并从窗口前 300 秒开始。</li>
+<li>默认使用 60 倍场景时间，使过境和链路切换能在短时间内演示。</li>
+<li>从 <code>/airsim_node/UAV/UAV2/Car/Boat/global_gps</code> 读取动态目标位置。</li>
+<li>通过卫星 RPC <code>41491</code> 驱动 UE 中的 <code>Satellite</code>，并持续发布四条 access 话题。</li>
+<li>检测并复用已经运行的 NetworkSim bridge；没有运行时会自动启动。</li>
+</ul>
+<p>常用覆盖参数通过环境变量设置：</p>
+<pre class="highlight"><code class="language-bash">CLOCK_SPEED=20 ACCESS_LEAD_S=300 DURATION=40 \
+  bash NetworkSim/scripts/run_tle_space_network_demo.sh
+
+CATALOG_NUMBER=48274 TARGET_VEHICLES="UAV:air,Car:ground,Boat:sea" \
+  bash NetworkSim/scripts/run_tle_space_network_demo.sh</code></pre>
+<p>输出保存在：</p>
+<pre class="highlight"><code class="language-text">${HOME}/LAESim/.runtime/tle_demo/current.tle
+${HOME}/LAESim/.runtime/tle_demo/current.tle.json
+${HOME}/LAESim/.runtime/tle_demo/space_tle_bridge.log
+${HOME}/LAESim/.runtime/tle_demo/space_tle_runtime.jsonl
+${HOME}/LAESim/.runtime/tle_demo/space_tle_summary.json</code></pre>
+<p><code>space_tle_summary.json</code> 按目标记录有效样本数、可见样本比例、窗口起止、总可见时长、最大仰角和最小真实斜距。单独刷新 TLE 可运行：</p>
+<pre class="highlight"><code class="language-bash">python3 Multi_use/update_tle.py \
+  --catalog-number 25544 \
+  --output "${HOME}/LAESim/.runtime/current_iss.tle"</code></pre>
+<p>要自动验证一次完整的 DOWN/UP 转换，在 TLE 演示运行期间执行：</p>
+<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
+source "${HOME}/LAESim/ros/devel/setup.bash"
+python3 NetworkSim/tests/ros_tle_network_transition_test.py \
+  --source Satellite --destination Car --timeout 120</code></pre>
+<p>测试必须同时得到：不可见阶段 <code>drop_stage=space_access_policy</code>，以及可见阶段带非零 <code>latency_ns</code> 的 ns-3 投递结果。</p>
+<p>真实计算坐标和演示坐标必须分开理解：</p>
+<ul>
+<li>TLE 经纬高、仰角和 <code>range_m</code> 使用真实地球尺度。</li>
+<li><code>global-track</code> 把全球地面轨迹正交压缩到 UE 场景的有限圆盘内，只用于显示。</li>
+<li><code>SatelliteLinkModel.Enabled=false</code> 时，NetworkSim 仍会把所有节点当作普通 Wi-Fi 节点，此时星地包会受到 UE <code>odom_local_ned</code> 演示距离影响。</li>
+<li><code>SatelliteLinkModel.Enabled=true</code> 时，命中 <code>SpaceAccessPolicy</code> 的星地包使用 access 中的真实斜距、自由空间损耗、传播时延、天线增益、SNR、带宽和误码率；UE 显示坐标不参与链路预算。</li>
+<li>一键脚本默认 UE 显示半径为 80 m、显示高度为 300 m，可以通过 <code>DISPLAY_RADIUS</code> 和 <code>DISPLAY_ALTITUDE</code> 修改而不改变星地通信结果。</li>
+</ul>
+<h3 id="_2">多星可视化与交付脚本<a class="headerlink" href="#_2" title="Permanent link">#</a></h3>
+<p>交付演示优先使用完整启动器。前提是 UE 已进入 Play、AirSim ROS wrapper 已运行，且 <code>/airsim_node/Satellite/odom_local_ned</code> 的时间戳确实在推进：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/scripts/start_space_demo.sh</code></pre>
+<p>启动器先运行 <code>ros_ue_clock_progress_test.py</code>。如果编辑器只是打开、Play 被暂停，或者 ROS 只在重复旧时间戳，它会直接停止并提示修正，不会留下一个“话题齐全但模型不动”的假正常状态。通过检查后，它会启动真实 TLE 多星桥、NetworkSim 和 UE 可视化器。</p>
+<p>可视化器 <code>space_mission_visualizer_ros.py</code> 显示：</p>
+<ul>
+<li>每颗卫星的显示位置、星下点和卫星到星下点的垂线。</li>
+<li>按卫星高度和最低仰角估算的覆盖圈。</li>
+<li>当前最佳星到目标载具的绿色 <code>UP</code> 链路线。</li>
+<li>没有可用卫星时目标处的红色 <code>DOWN</code> 标签。</li>
+</ul>
+<p>多星任务桥默认以 2 Hz 计算和发布 ROS 状态，但一键演示通过 <code>POSE_RATE_HZ=0.5</code> 把 UE 卫星模型更新限制为 0.5 Hz；可视化器也默认以 0.5 Hz 刷新并批量提交绘图。目标位置直接订阅 <code>/airsim_node/&lt;target&gt;/odom_local_ned</code>，避免对每个目标重复调用 pose RPC。可通过 <code>RATE_HZ</code>、<code>POSE_RATE_HZ</code> 和 <code>VISUAL_RATE_HZ</code> 分别修改，但提高后两者会直接增加 UE RPC 负载，交付演示建议保留默认值。</p>
+<p>可视化器会监视 <code>/space/constellation/state</code>：连续 10 秒没有上游状态，或者连续 3 次 UE RPC 失败时自动退出，避免 UE 已暂停、退出或卡死后仍无限重试。可通过 <code>CONSTELLATION_TIMEOUT</code> 和 <code>VISUAL_MAX_ERRORS</code> 调整。</p>
+<p>覆盖圈和链路线是 UE 演示标记；真实 access、斜距和链路预算仍由 TLE/任务桥与 ns-3 计算。标记不会参与可见性判定。</p>
+<p>运行状态、停止和报告导出：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/scripts/space_demo_status.sh
+bash NetworkSim/scripts/stop_space_demo.sh
+python3 NetworkSim/python/export_space_demo_report.py \
+  --runtime-dir "${HOME}/LAESim/.runtime/constellation_demo"</code></pre>
+<p>默认停止脚本保留共享的 AirSim ROS wrapper 和 NetworkSim；增加 <code>--include-network</code> 才会一并停止 NetworkSim。导出目录包含：</p>
+<pre class="highlight"><code class="language-text">report/space_demo_report.md
+report/target_statistics.csv
+report/selection_events.csv
+report/isl_statistics.csv</code></pre>
+<p>每轮启动会清除上一轮的 summary，只有本轮桥接器正常退出后才重新写入；因此导出器不会把旧 summary 与新 JSONL 混合。卫星 RPC 默认 5 秒超时，UE 停止响应时桥会退出并尽量写出截至故障前的报告。可通过 <code>RPC_TIMEOUT</code> 调整，但不建议恢复到 AirSim 客户端原本的 3600 秒长等待。</p>
+<p>需要单独启动可视化器时运行：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/scripts/run_space_visualization.sh</code></pre>
+<p>常用显示覆盖变量为 <code>SURFACE_Z</code>、<code>GLOBAL_TRACK_RADIUS</code>、<code>MIN_ELEVATION_DEG</code>、<code>SATELLITES</code> 和 <code>TARGETS</code>。其中 <code>GLOBAL_TRACK_RADIUS</code> 与多星桥的 <code>DISPLAY_RADIUS</code> 应保持一致。</p>
+<h2 id="9">9. 专业后端接口<a class="headerlink" href="#9" title="Permanent link">#</a></h2>
+<p>第三阶段之后，LAESim 增加了面向专业任务分析工具的可选接口。它们不替代当前默认 <code>sgp4/csv/mock</code> 链路，也不会成为 LAESim 编译或运行的强制依赖。</p>
+<p>建议把环境分成两类：</p>
+<ul>
+<li><code>airsim_agent</code>：用于连接 UE/LAESim、运行 AirSim PythonClient、驱动 <code>SimpleSatellite</code>。这个环境只建议安装轻量依赖，例如 <code>sgp4</code>。</li>
+<li><code>laesim_space</code>：用于专业天基任务分析后端，例如 Orekit 和 Basilisk。它可以离线生成星历、姿态或任务窗口，再把结果导出给 <code>airsim_agent</code> 使用。</li>
+</ul>
+<p>不要把 Basilisk 直接装进 <code>airsim_agent</code>。Basilisk 的可视化依赖会拉入新版 <code>tornado</code>，而 AirSim RPC 依赖的 <code>msgpack-rpc-python</code> 对 <code>tornado</code> 版本比较敏感，放在同一个环境里容易出现隐蔽冲突。</p>
+<p>先检查当前环境：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_backend_probe.py</code></pre>
+<p>推荐的基础验证：</p>
+<pre class="highlight"><code class="language-powershell">conda activate airsim_agent
+python .\Multi_use\space_mission_bridge.py --provider tle --tle .\Multi_use\space_mission_sample.tle --no-airsim --duration 2 --rate 1 --print-every 1</code></pre>
+<p>如果能输出 <code>src=tle-sgp4</code>、经纬高和 <code>laesim=(...)</code>，说明不依赖专业后端的第一版链路已经可用。</p>
+<h3 id="orekit">Orekit<a class="headerlink" href="#orekit" title="Permanent link">#</a></h3>
+<p>Orekit 用于更高精度的轨道传播、坐标系、时间系统和事件检测。当前接口提供 <code>orekit-tle</code> provider：</p>
+<p>推荐单独创建环境：</p>
+<pre class="highlight"><code class="language-powershell">conda create -n laesim_space -c conda-forge python=3.10 orekit sgp4 --yes --solver=libmamba
+conda activate laesim_space</code></pre>
+<p>如果 <code>--solver=libmamba</code> 不可用，可以去掉这个参数：</p>
+<pre class="highlight"><code class="language-powershell">conda create -n laesim_space -c conda-forge python=3.10 orekit sgp4 --yes</code></pre>
+<p>验证 Orekit 是否安装成功：</p>
+<pre class="highlight"><code class="language-powershell">conda activate laesim_space
+python -c "import orekit; orekit.initVM(); print('orekit ok')"
+python .\Multi_use\space_backend_probe.py</code></pre>
+<p>Orekit 还需要 <code>orekit-data</code> 才能进行严肃的时间系统和坐标系计算。最省事的做法是在希望保存数据的目录里调用 Orekit 的下载 helper：</p>
+<pre class="highlight"><code class="language-powershell">Set-Location &lt;任务数据目录&gt;
+conda activate laesim_space
+$env:PYTHONNOUSERSITE="1"
+python -c "import orekit; orekit.initVM(); from orekit.pyhelpers import download_orekit_data_curdir; download_orekit_data_curdir()"</code></pre>
+<p>该命令会在当前目录生成 <code>orekit-data.zip</code>。桥接器接受这个 zip 文件本身，也接受一个内部包含 <code>orekit-data.zip</code> 的目录。建议保留 zip，不需要解压：</p>
+<pre class="highlight"><code class="language-text">&lt;任务数据目录&gt;\orekit-data.zip</code></pre>
+<p>运行 <code>orekit-tle</code> provider 时可以指定解压目录：</p>
+<pre class="highlight"><code class="language-powershell">conda activate laesim_space
+python .\Multi_use\space_mission_bridge.py --provider orekit-tle --tle .\Multi_use\space_mission_sample.tle --orekit-data &lt;任务数据目录&gt;\orekit-data.zip --no-airsim --duration 5 --rate 1 --print-every 1</code></pre>
+<p>如果当前工作目录下已经有 <code>orekit-data.zip</code>，也可以不传 <code>--orekit-data</code>：</p>
+<pre class="highlight"><code class="language-powershell">Set-Location &lt;LAESim 源码目录&gt;
+conda activate laesim_space
+$env:PYTHONNOUSERSITE="1"
+python .\Multi_use\space_mission_bridge.py --provider orekit-tle --tle .\Multi_use\space_mission_sample.tle --no-airsim --duration 2 --rate 1 --print-every 1</code></pre>
+<p>如果没有安装 Orekit Python wrapper 或没有配置 <code>orekit-data</code>，该 provider 会明确报错；默认 <code>tle</code> provider 仍使用 <code>sgp4</code>，不受影响。</p>
+<h3 id="gmat">GMAT<a class="headerlink" href="#gmat" title="Permanent link">#</a></h3>
+<p>GMAT 更适合作为离线任务设计工具，而不是实时后端。LAESim 提供 mission JSON 到 GMAT handoff script 的导出：</p>
+<p>GMAT 不是 Python 包，不能通过 <code>pip install</code> 安装。需要下载 Windows 版 GMAT，安装或解压后，把 <code>GMAT.exe</code> 所在目录加入 <code>PATH</code>，或者在使用时记录它的绝对路径。</p>
+<p>验证系统是否能找到 GMAT：</p>
+<pre class="highlight"><code class="language-powershell">where GMAT
+where GMAT.exe</code></pre>
+<p>即使没有安装 GMAT，也可以先生成 handoff script：</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_mission_export_gmat.py --mission .\Multi_use\space_mission.example.json --out .\Multi_use\space_mission_gmat.script</code></pre>
+<p>生成的 <code>.script</code> 是任务设计起点，包含卫星对象、传播器、分析时间和 LAESim 摘要注释。真正用于工程设计时，应在 GMAT 中替换为经过设计的轨道状态或导入星历。</p>
+<h3 id="basilisk">Basilisk<a class="headerlink" href="#basilisk" title="Permanent link">#</a></h3>
+<p>Basilisk 更适合做航天器姿态、反作用轮、推进器等部件级动力学仿真。LAESim 当前先支持读取 Basilisk 或自定义脚本导出的姿态 CSV：</p>
+<p>建议装在 <code>laesim_space</code>，不要装进 <code>airsim_agent</code>：</p>
+<pre class="highlight"><code class="language-powershell">conda activate laesim_space
+$env:PYTHONNOUSERSITE="1"
+python -m pip install --no-user bsk</code></pre>
+<p><code>PYTHONNOUSERSITE=1</code> 用于避免 Python 误加载 <code>C:\Users\&lt;用户名&gt;\AppData\Roaming\Python\Python310\site-packages</code> 里的用户级包。遇到“明明激活了环境，却还是从用户目录加载包”的情况时，这个变量很有用。</p>
+<p>验证 Basilisk 是否安装成功：</p>
+<pre class="highlight"><code class="language-powershell">conda activate laesim_space
+$env:PYTHONNOUSERSITE="1"
+python -c "import Basilisk; print(Basilisk.__path__)"
+python .\Multi_use\space_backend_probe.py</code></pre>
+<p>LAESim 不要求实时嵌入 Basilisk。更稳的流程是：Basilisk 离线输出姿态 CSV，LAESim 桥接脚本读取这个 CSV 并驱动 UE 模型姿态。</p>
+<pre class="highlight"><code class="language-powershell">python .\Multi_use\space_mission_bridge.py --provider csv --csv .\Multi_use\space_mission_sample.csv --attitude-csv .\Multi_use\space_mission_attitude_sample.csv --vehicle Satellite</code></pre>
+<p>姿态 CSV 支持四元数列 <code>qx/qy/qz/qw</code>，也支持欧拉角列 <code>roll_deg/pitch_deg/yaw_deg</code>。接入后，UE 中 <code>SimpleSatellite</code> 的显示姿态由 CSV 决定，轨道位置仍由 <code>tle/csv/mock/orekit-tle</code> provider 决定。</p>
+<h2 id="10">10. 开发环境验证状态<a class="headerlink" href="#10" title="Permanent link">#</a></h2>
+<p>在本机已经验证：</p>
+<ul>
+<li><code>airsim_agent</code>：<code>sgp4</code> 可用，<code>space_mission_bridge.py --provider tle --no-airsim</code> 可正常输出星历和 LAESim 显示坐标。</li>
+<li><code>laesim_space</code>：Orekit、Basilisk、SGP4 均可 import，<code>space_backend_probe.py</code> 可识别为可用；配置 <code>orekit-data.zip</code> 后，<code>space_mission_bridge.py --provider orekit-tle --no-airsim</code> 已验证可输出星历，24 小时任务分析已验证 Orekit 能生成亚秒精度的升起/落下窗口。</li>
+<li>WSL ROS Noetic + ns-3：已安装 <code>sgp4 2.25</code>，TLE/SGP4 传播验证通过。<code>ros_space_access_integration_test.sh</code> 已使用动态 GPS 目标验证完整闭环：500.1 km 星地包返回 <code>link_type=satellite</code>、FSPL、SNR、传播/串行化时延；不可见链路发布到 <code>/network_sim/drop</code>，<code>drop_stage=space_access_policy</code>。</li>
+<li>WSL 真实 TLE 在线演示：已使用当前 ISS TLE 自动定位下一可见窗口，驱动 UE 卫星模型并记录四个动态目标的窗口。实测不可见阶段在真实斜距 2594.9 km、仰角 -2.26 度时阻断；可见阶段 <code>Satellite -&gt; Car</code> 在真实斜距 1820.7 km 时经逻辑星地链路投递，传播时延 6.073 ms、总时延 10.169 ms、SNR 7.51 dB。</li>
+<li>WSL 多星与中继：三颗 TLE 已同时传播并完成最佳星捕获/空窗统计；无 UE 测试中 7/7 个选择链路数据包送达，两跳 <code>Satellite -&gt; Satellite2 -&gt; Car</code> 返回总斜距 1500 km 和约 13.195 ms 总时延。</li>
+<li>任务约束：传感器视场、侧摆/目标跟踪、最大离天底角、最大距离、最小驻留和瞬时区域覆盖率均有确定性示例与单元测试。</li>
+<li>统一时钟：<code>ros_unified_clock_integration_test.sh</code> 已验证暂停、2 秒单步、TLE 按时刻查询和 ns-3 同步推进；测试包返回约 1.338 ms 仿真链路时延。</li>
+<li>可视化与交付：已增加星下点、覆盖圈、选中链路和 UP/DOWN 标记节点，以及启动、状态、停止和 Markdown/CSV 报告导出脚本；纯几何、settings 坐标组合和报告聚合测试均已在 Windows/WSL 通过。</li>
+<li>UE 三星现场验收：<code>Satellite/Satellite2/Satellite3</code> 已同时被 TLE 桥驱动到不同显示位置；低负载配置下可视化状态连续推进到 176 帧，UE 始终可响应，3 颗卫星、4 个目标和 4 DOWN 空窗状态持续有效，日志无 RPC/Python 异常。该轮正常退出后 JSONL 与 summary 均为 677 条，报告聚合一致。此前已验证 4 UP 画面状态和实时最佳星链路 6/6 包送达，最后一包真实斜距约 2154 km、ns-3 时延约 11.281 ms。</li>
+<li>UE/通信坐标解耦：投递测试时 UE 中 Satellite 与 Car 的显示距离约 306.4 m，已超过普通 Wi-Fi 的 <code>MaxRangeMeters=250</code>，数据包仍按 <code>true_range_m=1820747.8</code> 的链路预算正常送达，证明星地通信不再依赖 UE 显示距离。</li>
+<li>LAESim 实时动态目标：已从正在运行的 <code>/airsim_node/Satellite/global_gps</code> 读取位置并发布 <code>source=ros-global-gps</code>、<code>valid=true</code> 的 access 状态，证明实时载具 GPS 接口可用。</li>
+<li>GMAT：当前未安装，<code>where GMAT</code> / <code>where GMAT.exe</code> 没有找到可执行文件。</li>
+<li>交付闭环：关键文件清单 <code>40/40</code> 通过；活动 settings 校验为 <code>0</code> 错误、<code>0</code> 警告；独立 ROS/ns-3 四阶段验收固定得到 <code>DOWN -&gt; UP:Satellite -&gt; HANDOVER:Satellite2 -&gt; DOWN</code>，两个 UP 包分别返回约 6.76 ms 和 6.26 ms 仿真时延；实时环境自检已确认 UE、ROS、三星状态、NetworkSim、可视化和 ns-3 runner 全部可用。</li>
+<li>UE 长时运行保护复验：一键演示采用任务状态 2 Hz、UE 位姿 0.5 Hz、标记 0.5 Hz；主动停止星座桥后，可视化器在 10 秒内自动退出且 UE 保持响应。恢复演示后连续 60 秒内可视化帧由 24 增至 54，3 星/4 目标完整、连续错误数为 0，doctor 全部必需项通过，日志无 RPC 超时或 traceback。</li>
+</ul>
+<p>交付时建议把专业后端作为可选增强项说明：没有 Orekit/Basilisk/GMAT 时，仍然可以用 <code>sgp4/csv/mock</code> 完成实时卫星显示、星地几何计算和任务可见性演示；装好专业后端后，再用于高精度传播、离线轨道设计和姿态动力学数据生成。</p>
+<h2 id="11">11. 官方入口<a class="headerlink" href="#11" title="Permanent link">#</a></h2>
+<ul>
+<li>Orekit Python wrapper：<code>https://anaconda.org/conda-forge/orekit</code></li>
+<li>Basilisk：<code>https://github.com/AVSLab/basilisk</code></li>
+<li>GMAT：<code>https://software.nasa.gov/software/GSC-17177-1</code>，下载页通常跳转到 <code>https://sourceforge.net/projects/gmat/</code></li>
+</ul>
+<h2 id="12">12. 交付状态与可选扩展<a class="headerlink" href="#12" title="Permanent link">#</a></h2>
+<p>面向 LAESim 演示与研究的第一版天基任务模块已经闭环。交付前依次运行配置校验、确定性四阶段验收、环境自检和真实 UE 验收，完整步骤见 <code>space_delivery_checklist.md</code>。</p>
+<p>以下属于后续专业增强，不是第一版交付阻塞项：</p>
+<ol>
+<li>将 <code>max_range_m</code>、传感器视场等组合约束改为 Orekit 复合事件检测，减少采样回退。</li>
+<li>将当前 AirSim 调试绘图标记升级为可打包的 UE 组件，用于更复杂的样式、图例和持久化轨迹。</li>
+<li>增加跨 UE 物理、ROS 和任务后端的完整锁步模式；当前统一时钟只控制任务计算与 ns-3。</li>
+<li>在确有任务需求时扩展轨道机动优化、高保真姿态动力学、专业雷达或 EOIR，而不是把它们作为标准演示依赖。</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../laesim_wsl_ros_ns3/" class="btn btn-neutral float-left" title="WSL2、ROS 与 ns-3"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../space_delivery_checklist/" class="btn btn-neutral float-right" title="交付检查清单">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+      <p>哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室；LAESim contributors；基于 Microsoft AirSim</p>
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/SANIS-HITSZ/LAESim" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../laesim_wsl_ros_ns3/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../space_delivery_checklist/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室" /><link rel="canonical" href="https://sanis-hitsz.github.io/LAESim/laesim_wsl_ros_ns3/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>WSL2、ROS 与 ns-3 文档已合并 - LAESim 中文文档</title>
+    <title>WSL2、ROS 与 ns-3 - LAESim 中文文档</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,7 +13,7 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "WSL2\u3001ROS \u4e0e ns-3 \u6587\u6863\u5df2\u5408\u5e76";
+        var mkdocs_page_name = "WSL2\u3001ROS \u4e0e ns-3";
         var mkdocs_page_input_path = "laesim_wsl_ros_ns3.md";
         var mkdocs_page_url = "/LAESim/laesim_wsl_ros_ns3/";
       </script>
@@ -34,7 +34,7 @@
           <a href=".." class="icon icon-home"> LAESim 中文文档
         </a>
         <div class="version">
-          main
+          V1.5
         </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -48,7 +48,7 @@
                 </li>
               </ul>
               <p class="caption"><span class="caption-text">文档</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../documentation/">文档概览</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../laesim_features/">核心特色</a>
@@ -57,10 +57,80 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../laesim_use/">使用 LAESim</a>
                   </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">WSL2、ROS 与 ns-3</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1">1. 系统结构</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2">2. 已验证的软件版本</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-laesim-wsl2">3. 创建 LAESim WSL2 发行版</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#31">3.1 定义本机参数</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#32">3.2 导入发行版</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#4-ros-noetic">4. 安装 ROS Noetic</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#5-wsl-laesim-ros">5. 在 WSL 中编译 LAESim ROS</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#6-windows-laesim-wsl-ros">6. 验证 Windows LAESim 与 WSL ROS</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#61-windows">6.1 启动 Windows 仿真端</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#62-wsl-ros">6.2 启动 WSL ROS</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#7-ns-3">7. 安装与构建 ns-3</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#8">8. 配置可选网络后端</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#81-ns-3">8.1 当前 ns-3 功能完整性</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#82">8.2 星地逻辑链路模型</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#9">9. 启动网络桥接器</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#10-ros">10. ROS 消息接口与端到端测试</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#101-ns-3">10.1 ns-3 内部丢包诊断</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#tle">真实 TLE 与动态链路转换测试</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_1">多卫星选择与链路切换</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">星间链路与多跳逻辑路由</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#102">10.2 统一场景时钟</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#11">11. 图像传输与网络栈边界</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#12">12. 当前限制</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#13">13. 官方参考</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">天基任务</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../space_mission_bridge/">任务桥接与分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../space_delivery_checklist/">交付检查清单</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">仿真案例</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../simulation_cases/">案例概览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">版本</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../v1_5_sync_notes/">V1.5 基线同步说明</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">上游参考</span></p>
@@ -74,15 +144,15 @@
               </ul>
               <p class="caption"><span class="caption-text">项目</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.4">GitHub 仓库</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">GitHub 仓库</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CONTRIBUTORS.md">团队与联系</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CONTRIBUTORS.md">团队与联系</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CITATION.cff">引用 LAESim</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CITATION.cff">引用 LAESim</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/CHANGELOG.md">更新记录</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CHANGELOG.md">更新记录</a>
                   </li>
               </ul>
       </div>
@@ -99,9 +169,10 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">WSL2、ROS 与 ns-3 文档已合并</li>
+          <li class="breadcrumb-item">文档</li>
+      <li class="breadcrumb-item active">WSL2、ROS 与 ns-3</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.4/docs/laesim_wsl_ros_ns3.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.5/docs/laesim_wsl_ros_ns3.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -109,14 +180,503 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="wsl2ros-ns-3">WSL2、ROS 与 ns-3 文档已合并<a class="headerlink" href="#wsl2ros-ns-3" title="Permanent link">#</a></h1>
-<p>本页内容已并入<a href="../laesim_build/#wsl-ros-ns3">安装与构建 LAESim</a>，浏览器将自动跳转到对应章节。</p>
-<script>
-window.location.replace("../laesim_build/#wsl-ros-ns3");
-</script>
+                <h1 id="laesim-wsl2ros-noetic-ns-3">LAESim 的 WSL2、ROS Noetic 与 ns-3 集成<a class="headerlink" href="#laesim-wsl2ros-noetic-ns-3" title="Permanent link">#</a></h1>
+<p>本文说明如何在 Windows 中运行 LAESim/UE4，同时在 WSL2 中运行 ROS Noetic 和可选的 ns-3 网络仿真。所有路径均使用环境变量或通用占位符，不依赖某台电脑的用户名、盘符或目录结构。</p>
+<h2 id="1">1. 系统结构<a class="headerlink" href="#1" title="Permanent link">#</a></h2>
+<pre class="highlight"><code class="language-text">Windows 11
+  UE 4.27 + LAESim
+  %USERPROFILE%\Documents\AirSim\settings.json
+                 | AirSim RPC
+                 v
+WSL2 自定义发行版
+  Ubuntu 20.04 + ROS Noetic
+  $HOME/LAESim/ros
+  $HOME/opt/ns-3.48
+  laesim_network_bridge
+       | Backend=none -&gt; 理想网络，消息立即到达
+       ` Backend=ns3  -&gt; ns-3 Wi-Fi ad hoc + OLSR/AODV</code></pre>
+<p>WSL2 发行版可以安装到任意空间充足的非系统盘。Windows 项目目录、WSL 虚拟磁盘目录和 Linux 主目录彼此独立，不要求使用相同盘符。</p>
+<h2 id="2">2. 已验证的软件版本<a class="headerlink" href="#2" title="Permanent link">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>Windows 11 + WSL2</td>
+</tr>
+<tr>
+<td>Unreal Engine</td>
+<td>UE 4.27</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>Ubuntu 20.04 (focal)</td>
+</tr>
+<tr>
+<td>ROS</td>
+<td>ROS Noetic</td>
+</tr>
+<tr>
+<td>ns-3</td>
+<td>ns-3.48，提交 <code>d2add90b452d600cfb4859baed8e9ea633519447</code></td>
+</tr>
+<tr>
+<td>ns-3 编译器</td>
+<td>GCC/G++ 11 或更高版本；Ubuntu 20.04 默认 GCC 9 不满足 ns-3.48 要求</td>
+</tr>
+<tr>
+<td>LAESim ROS 编译器</td>
+<td>GCC/G++ 8</td>
+</tr>
+</tbody>
+</table>
+<p>ROS Noetic 与 Ubuntu 20.04 已离开标准支持周期。当前组合用于兼容 LAESim 的 ROS1 工程；在项目完成 ROS 2 迁移前，不要直接用其他 Ubuntu 或 ROS 版本替换。</p>
+<h2 id="3-laesim-wsl2">3. 创建 LAESim WSL2 发行版<a class="headerlink" href="#3-laesim-wsl2" title="Permanent link">#</a></h2>
+<h3 id="31">3.1 定义本机参数<a class="headerlink" href="#31" title="Permanent link">#</a></h3>
+<p>在 LAESim 仓库根目录打开管理员 PowerShell。先定义本机使用的参数：</p>
+<pre class="highlight"><code class="language-powershell">$DistroName = "LAESim"
+$LinuxUser = "laesim"
+$WslInstallRoot = Read-Host "请输入 WSL2 发行版存储目录，例如 D:\WSL\LAESim"
+$RootfsPath = Read-Host "请输入 Ubuntu 20.04 rootfs tar 文件路径"
+$RepoRoot = (Resolve-Path .).Path</code></pre>
+<ul>
+<li><code>$WslInstallRoot</code> 决定 <code>ext4.vhdx</code> 的存放位置，应选择空间充足的磁盘。</li>
+<li><code>$RootfsPath</code> 指向 Ubuntu 20.04 的 WSL rootfs 归档。</li>
+<li><code>$LinuxUser</code> 可以改为符合 Linux 用户名规则的其他名称。</li>
+</ul>
+<p>如果电脑中已有干净的 Ubuntu 20.04 WSL 发行版，可以导出为 rootfs：</p>
+<pre class="highlight"><code class="language-powershell">$SourceDistro = Read-Host "请输入现有 Ubuntu 20.04 发行版名称"
+wsl --export $SourceDistro $RootfsPath</code></pre>
+<p>也可以使用可信来源提供的 Ubuntu 20.04 WSL rootfs。使用下载文件时，应按发布方说明校验哈希，不要复用其他电脑生成的私有归档哈希。</p>
+<h3 id="32">3.2 导入发行版<a class="headerlink" href="#32" title="Permanent link">#</a></h3>
+<pre class="highlight"><code class="language-powershell">powershell -ExecutionPolicy Bypass -File .\NetworkSim\scripts\create_laesim_wsl.ps1 `
+  -RootfsPath $RootfsPath `
+  -InstallRoot $WslInstallRoot `
+  -DistroName $DistroName `
+  -DefaultUser $LinuxUser</code></pre>
+<p>脚本使用 <code>wsl --import --version 2</code> 导入发行版、创建默认用户，并启用 systemd。验证结果：</p>
+<pre class="highlight"><code class="language-powershell">wsl -l -v
+Get-Item (Join-Path $WslInstallRoot "ext4.vhdx")
+wsl -d $DistroName -- id</code></pre>
+<p><code>wsl -l -v</code> 中该发行版的 VERSION 应为 <code>2</code>，<code>id</code> 应显示 <code>$LinuxUser</code> 对应的非 root 用户。</p>
+<h2 id="4-ros-noetic">4. 安装 ROS Noetic<a class="headerlink" href="#4-ros-noetic" title="Permanent link">#</a></h2>
+<p>安装脚本位于 Windows 仓库中。先把 Windows 路径转换为当前 WSL 可识别的路径：</p>
+<pre class="highlight"><code class="language-powershell">$RepoRootWsl = (wsl -d $DistroName -- wslpath -a $RepoRoot).Trim()</code></pre>
+<p>然后安装 ROS 和编译依赖：</p>
+<pre class="highlight"><code class="language-powershell">wsl -d $DistroName -u root -- env TARGET_USER=$LinuxUser `
+  bash "$RepoRootWsl/NetworkSim/scripts/bootstrap_wsl_ros.sh"</code></pre>
+<p>脚本默认使用中科大 ROS 镜像。需要使用 ROS 官方软件源时执行：</p>
+<pre class="highlight"><code class="language-powershell">wsl -d $DistroName -u root -- env TARGET_USER=$LinuxUser `
+  ROS_APT_MIRROR=https://packages.ros.org/ros/ubuntu `
+  bash "$RepoRootWsl/NetworkSim/scripts/bootstrap_wsl_ros.sh"</code></pre>
+<p><code>TARGET_USER</code> 必须是将来运行 LAESim 和 ROS 的非 root Linux 用户。</p>
+<h2 id="5-wsl-laesim-ros">5. 在 WSL 中编译 LAESim ROS<a class="headerlink" href="#5-wsl-laesim-ros" title="Permanent link">#</a></h2>
+<p>建议将用于 Linux 编译的源码克隆到 WSL 的 ext4 文件系统中。不要直接在 <code>/mnt/c</code>、<code>/mnt/d</code> 等 Windows 挂载目录中编译大量 Linux 小文件。</p>
+<pre class="highlight"><code class="language-bash">wsl -d LAESim
+
+export LAESIM_HOME="${HOME}/LAESim"
+git clone https://github.com/SANIS-HITSZ/LAESim.git "${LAESIM_HOME}"
+cd "${LAESIM_HOME}"
+./setup.sh
+
+cd ros
+source /opt/ros/noetic/setup.bash
+catkin_make \
+  -DCMAKE_C_COMPILER=/usr/bin/gcc-8 \
+  -DCMAKE_CXX_COMPILER=/usr/bin/g++-8
+source devel/setup.bash</code></pre>
+<p>如果发行版名称不是 <code>LAESim</code>，把第一条命令中的名称替换为创建时设置的 <code>$DistroName</code>。如果目录已经克隆，使用 <code>git pull --ff-only</code> 更新，不要再次执行 <code>git clone</code>。</p>
+<p>编译前应确认以下依赖目录存在：</p>
+<pre class="highlight"><code class="language-text">$HOME/LAESim/AirLib/deps/eigen3
+$HOME/LAESim/external/rpclib</code></pre>
+<h2 id="6-windows-laesim-wsl-ros">6. 验证 Windows LAESim 与 WSL ROS<a class="headerlink" href="#6-windows-laesim-wsl-ros" title="Permanent link">#</a></h2>
+<h3 id="61-windows">6.1 启动 Windows 仿真端<a class="headerlink" href="#61-windows" title="Permanent link">#</a></h3>
+<ol>
+<li>将多机配置保存为 <code>%USERPROFILE%\Documents\AirSim\settings.json</code>。</li>
+<li>使用 UE 4.27 打开 LAESim 环境。</li>
+<li>点击 Play，等待场景和 AirSim RPC 服务启动。</li>
+<li>根据 <code>settings.json</code> 中配置的 RPC 端口检查监听状态。</li>
+</ol>
+<p>例如，默认 RPC 端口可通过 PowerShell 检查：</p>
+<pre class="highlight"><code class="language-powershell">Test-NetConnection 127.0.0.1 -Port 41451</code></pre>
+<h3 id="62-wsl-ros">6.2 启动 WSL ROS<a class="headerlink" href="#62-wsl-ros" title="Permanent link">#</a></h3>
+<p>WSL2 使用 NAT 网络时，Windows 仿真端通常不能通过 WSL 内的 <code>localhost</code> 访问。应从 WSL 默认路由动态获取 Windows 主机地址，不要把某次运行得到的 IP 写死：</p>
+<pre class="highlight"><code class="language-bash">export LAESIM_HOME="${HOME}/LAESim"
+export ROS_WORKSPACE="${LAESIM_HOME}/ros"
+export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
+
+source /opt/ros/noetic/setup.bash
+source "${ROS_WORKSPACE}/devel/setup.bash"
+roscore</code></pre>
+<p>另开一个 WSL 终端：</p>
+<pre class="highlight"><code class="language-bash">export ROS_WORKSPACE="${HOME}/LAESim/ros"
+export WINDOWS_HOST="$(ip route show default | awk '{print $3}')"
+
+source /opt/ros/noetic/setup.bash
+source "${ROS_WORKSPACE}/devel/setup.bash"
+roslaunch airsim_ros_pkgs airsim_node.launch host:="${WINDOWS_HOST}"</code></pre>
+<p>验证 ROS 主题：</p>
+<pre class="highlight"><code class="language-bash">rostopic list | grep /airsim_node
+rostopic hz /airsim_node/Car/odom_local_ned</code></pre>
+<p>主题名称取决于 <code>settings.json</code> 中的载具名称。能够持续收到配置中各载具的位姿、GPS 或传感器主题，即说明 Windows 与 WSL ROS 已连通。<code>TF_REPEATED_DATA</code> 表示重复时间戳，不等同于 RPC 连接失败。</p>
+<h2 id="7-ns-3">7. 安装与构建 ns-3<a class="headerlink" href="#7-ns-3" title="Permanent link">#</a></h2>
+<p><code>ns3.48-laesim-ns3-runner</code> 是 LAESim 调用 ns-3 的外部仿真进程。它必须在 WSL/Linux 环境中构建和运行，不是在 Windows 的 AirSim Python/conda 环境里构建。Windows UE 只负责仿真画面和载具状态；WSL 里的 ROS 网络桥接器会启动这个 runner，把节点位置和应用层数据包交给 ns-3。</p>
+<p>推荐先运行一键构建与验证脚本：</p>
+<pre class="highlight"><code class="language-bash">export LAESIM_HOME="${HOME}/LAESim"
+bash "${LAESIM_HOME}/NetworkSim/scripts/build_and_verify_ns3_runner.sh"</code></pre>
+<p>这个脚本会检查 <code>git</code>、<code>python3</code> 和 C/C++ 编译器。ns-3.48 要求 GNU 编译器版本不低于 11，因此 Ubuntu 20.04 默认的 GCC 9.4.0 不能直接使用；脚本会优先选择 <code>gcc-11/g++-11</code>，找不到时先尝试 apt 安装，必要时自动加入 <code>ppa:ubuntu-toolchain-r/test</code> 后再安装。随后脚本下载/构建 ns-3.48，编译 runner，并执行 <code>smoke_backend.py --require-ns3</code>。</p>
+<p>如果需要分步排查，构建过程可以拆成两步：</p>
+<ol>
+<li><code>bootstrap_ns3.sh</code>：下载并构建指定版本的 ns-3.48。</li>
+<li><code>build_ns3_runner.sh</code>：把 <code>NetworkSim/ns3/laesim-ns3-runner.cc</code> 复制到 ns-3 的 <code>scratch/</code> 目录，并编译出 runner 可执行文件。</li>
+</ol>
+<p>在 WSL 内手动执行：</p>
+<pre class="highlight"><code class="language-bash">export LAESIM_HOME="${HOME}/LAESim"
+bash "${LAESIM_HOME}/NetworkSim/scripts/bootstrap_ns3.sh"
+bash "${LAESIM_HOME}/NetworkSim/scripts/build_ns3_runner.sh"</code></pre>
+<p>默认目录如下，均相对于当前 Linux 用户的主目录：</p>
+<pre class="highlight"><code class="language-text">$HOME/opt/ns-3.48
+$HOME/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner</code></pre>
+<p>如果最后看到类似下面输出，说明 runner 已经构建成功：</p>
+<pre class="highlight"><code class="language-text">LAESim ns-3 runner is ready at /home/&lt;user&gt;/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner.</code></pre>
+<p>需要改用其他目录时，在运行两个脚本前设置同一个 <code>NS3_ROOT</code>：</p>
+<pre class="highlight"><code class="language-bash">export NS3_ROOT="${HOME}/simulators/ns-3.48"</code></pre>
+<p>此时对应的 runner 路径会变成：</p>
+<pre class="highlight"><code class="language-text">$HOME/simulators/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner</code></pre>
+<p>后续 <code>settings.json</code> 里的 <code>NetworkSimulation.RunnerPath</code> 也要改成同一个路径，否则桥接器会找不到 runner。</p>
+<p>运行后端冒烟测试：</p>
+<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
+python3 "${HOME}/LAESim/NetworkSim/tests/smoke_backend.py" --require-ns3</code></pre>
+<p>如果当前机器还没有构建 ns-3 runner，去掉 <code>--require-ns3</code> 后脚本会只验证 <code>none</code> 直连后端并打印 <code>ns3_skipped</code>。完成 ns-3 构建后，建议保留 <code>--require-ns3</code>，这样 runner 缺失会直接报错，便于交付前检查。新版测试覆盖正常送达、物理拓扑超距 <code>range</code>、路由未建立 <code>routing</code> 和 PHY 未送达 <code>timeout</code>；这些后端测试使用逻辑节点，不需要启动 UE。</p>
+<h2 id="8">8. 配置可选网络后端<a class="headerlink" href="#8" title="Permanent link">#</a></h2>
+<p>在 Windows 的 <code>%USERPROFILE%\Documents\AirSim\settings.json</code> 顶层加入：</p>
+<pre class="highlight"><code class="language-json">"NetworkSimulation": {
+  "Backend": "none",
+  "StepMs": 20,
+  "Routing": "olsr",
+  "MaxRangeMeters": 250.0,
+  "TxPowerDbm": 16.0,
+  "WarmupSeconds": 3.0,
+  "PacketTimeoutSeconds": 5.0,
+  "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner",
+  "SatelliteLinkModel": {
+    "Enabled": false,
+    "FrequencyHz": 2200000000.0,
+    "BandwidthHz": 5000000.0,
+    "DataRateBps": 2000000.0,
+    "TxPowerDbm": 40.0,
+    "TxAntennaGainDbi": 10.0,
+    "RxAntennaGainDbi": 20.0,
+    "SystemLossDb": 2.0,
+    "NoiseFigureDb": 3.0,
+    "MinSnrDb": 3.0,
+    "PacketErrorModel": "bpsk"
+  },
+  "SpaceAccessPolicy": {
+    "Enabled": false,
+    "FailMode": "closed",
+    "MaxStateAgeSeconds": 2.0,
+    "Rules": [
+      {
+        "Source": "Satellite",
+        "Destination": "Car",
+        "AccessTopic": "/space/Satellite/access/Car",
+        "Bidirectional": true
+      }
+    ]
+  }
+}</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>Backend</code></th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>保持理想通信，ROS 消息立即转发，不计算网络时延、丢包和路由</td>
+</tr>
+<tr>
+<td><code>ns3</code></td>
+<td>消息经过 ns-3 Wi-Fi ad hoc 网络，节点位置来自 LAESim odometry</td>
+</tr>
+</tbody>
+</table>
+<p>当前 runner 支持 <code>olsr</code> 和 <code>aodv</code>。<code>MaxRangeMeters</code> 是传播模型的硬截止上限，不代表范围内一定能够解调；IEEE 802.11g 接收门限、<code>TxPowerDbm</code> 和 Yans 默认路径损耗仍会让有效通信距离短于该上限。<code>PacketTimeoutSeconds</code> 到期后未送达的包会被记录为 <code>DROP</code>。</p>
+<p><code>SatelliteLinkModel</code> 默认关闭。启用后，命中 <code>SpaceAccessPolicy</code> 规则的星地包使用 access 消息中的真实 <code>range_m</code> 和独立链路预算，不再使用 UE <code>odom_local_ned</code> 距离或 802.11g；未命中规则的普通空地海链路保持原行为。该模型依赖有效的 <code>SpaceAccessPolicy</code> 状态，因此启用时必须同时设置 <code>SpaceAccessPolicy.Enabled=true</code>。</p>
+<p><code>SpaceAccessPolicy</code> 是可选的天基链路门控。默认 <code>Enabled=false</code>，不会改变已有 ns-3 行为。启用后，只有 <code>Rules</code> 匹配的源/目标链路会检查 <code>SpaceAccessState</code>，其他地面、海上或空中链路仍按原网络后端处理。规则中的载具名必须存在于 <code>Vehicles</code>。</p>
+<p>第一次同步包含天基消息定义的新版本后，需要在 WSL 的源码副本中重新生成 ROS 消息：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim/ros"
+source /opt/ros/noetic/setup.bash
+catkin_make --force-cmake
+source devel/setup.bash
+rosmsg show airsim_ros_pkgs/SpaceAccessState</code></pre>
+<p>最后一条能显示 <code>valid</code>、<code>access</code>、<code>elevation_deg</code> 和 <code>range_m</code> 等字段后，才能启用 <code>SpaceAccessPolicy</code>。策略关闭时，NetworkSim 不强制依赖该消息，原有网络桥接仍可运行。</p>
+<h2 id="81-ns-3">8.1 当前 ns-3 功能完整性<a class="headerlink" href="#81-ns-3" title="Permanent link">#</a></h2>
+<p>当前合入的 ns-3 功能已经覆盖“ROS 消息级通信网络仿真”的完整闭环：</p>
+<ul>
+<li>从 <code>settings.json</code> 读取所有 LAESim 载具名称和 <code>NetworkSimulation</code> 配置。</li>
+<li>订阅 <code>/airsim_node/&lt;载具名&gt;/odom_local_ned</code>，把各载具当前位置同步为 ns-3 节点位置。</li>
+<li>通过 <code>/network_sim/tx</code> 接收应用层 JSON 数据包。</li>
+<li>支持 <code>Backend=none</code> 的理想直连模式，便于和原始算法行为对照。</li>
+<li>支持 <code>Backend=ns3</code>，由外部 <code>ns3.48-laesim-ns3-runner</code> 模拟 Wi-Fi ad hoc 网络。</li>
+<li>runner 当前支持 IEEE 802.11g、固定发送功率、<code>RangePropagationLossModel</code>、OLSR/AODV 路由、包超时丢弃。</li>
+<li>输出 <code>/network_sim/rx/&lt;载具名&gt;</code>，并在消息中附带 <code>simulation_time_ns</code> 和 <code>latency_ns</code>。</li>
+<li>可订阅 <code>/space/&lt;卫星&gt;/access/&lt;目标&gt;</code>，在进入 none/ns3 后端前按实时星地可见性放行或阻断指定链路。</li>
+<li>可选 <code>SatelliteLinkModel</code> 把真实星地斜距转换为自由空间路径损耗、传播时延、SNR 和 BPSK 包错误率，并通过 runner 的独立逻辑链路调度，不受 UE 卫星显示坐标影响。</li>
+<li>天基策略阻断和 ns-3 内部丢包统一发布到 <code>/network_sim/drop</code>，通过 <code>drop_stage</code> 区分；ns-3 内部可进一步区分 <code>range/routing/timeout/socket</code>。</li>
+<li>提供 <code>METRICS</code> 统计入口，可观察发送数、送达数、丢包率、吞吐量和平均时延。</li>
+<li>提供 <code>smoke_backend.py</code> 和 <code>ros_roundtrip_test.py</code> 做后端和 ROS 端到端验证。</li>
+</ul>
+<p>当前没有做成透明网络栈仿真。也就是说，未经修改的 ROS topic、TCP 或 UDP 程序不会自动经过 ns-3；需要应用主动把希望仿真的数据包发布到 <code>/network_sim/tx</code>。如果要让真实 socket 流量透明进入 ns-3，需要后续接入 TAP/EMU/DCE，这不属于当前版本。</p>
+<h2 id="82">8.2 星地逻辑链路模型<a class="headerlink" href="#82" title="Permanent link">#</a></h2>
+<p>启用 <code>SatelliteLinkModel</code> 后，ROS bridge 只对 <code>SpaceAccessPolicy</code> 命中的数据包生成 <code>LOGICAL_SEND</code>，普通载具仍使用原 <code>SEND</code>。当前计算关系为：</p>
+<pre class="highlight"><code class="language-text">FSPL(dB) = 20 log10(4 pi R f / c)
+Pr(dBm) = Pt + Gt + Gr - SystemLoss - FSPL
+Noise(dBm) = -174 + 10 log10(BandwidthHz) + NoiseFigure
+SNR(dB) = Pr - Noise
+PropagationDelay = R / c
+SerializationDelay = PacketBits / DataRateBps</code></pre>
+<p><code>PacketErrorModel=bpsk</code> 时，根据 <code>Eb/N0</code> 计算 BPSK BER，再按包长度换算包错误率；低于 <code>MinSnrDb</code> 的包直接以 <code>drop_reason=link_budget</code> 丢弃。设置为 <code>none</code> 时关闭随机误码，但仍保留链路预算、传播时延和带宽排队。</p>
+<p>runner 为每个有向逻辑链路维护独立的可用时间，因此连续数据包会按 <code>DataRateBps</code> 排队。输出的成功包会增加：</p>
+<pre class="highlight"><code class="language-text">link_type=satellite
+true_range_m
+propagation_delay_ns
+serialization_delay_ns
+data_rate_bps
+packet_error_rate
+fspl_db
+rx_power_dbm
+snr_db
+frequency_hz
+bandwidth_hz</code></pre>
+<p>这些字段描述真实任务几何和逻辑射频链路。<code>node_distance_m</code> 只用于普通 Wi-Fi 丢包诊断，不参与星地逻辑链路计算。</p>
+<h2 id="9">9. 启动网络桥接器<a class="headerlink" href="#9" title="Permanent link">#</a></h2>
+<p>默认情况下，启动脚本会根据 Windows 的 <code>%USERPROFILE%</code> 自动定位 <code>Documents\AirSim\settings.json</code>：</p>
+<pre class="highlight"><code class="language-bash">export LAESIM_HOME="${HOME}/LAESim"
+export ROS_WORKSPACE="${LAESIM_HOME}/ros"
+export BACKEND=none  # 可改为 ns3；该变量会覆盖 settings.json
+bash "${LAESIM_HOME}/NetworkSim/scripts/run_ros_network_bridge.sh"</code></pre>
+<p>不设置 <code>BACKEND</code> 时使用 <code>settings.json</code> 中的配置。如果配置文件放在自定义位置，先把 Windows 路径转换为 WSL 路径并显式设置 <code>SETTINGS</code>：</p>
+<pre class="highlight"><code class="language-bash">export SETTINGS="$(wslpath -u 'D:\path\to\settings.json')"</code></pre>
+<p>上面的 <code>D:\path\to\settings.json</code> 只是格式示例，应替换为实际文件路径。</p>
+<h2 id="10-ros">10. ROS 消息接口与端到端测试<a class="headerlink" href="#10-ros" title="Permanent link">#</a></h2>
+<p>发送端向 <code>/network_sim/tx</code> 发布 <code>std_msgs/String</code>，内容为 JSON：</p>
+<pre class="highlight"><code class="language-json">{
+  "packet_id": "frame-0001",
+  "src": "UAV",
+  "dst": "Car",
+  "size_bytes": 1024,
+  "payload": "application-data"
+}</code></pre>
+<p>接收端订阅 <code>/network_sim/rx/&lt;载具名&gt;</code>。输出会增加 ns-3 的 <code>simulation_time_ns</code> 和 <code>latency_ns</code>：</p>
+<pre class="highlight"><code class="language-json">{
+  "packet_id": "frame-0001",
+  "src": "UAV",
+  "dst": "Car",
+  "size_bytes": 1024,
+  "simulation_time_ns": 19787694150,
+  "latency_ns": 10000000,
+  "payload": "application-data"
+}</code></pre>
+<p>其中 <code>simulation_time_ns</code> 是 ns-3 runner 当前累计仿真时钟，表示这个包在 ns-3 时间轴上的送达时刻；它不是从命令行发包到终端打印结果的墙钟耗时，也不是单包网络时延。单包网络时延看 <code>latency_ns</code>。如果使用旧版 runner，<code>latency_ns</code> 可能为 0，此时应重新运行 <code>NetworkSim/scripts/build_ns3_runner.sh</code> 编译新版 runner。</p>
+<p>端到端测试：</p>
+<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
+source "${HOME}/LAESim/ros/devel/setup.bash"
+python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py"</code></pre>
+<p><code>ros_roundtrip_test.py</code> 用来验证 ROS 端到端链路是否打通：测试节点向 <code>/network_sim/tx</code> 发布一个 JSON 数据包，再订阅 <code>/network_sim/rx/&lt;目标载具&gt;</code> 等待投递结果。如果命令不指定源和目标，脚本会自动从当前 ROS master 中已有的 <code>/network_sim/rx/&lt;vehicle&gt;</code> 话题里选择两个真实存在的载具，避免默认载具名和当前 <code>settings.json</code> 不一致。</p>
+<p>也可以手动指定任意两个已配置载具：</p>
+<pre class="highlight"><code class="language-bash">python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py" --source F1 --destination F2
+python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py" --source Boat --destination Boat2</code></pre>
+<p>源和目标必须出现在当前 <code>settings.json</code> 的 <code>Vehicles</code> 中，并且 bridge 已经发布对应的 <code>/network_sim/rx/&lt;载具名&gt;</code> 话题。应分别用 <code>none</code> 和 <code>ns3</code> 后端测试。<code>none</code> 模式的网络仿真时间为 0；<code>ns3</code> 模式应返回非零仿真时间，链路不可达时应输出丢包结果。</p>
+<p>启用 <code>SpaceAccessPolicy</code> 后，先运行 <code>space_mission_bridge_ros.py</code> 发布规则配置的 access 话题。可见时使用普通命令验证投递：</p>
+<pre class="highlight"><code class="language-bash">python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py" --source Satellite --destination Car</code></pre>
+<p>不可见、状态缺失或状态过期时，使用 <code>--expect-drop</code> 验证门控：</p>
+<pre class="highlight"><code class="language-bash">python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py" --source Satellite --destination Car --expect-drop</code></pre>
+<p>成功时会打印 <code>/network_sim/drop</code> 中的 JSON，其中 <code>drop_stage=space_access_policy</code>，<code>drop_reason</code> 用于区分低于仰角门限、状态缺失、无效或过期。<code>FailMode=closed</code> 适合正式仿真；若只想在 access 发布器暂时中断时继续调试网络，可设置 <code>FailMode=open</code>。</p>
+<h3 id="101-ns-3">10.1 ns-3 内部丢包诊断<a class="headerlink" href="#101-ns-3" title="Permanent link">#</a></h3>
+<p>runner 发现数据包无法送达后，ROS bridge 同样会把结果发布到 <code>/network_sim/drop</code>。这类结果满足：</p>
+<pre class="highlight"><code class="language-text">drop_stage=ns3
+drop_reason=range | routing | timeout | socket | link_budget | link_error</code></pre>
+<p>分类含义：</p>
+<ul>
+<li><code>range</code>：按 <code>MaxRangeMeters</code> 构造的当前物理拓扑中，源节点到目标节点不存在可达路径。</li>
+<li><code>routing</code>：物理拓扑存在路径，但当前 OLSR/AODV 路由尚未建立。</li>
+<li><code>timeout</code>：物理拓扑和 IP 路由均存在，但数据包在 <code>PacketTimeoutSeconds</code> 内没有到达；常见于路径损耗、接收门限或 MAC/PHY 丢包。</li>
+<li><code>socket</code>：拓扑和路由检查正常，但 ns-3 UDP socket 仍然拒绝发送。</li>
+<li><code>link_budget</code>：星地逻辑链路的 SNR 低于 <code>MinSnrDb</code>，链路预算不足。</li>
+<li><code>link_error</code>：星地逻辑链路预算允许通信，但本次数据包按误码率模型判定丢失。</li>
+</ul>
+<p>示例输出：</p>
+<pre class="highlight"><code class="language-json">{
+  "packet_id": "ros-roundtrip-798b69be726a",
+  "src": "UAV",
+  "dst": "Car",
+  "dropped": true,
+  "drop_stage": "ns3",
+  "drop_reason": "range",
+  "simulation_time_ns": 27880000000,
+  "packet_age_ns": 0,
+  "node_distance_m": 10.0,
+  "topology_hop_count": null,
+  "route_available": false,
+  "routing_protocol": "olsr",
+  "max_range_m": 1.0,
+  "source_position_m": [0.0, 0.0, 0.0],
+  "destination_position_m": [10.0, 0.0, 0.0]
+}</code></pre>
+<p><code>simulation_time_ns</code> 是事件发生时的 ns-3 累计仿真时刻，<code>packet_age_ns</code> 是该包在 ns-3 中已等待的时间。<code>node_distance_m</code> 和两端坐标来自 runner 当前使用的网络拓扑坐标，不应与天基任务报告中的真实星地斜距混为一谈。</p>
+<p>测试某种预期丢包时可以同时约束阶段和原因：</p>
+<pre class="highlight"><code class="language-bash">python3 "${HOME}/LAESim/NetworkSim/tests/ros_roundtrip_test.py" \
+  --source UAV --destination Car \
+  --expect-drop \
+  --expect-drop-stage ns3 \
+  --expect-drop-reason range</code></pre>
+<p>更新诊断代码后必须重新执行 <code>NetworkSim/scripts/build_ns3_runner.sh</code>。新版 Python bridge 可以读取旧 runner 的短格式 <code>DROP</code>，但旧格式没有节点距离、路由和仿真时间，相关字段会是空值。</p>
+<p>不启动 UE 也可以运行自动化闭环测试。脚本会在独立 ROS master 端口上启动两个逻辑节点、动态目标 GPS 发布器、ns-3 bridge 和 mock 卫星 access 发布器，先验证动态目标可见时送达，再验证不可见时进入 <code>/network_sim/drop</code>：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/tests/ros_space_access_integration_test.sh</code></pre>
+<p>测试使用 <code>NetworkSim/config/network-simulation-space-access.example.json</code>，不会读取或修改 Windows 当前的 AirSim <code>settings.json</code>，结束后会关闭自己启动的 ROS 和 bridge 进程。</p>
+<p>当前 WSL 验证结果：可见链路 <code>Satellite -&gt; Car</code> 已经过 ns-3 正常送达并返回非零 <code>latency_ns</code>；将最低仰角提高到 <code>89.9</code> 度后，同一数据包由 <code>space_access_policy</code> 阻断，<code>/network_sim/drop</code> 返回实际仰角、距离和阻断原因。</p>
+<h3 id="tle">真实 TLE 与动态链路转换测试<a class="headerlink" href="#tle" title="Permanent link">#</a></h3>
+<p>安装 WSL 侧卫星 RPC 和 SGP4 依赖：</p>
+<pre class="highlight"><code class="language-bash">python3 -m pip install --user sgp4 msgpack-rpc-python</code></pre>
+<p>UE、ROS wrapper 和当前 <code>settings.json</code> 中的 ns-3 配置启动后，运行：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/scripts/run_tle_space_network_demo.sh</code></pre>
+<p>脚本会刷新当前 TLE、自动定位下一次参考点过境、驱动 UE 卫星、发布动态 access 并复用或启动 NetworkSim bridge。另开终端验证转换：</p>
+<pre class="highlight"><code class="language-bash">source /opt/ros/noetic/setup.bash
+source "${HOME}/LAESim/ros/devel/setup.bash"
+python3 NetworkSim/tests/ros_tle_network_transition_test.py \
+  --source Satellite --destination Car --timeout 120</code></pre>
+<p>成功输出同时包含 <code>blocked_phase</code> 和 <code>visible_phase</code>。前者应为 <code>space_access_unavailable</code>，后者应包含非零 <code>latency_ns</code>。运行记录和窗口摘要保存在 <code>${HOME}/LAESim/.runtime/tle_demo/</code>。</p>
+<p>当前一键演示默认把 UE 卫星轨迹显示为 80 m 半径、300 m 高度。该尺度只服务画面表现；启用 <code>SatelliteLinkModel</code> 后，星地通信使用 TLE/access 的真实斜距，调整 <code>DISPLAY_RADIUS</code> 或 <code>DISPLAY_ALTITUDE</code> 不会再改变星地链路结果。</p>
+<p>本机真实 UE 动态验证中，Satellite 与 Car 的显示坐标距离约 306.4 m，超过普通 Wi-Fi 的 <code>MaxRangeMeters=250</code>；同一数据包仍以 <code>link_type=satellite</code> 在真实斜距 1820.7 km 下送达。输出为：传播时延 6.073 ms、串行化时延 4.096 ms、总时延 10.169 ms、FSPL 164.50 dB、SNR 7.51 dB、包错误率约 0.000454。该结果直接验证了星地通信与 UE 显示坐标已经解耦。</p>
+<h3 id="_1">多卫星选择与链路切换<a class="headerlink" href="#_1" title="Permanent link">#</a></h3>
+<p>当前多星配置模板包含 <code>Satellite</code>、<code>Satellite2</code>、<code>Satellite3</code>。启动三星实时传播：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
+<p>交付时可以使用带运行状态检查和 UE 标记的完整入口：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/scripts/start_space_demo.sh
+bash NetworkSim/scripts/space_demo_status.sh</code></pre>
+<p><code>start_space_demo.sh</code> 会先验证 UE ROS 时间戳正在前进，然后启动多星桥、NetworkSim 和 <code>space_mission_visualizer_ros.py</code>。任务计算和 ROS 状态默认 2 Hz，UE 卫星位姿和可视化标记默认 0.5 Hz，以降低编辑器长时间运行时的 RPC 压力。可视化器在上游状态中断 10 秒或连续 3 次 RPC 失败后自动退出，不会无限重试。它在 UE 中画星下点、覆盖圈、当前选择链路和 UP/DOWN 标签；这些标记仅用于显示，不进入 ns-3 链路预算。</p>
+<p>交付前先运行不依赖 UE 的确定性验收。它使用独立 ROS master，不会影响当前 ROS wrapper 或正在运行的 UE：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/tests/ros_space_delivery_acceptance.sh</code></pre>
+<p>测试固定验证 <code>DOWN -&gt; UP:Satellite -&gt; HANDOVER:Satellite2 -&gt; DOWN</code>，并要求两个 DOWN 包由 <code>space_access_policy</code> 阻断、两个 UP 包通过 ns-3 <code>satellite</code> 逻辑链路投递。之后在 UE Play 和 ROS wrapper 已启动时运行实时环境自检：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/scripts/check_space_demo_environment.sh \
+  --settings /mnt/c/Users/&lt;Windows用户名&gt;/Documents/AirSim/settings.json \
+  --require-ros --require-ns3 --live</code></pre>
+<p>该脚本只读检查配置、依赖、runner、ROS 节点、三星状态、NetworkSim、可视化话题和卫星时间戳，不会安装软件或修改 settings。完整跨电脑步骤见 <code>docs/space_delivery_checklist.md</code>。</p>
+<p>首次从单星配置切换到多星配置时，必须依次重启 UE Play、AirSim ROS wrapper 和 NetworkSim bridge。可用以下命令确认三颗星都已进入 ROS/NetworkSim：</p>
+<pre class="highlight"><code class="language-bash">rostopic hz /airsim_node/Satellite2/global_gps
+rostopic echo -n 1 /space/Satellite3/state
+rostopic echo -n 1 /space/selection/Car
+rostopic list | grep '/network_sim/rx/Satellite'</code></pre>
+<p><code>/space/selection/&lt;target&gt;</code> 选择当前最高仰角卫星，并通过迟滞与最短保持时间抑制切换振荡。NetworkSim 仍逐条订阅每颗卫星的 access；应用要把 <code>src</code> 设成 selection 消息中的 <code>selected_satellite</code>，才能完成业务链路切换。自动测试为：</p>
+<pre class="highlight"><code class="language-bash">python3 NetworkSim/tests/ros_constellation_handover_test.py \
+  --target Car --duration 60</code></pre>
+<p>脚本输出发送、送达、丢包、使用过的卫星和 handover 次数。需要强制验证实际发生过切换时增加 <code>--require-handover</code>。运行报告位于 <code>${HOME}/LAESim/.runtime/constellation_demo/</code>，其中 summary 记录切换次数、覆盖中断与重访间隔。</p>
+<p>结束演示并导出报告：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/scripts/stop_space_demo.sh
+python3 NetworkSim/python/export_space_demo_report.py \
+  --runtime-dir "${HOME}/LAESim/.runtime/constellation_demo"</code></pre>
+<p>报告导出器生成 Markdown 总结以及目标统计、切换事件和 ISL 可用率三个 CSV。若需要连 NetworkSim 一起停止，使用 <code>stop_space_demo.sh --include-network</code>；AirSim ROS wrapper 始终保留，避免影响其他载具实验。</p>
+<p>不启动 UE 也可以验证“最佳星选择 -&gt; 星地逻辑链路 -&gt; ns-3 -&gt; ROS 接收”闭环：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+bash NetworkSim/tests/ros_constellation_integration_test.sh</code></pre>
+<p>该测试使用独立 ROS master 和 <code>NetworkSim/config/network-simulation-constellation.example.json</code>，不会修改当前 AirSim 配置。三颗测试星使用同一份样例 TLE，因此它验证的是多星接口和选择链路，不用于验证真实星座切换；真实 handover 仍使用三份不同当前 TLE 的一键演示。</p>
+<h3 id="_2">星间链路与多跳逻辑路由<a class="headerlink" href="#_2" title="Permanent link">#</a></h3>
+<p>多星启动器默认发布三颗卫星之间的 ISL access，默认最大作用距离为 5000 km：</p>
+<pre class="highlight"><code class="language-bash">PUBLISH_ISL=1 MAX_ISL_RANGE_M=5000000 \
+  bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
+<p>应用需要显式给出中继路径：</p>
+<pre class="highlight"><code class="language-bash">rostopic pub -1 /network_sim/tx std_msgs/String \
+  '{data: "{\"packet_id\":\"relay-1\",\"src\":\"Satellite\",\"dst\":\"Car\",\"route\":[\"Satellite\",\"Satellite2\",\"Car\"],\"size_bytes\":1024,\"payload\":\"mission-data\"}"}'</code></pre>
+<p>处理过程：</p>
+<ol>
+<li>ROS bridge 验证 route 首尾必须等于 <code>src/dst</code>，节点必须存在且不得重复。</li>
+<li>每一跳分别匹配 <code>SpaceAccessPolicy</code>；某一跳失败时 <code>/network_sim/drop</code> 返回 <code>failed_hop</code>。</li>
+<li><code>SatelliteLinkModel</code> 按每一跳真实距离分别计算 FSPL、SNR、传播时延和包错误率。</li>
+<li>ns-3 runner 用每条有向链路的独立队列执行逐跳存储转发，组合各跳错误率后交付或丢弃。</li>
+</ol>
+<p>成功包使用 <code>link_type=satellite_route</code>，并带 <code>route_nodes</code>、<code>route_hop_count</code>、各跳距离/传播/串行化时延的汇总值。底层 runner 更新后必须重新构建：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/scripts/build_ns3_runner.sh
+python3 NetworkSim/tests/smoke_backend.py --require-ns3</code></pre>
+<p>ROS 两跳测试已包含在 <code>ros_constellation_integration_test.sh</code> 中。当前固定验收链路总斜距 1500 km、两跳总时延约 13.195 ms。</p>
+<p>该功能仍属于消息级显式路由：只有带 <code>route</code> 的 <code>/network_sim/tx</code> 包进入星间中继模型，普通 ROS topic、TCP/UDP 和不带 route 的包保持原行为。</p>
+<h3 id="102">10.2 统一场景时钟<a class="headerlink" href="#102" title="Permanent link">#</a></h3>
+<p>默认情况下，NetworkSim 使用墙钟定时器按 <code>StepMs</code> 推进 ns-3。需要暂停、单步、倍速和确定性复现时，在 <code>settings.json</code> 的 <code>NetworkSimulation</code> 中启用：</p>
+<pre class="highlight"><code class="language-json">"UnifiedClock": {
+  "Enabled": true,
+  "ClockTopic": "/clock",
+  "MaxStepMs": 1000.0
+}</code></pre>
+<p>然后先启动统一时钟，再启动 NetworkSim bridge：</p>
+<pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
+source /opt/ros/noetic/setup.bash
+source ros/devel/setup.bash
+
+python3 ros/src/example/space_sim_clock.py \
+  --start-time 2026-07-23T00:00:00Z --rate 60
+
+# 另开终端
+bash NetworkSim/scripts/run_ros_network_bridge.sh</code></pre>
+<p>启用后，网络桥不再用 ROS 墙钟 Timer 主动推进后端，而是只消费 <code>/clock</code> 的正向增量：</p>
+<ul>
+<li><code>pause</code>：<code>/clock</code> 保持不变，ns-3 事件不推进。</li>
+<li><code>step --seconds N</code>：精确推进 N 秒场景时间，释放该时间段内到期的网络事件。</li>
+<li><code>set_rate</code>：只改变后续场景时间相对墙钟的倍率。</li>
+<li><code>resume</code>：恢复连续推进。</li>
+</ul>
+<p><code>MaxStepMs</code> 用于把一次较大的 <code>/clock</code> 跳变量分块送入后端，避免单次推进过大。它不会改变最终场景时间。<code>simulation_time_ns</code> 仍表示 ns-3 累计场景时刻，<code>latency_ns</code> 仍表示单包仿真时延。</p>
+<p>ns-3 离散事件时间不能回退。如果 <code>/clock</code> 跳到更早时刻，网络桥会忽略负增量并告警；需要从过去时刻重新实验时，应重启 NetworkSim bridge。AirSim ROS wrapper 不需要设置 <code>/use_sim_time=true</code>，UE 物理本身也不会被此开关暂停。</p>
+<p>不依赖 UE 的自动验收命令：</p>
+<pre class="highlight"><code class="language-bash">bash NetworkSim/tests/ros_unified_clock_integration_test.sh</code></pre>
+<p>该测试同时检查 <code>/clock</code>、TLE 状态时刻和 ns-3 投递，避免只验证“话题存在”而没有验证时间语义。</p>
+<h2 id="11">11. 图像传输与网络栈边界<a class="headerlink" href="#11" title="Permanent link">#</a></h2>
+<p>ns-3 可以模拟承载图像的字节流，但不会替代 UE 生成画面，也不会自动把 <code>sensor_msgs/Image</code> 转换成真实操作系统 socket 流量。当前集成采用消息级网络仿真：</p>
+<ul>
+<li>UE/LAESim 生成仿真画面。</li>
+<li>应用压缩并分片图像，再按分片实际字节数提交给 <code>/network_sim/tx</code>。</li>
+<li>ns-3 决定分片何时到达或是否丢失。</li>
+<li>接收应用根据数据包和分片序号重组并解码图像。</li>
+</ul>
+<p>当前单个 ns-3 包上限为 60000 字节，大图像必须分片。这种方式适合研究自组织网络对感知和协同算法的影响，并可统计时延、吞吐量、丢包率和路由变化。</p>
+<p>如果必须让未经修改的 ROS/TCP/UDP 程序直接经过网络仿真，需要进一步接入 TAP/EMU 或 DCE。这会增加 Linux 网络接口、权限和时钟同步要求，不属于当前集成范围。</p>
+<h2 id="12">12. 当前限制<a class="headerlink" href="#12" title="Permanent link">#</a></h2>
+<ul>
+<li>runner 当前使用 IEEE 802.11g ad hoc、固定发送功率、RangePropagationLoss 和 OLSR/AODV。</li>
+<li><code>MaxRangeMeters</code> 只提供硬截止，实际可达距离还受发送功率、接收门限和 Yans 路径损耗影响。</li>
+<li>星地逻辑链路当前采用自由空间损耗、固定收发增益、固定噪声系数和 BPSK 误码近似；尚未模拟多普勒、天气衰减、自适应调制编码和天线指向动态。</li>
+<li>默认模式仍由墙钟 Timer 和固定 <code>StepMs</code> 软同步；可选统一时钟模式已支持暂停、单步和倍速，但尚未控制 UE 物理时间。</li>
+<li>指标尚未发布为 ROS 指标主题或持久化为 CSV。</li>
+<li>当前会在每次丢包事件中导出路由协议、可用状态和拓扑跳数，但尚未持续发布完整路由表变化。</li>
+<li>天基门控和星间中继当前针对显式提交的应用层消息，不会自动改写任意 ROS/TCP/UDP 程序的网络路径。</li>
+<li>视频传输仍需补充编码、分片、重传和接收缓冲策略。</li>
+<li>WSL 发行版的 <code>ext4.vhdx</code> 可以放在非系统盘，但 Windows 自身的 WSL 组件仍可能占用少量系统盘空间。</li>
+</ul>
+<h2 id="13">13. 官方参考<a class="headerlink" href="#13" title="Permanent link">#</a></h2>
+<ul>
+<li><a href="https://learn.microsoft.com/windows/wsl/use-custom-distro">Microsoft：导入任意 Linux 发行版供 WSL 使用</a></li>
+<li><a href="https://www.nsnam.org/documentation/">ns-3 官方文档</a></li>
+<li><a href="https://wiki.ros.org/noetic/Installation/Ubuntu">ROS Noetic 安装说明</a></li>
+<li><a href="https://cloud-images.ubuntu.com/">Ubuntu 官方云镜像</a></li>
+</ul>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../laesim_use/" class="btn btn-neutral float-left" title="使用 LAESim"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../space_mission_bridge/" class="btn btn-neutral float-right" title="任务桥接与分析">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -143,6 +703,10 @@ window.location.replace("../laesim_build/#wsl-ros-ns3");
         </span>
     
     
+      <span><a href="../laesim_use/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../space_mission_bridge/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
