@@ -58,6 +58,19 @@ LAESim 增加了 AirSim 原版没有提供的 Boat 类型、Pawn、状态结构�
 
 Satellite 提供独立 Pawn、状态结构、Python API、ROS topic、控制示例和默认模型。当前运动模型是三维空间理想质点，控制量为 NED 速度 `vx/vy/vz` 与 `yaw_rate`；停止发送持续移动指令后会静止悬停。该模型适合任务规划、空间协同、感知与通信研究，不模拟轨道摄动、重力或推进器动力学。
 
+## 天基任务桥接
+
+如果需要卫星轨道、星下点、目标可见性或链路几何量，LAESim 使用外部 Python 桥接进程读取 TLE/SGP4、CSV 或 mock 数据，再通过 AirSim RPC 调用 `simSetVehiclePose` 驱动 UE 中的 `SimpleSatellite` 显示模型。
+
+这种设计区分两套坐标：
+
+- 真实计算坐标：由天基任务桥接脚本保持经纬高、ECEF、局部 NED 和任务时间。
+- 任务窗口：支持采样统计，也支持 Orekit 仰角事件检测生成亚秒边界的升起/落下窗口。
+- 网络联动：可用实时 `/space/<satellite>/access/<target>` 状态门控指定 NetworkSim/ns-3 应用层链路。
+- UE 显示坐标：按比例缩放后的局部 NED，仅用于让场景中“看得见卫星”。
+
+真实星地距离、仰角、方位角和 Access 状态应以桥接脚本输出为准，不建议从 UE 中显示模型的距离反推。当前已提供实时桥接脚本和离线任务分析脚本：前者用于驱动 UE 里的 `SimpleSatellite` 模型，后者用于统计多星、多目标、区域网格覆盖、覆盖窗口、重访时间和可见时间段报告，并可导出供网络联动使用的链路窗口和 GeoJSON 可视化文件。
+
 ## SceneMap 图片地图
 
 SceneMap 可以在启动时或运行时把图片加载为 UE 平面地图，支持：
@@ -89,7 +102,7 @@ AirSim/UE 提供载具位置，ROS 网络桥接器把位置和应用消息交给
 - 通信范围内正常交付与范围外超时丢包
 - OLSR 两节点冒烟测试
 
-完整环境、接口和限制见[安装与构建 LAESim 中的 WSL2、ROS 与 ns-3 部分](laesim_build.md#wsl-ros-ns3)。
+完整环境、接口和限制见[WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md)。
 
 ## 继承的 AirSim 能力
 

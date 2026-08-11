@@ -1,0 +1,11 @@
+std_msgs/Header header
+string vehicle_name
+string target_name
+string target_kind
+string source
+bool valid
+bool access
+float64 azimuth_deg
+float64 elevation_deg
+float64 range_m
+string message

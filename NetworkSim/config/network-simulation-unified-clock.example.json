@@ -1,0 +1,30 @@
+{
+  "Vehicles": {
+    "Satellite": {},
+    "Car": {}
+  },
+  "NetworkSimulation": {
+    "Backend": "ns3",
+    "StepMs": 20,
+    "Routing": "olsr",
+    "MaxRangeMeters": 250.0,
+    "TxPowerDbm": 16.0,
+    "WarmupSeconds": 3.0,
+    "PacketTimeoutSeconds": 5.0,
+    "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner",
+    "UnifiedClock": {
+      "Enabled": true,
+      "ClockTopic": "/clock",
+      "MaxStepMs": 1000.0
+    },
+    "SatelliteLinkModel": {
+      "Enabled": false
+    },
+    "SpaceAccessPolicy": {
+      "Enabled": false,
+      "FailMode": "closed",
+      "MaxStateAgeSeconds": 2.0,
+      "Rules": []
+    }
+  }
+}

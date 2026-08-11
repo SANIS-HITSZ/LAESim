@@ -57,6 +57,8 @@ add_message_files(
   BoatState.msg
   SatelliteControls.msg
   SatelliteState.msg
+  SpaceAccessState.msg
+  SpaceSatelliteState.msg
   Altimeter.msg
   Environment.msg
   SceneMapInfo.msg

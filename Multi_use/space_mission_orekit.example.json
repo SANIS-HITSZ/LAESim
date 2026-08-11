@@ -1,0 +1,35 @@
+{
+  "analysis": {
+    "start_time": "2026-07-23T00:00:00Z",
+    "duration_s": 86400,
+    "step_s": 60,
+    "min_elevation_deg": 5,
+    "access_window_method": "orekit-events",
+    "event_max_check_s": 60,
+    "event_threshold_s": 0.1
+  },
+  "orekit_data": "../../orekit-data.zip",
+  "reference": {
+    "latitude_deg": 22.591164,
+    "longitude_deg": 113.975317,
+    "altitude_m": 0
+  },
+  "satellites": [
+    {
+      "name": "Satellite",
+      "provider": "orekit-tle",
+      "tle": "space_mission_sample.tle",
+      "satellite_name": "ISS (ZARYA)"
+    }
+  ],
+  "targets": [
+    {
+      "name": "Car",
+      "kind": "ground",
+      "latitude_deg": 22.591164,
+      "longitude_deg": 113.975317,
+      "altitude_m": 0,
+      "min_elevation_deg": 5
+    }
+  ]
+}

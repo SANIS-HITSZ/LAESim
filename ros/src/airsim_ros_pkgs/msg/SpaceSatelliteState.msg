@@ -1,0 +1,13 @@
+std_msgs/Header header
+string vehicle_name
+string satellite_name
+string source
+string scenario_time
+float64 latitude
+float64 longitude
+float64 altitude
+geometry_msgs/Vector3 real_ned
+geometry_msgs/Pose display_pose
+float64 horizontal_scale
+float64 vertical_scale
+bool valid

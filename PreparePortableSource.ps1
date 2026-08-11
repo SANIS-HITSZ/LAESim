@@ -21,12 +21,22 @@ if (Test-Path -LiteralPath $DestinationRoot) {
 $excludeDirNames = @(
     ".git",
     ".vs",
+    ".vscode",
+    ".runtime",
+    ".pytest_cache",
     "Binaries",
     "Build",
+    "build",
     "Intermediate",
     "Saved",
+    "DerivedDataCache",
     "temp",
-    "__pycache__"
+    "__pycache__",
+    "devel",
+    "install",
+    "deps",
+    "lib",
+    "obj"
 )
 
 $excludeFileNames = @(
@@ -35,8 +45,11 @@ $excludeFileNames = @(
     "*.iobj",
     "*.ilk",
     "*.lib",
+    "*.dll",
     "*.exp",
     "*.pdb",
+    "*.pyc",
+    "*.pyo",
     "*.tlog",
     "*.log",
     "*.tmp",
@@ -46,11 +59,31 @@ $excludeFileNames = @(
     "*.VC.opendb"
 )
 
+$excludeRelativeDirectories = @(
+    "external\rpclib",
+    "Unreal\Environments\Blocks\Plugins\AirSim",
+    "Unreal\Plugins\AirSim\Content\Models\Boat",
+    "Unreal\Plugins\AirSim\Content\Models\Satellite",
+    "Unreal\Plugins\AirSim\Content\VehicleAdv\SUV",
+    "Unreal\Plugins\AirSim\Source\AirLib"
+)
+
 function ShouldSkipDirectory([System.IO.DirectoryInfo]$directoryInfo) {
-    return $excludeDirNames -contains $directoryInfo.Name
+    if ($excludeDirNames -contains $directoryInfo.Name) {
+        return $true
+    }
+
+    $relativePath = $directoryInfo.FullName.Substring($sourceRoot.Length).TrimStart('\')
+    return $excludeRelativeDirectories -contains $relativePath
 }
 
 function ShouldSkipFile([System.IO.FileInfo]$fileInfo) {
+    $relativePath = $fileInfo.FullName.Substring($sourceRoot.Length).TrimStart('\')
+    if ($relativePath -ieq "ros\src\CMakeLists.txt") {
+        # catkin_make creates this machine-local symlink; the Git baseline owns it.
+        return $true
+    }
+
     $assetsRoot = Join-Path $sourceRoot "Unreal\Assets"
     if (($fileInfo.Extension -ieq ".obj") -and $fileInfo.FullName.StartsWith($assetsRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
         return $false

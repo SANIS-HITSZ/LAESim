@@ -62,10 +62,9 @@ apt-get install -y --no-install-recommends \
     unzip \
     wget
 
-if ! command -v g++-11 >/dev/null 2>&1; then
-    add-apt-repository -y ppa:ubuntu-toolchain-r/test
+if ! command -v gcc >/dev/null 2>&1 || ! command -v g++ >/dev/null 2>&1; then
     apt-get update
-    apt-get install -y --no-install-recommends gcc-11 g++-11
+    apt-get install -y --no-install-recommends build-essential
 fi
 
 if [[ ! -s "${ROS_KEYRING}" ]]; then

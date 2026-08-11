@@ -5,7 +5,7 @@
 默认使用前提：
 
 - UE 工程已经打开并 `Play`
-- `settings.json` 已经放在 `%USERPROFILE%\Documents\AirSim\settings.json`
+- `settings.json` 已经放在 `C:\Users\<用户名>\Documents\AirSim\settings.json`
 - Python 环境里已安装 `airsim` 依赖和 `pygame`
 
 ## 1. keyboard_control.py
@@ -177,7 +177,97 @@ python .\Multi_use\satellite_keyboard_control.py --speed 50 --yaw-rate 1.0
 - `Q/E`：左 / 右偏航
 - `ESC`：退出并发送零速度
 
-## 5. sensor_probe.py
+## 5. space_mission_bridge.py
+
+这个脚本把 TLE/SGP4、CSV 或 mock 数据源里的卫星状态同步到 LAESim 的 `SimpleSatellite` 模型。脚本负责卫星位置、局部 NED 和目标可见性计算，UE 只负责演示性显示。
+
+默认连接：
+
+- 端口：`41491`
+- 默认实例名：`Satellite`
+
+CSV 冒烟测试：
+
+```powershell
+conda activate <AirSim Python环境名>
+python .\Multi_use\space_mission_bridge.py --provider csv --csv .\Multi_use\space_mission_sample.csv --vehicle Satellite --rate 1
+```
+
+TLE/SGP4 传播：
+
+```powershell
+conda activate <AirSim Python环境名>
+pip install sgp4
+python .\Multi_use\space_mission_bridge.py --provider tle --tle .\Multi_use\space_mission_sample.tle --vehicle Satellite --rate 2
+```
+
+常用显示模式：
+
+- `scaled-ned`：把真实 NED 按比例缩放到 UE，默认水平和高度都乘以 `0.001`
+- `fixed-overhead`：卫星固定在场景上方，只表现“天上有卫星”
+- `subpoint-only`：显示星下点水平运动，高度固定
+- `global-track`：把全球地面轨迹正交压缩到有限圆盘内，适合真实 TLE 的 UE 演示
+
+注意：UE 中卫星模型的位置是演示坐标，不代表真实星地距离。真实距离、覆盖和可见性应使用桥接脚本输出。
+
+刷新并校验当前 TLE：
+
+```powershell
+python .\Multi_use\update_tle.py --catalog-number 25544 --output .\.runtime\current_iss.tle
+```
+
+该工具会校验 TLE 行格式和校验和，原子更新输出文件，并在同目录写入包含来源 URL、下载时间和 TLE 历元的 JSON 元数据。实时脚本可用 `--max-tle-age-days` 检查历元偏差，用 `--require-fresh-tle` 在 TLE 过期时直接退出。
+
+任务目标与可见性演示：
+
+```powershell
+conda activate <AirSim Python环境名>
+python .\Multi_use\space_mission_bridge.py --provider mock --vehicle Satellite --target Island:22.591164:113.975317:0 --rate 2 --print-every 1
+```
+
+输出 JSONL 报告：
+
+```powershell
+python .\Multi_use\space_mission_bridge.py --provider mock --vehicle Satellite --target Island:22.591164:113.975317:0 --mission-report-jsonl .\space_report.jsonl
+```
+
+离线任务分析：
+
+```powershell
+python .\Multi_use\space_mission_analyzer.py --mission .\Multi_use\space_mission.example.json --out .\Multi_use\space_mission_report --print-summary
+```
+
+该命令会生成区域网格覆盖、覆盖窗口、重访时间、逐时间步样本、GeoJSON 可视化文件，以及供 ns-3 联动使用的链路启停 JSON。
+
+Orekit 精确事件窗口验证：
+
+```powershell
+conda activate laesim_space
+$env:PYTHONNOUSERSITE="1"
+python .\Multi_use\space_mission_analyzer.py --mission .\Multi_use\space_mission_orekit.example.json --out .\Multi_use\space_mission_orekit_report --print-summary
+```
+
+该示例使用 Orekit 的仰角事件检测生成升起/落下窗口。检查 `windows.csv` 的 `method=orekit-events`，可确认窗口不是由固定 `step_s` 采样边界近似得到。
+
+专业后端检查：
+
+```powershell
+python .\Multi_use\space_backend_probe.py
+```
+
+GMAT 离线任务设计交接包：
+
+```powershell
+python .\Multi_use\space_mission_export_gmat.py --mission .\Multi_use\space_mission.example.json --out .\Multi_use\space_mission_gmat.script
+```
+
+Basilisk 或自定义姿态 CSV 接入：
+
+```powershell
+python .\Multi_use\space_mission_bridge.py --provider csv --csv .\Multi_use\space_mission_sample.csv --attitude-csv .\Multi_use\space_mission_attitude_sample.csv --vehicle Satellite
+```
+
+## 6. sensor_probe.py
 
 这个脚本可以：
 
@@ -189,7 +279,7 @@ python .\Multi_use\satellite_keyboard_control.py --speed 50 --yaw-rate 1.0
 
 默认行为：
 
-- 默认读取 `%USERPROFILE%\Documents\AirSim\settings.json`
+- 默认读取 `C:\Users\<用户名>\Documents\AirSim\settings.json`
 - 默认把输出保存到当前目录下的 `sensor_probe_outputs`
 
 最常用命令：
@@ -223,7 +313,7 @@ python .\Multi_use\sensor_probe.py --vehicle UAV --vehicle Car
 - 确认相机名字、雷达名字、图像类型是否能正确读取
 - 在不引入 ROS 的前提下验证传感器链路
 
-## 6. scene_map_tools.py
+## 7. scene_map_tools.py
 
 这个脚本用于测试“图片地图平面”功能，不依赖 ROS，走 `41451` 这个 CV / 世界级 RPC 端口。它可以加载地图、卸载地图、查询地图尺寸与位姿，也可以做像素坐标和 AirSim 世界坐标的转换。
 
@@ -257,7 +347,7 @@ python .\Multi_use\scene_map_tools.py to-pixel --x 10 --y 0
 python .\Multi_use\scene_map_tools.py unload
 ```
 
-## 7. 建议的使用顺序
+## 8. 建议的使用顺序
 
 如果第一次拿到工程，建议按这个顺序试：
 

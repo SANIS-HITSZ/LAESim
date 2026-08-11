@@ -1,0 +1,54 @@
+{
+  "analysis": {
+    "start_time": "2026-07-23T00:00:00Z",
+    "duration_s": 300,
+    "step_s": 10,
+    "min_elevation_deg": 5,
+    "access_window_method": "sampled"
+  },
+  "reference": {
+    "latitude_deg": 22.591164,
+    "longitude_deg": 113.975317,
+    "altitude_m": 0
+  },
+  "satellites": [
+    {
+      "name": "Satellite",
+      "provider": "csv",
+      "csv": "space_mission_sample.csv"
+    }
+  ],
+  "targets": [
+    {
+      "name": "GroundStation",
+      "kind": "ground",
+      "latitude_deg": 22.591164,
+      "longitude_deg": 113.975317,
+      "altitude_m": 0,
+      "min_elevation_deg": 5,
+      "max_range_m": 1800000,
+      "sensor_pointing_mode": "target-track",
+      "sensor_half_angle_deg": 2,
+      "max_off_nadir_deg": 35,
+      "min_dwell_s": 30
+    },
+    {
+      "name": "SeaSearchArea",
+      "kind": "sea",
+      "type": "area_grid",
+      "center_latitude_deg": 22.50,
+      "center_longitude_deg": 114.05,
+      "altitude_m": 0,
+      "width_km": 20,
+      "height_km": 20,
+      "spacing_km": 5,
+      "min_elevation_deg": 5,
+      "sensor_pointing_mode": "side-look",
+      "side_look_angle_deg": 2,
+      "sensor_half_angle_deg": 5,
+      "max_off_nadir_deg": 35,
+      "min_dwell_s": 20,
+      "min_area_coverage_fraction": 0.6
+    }
+  ]
+}

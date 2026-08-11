@@ -1,0 +1,49 @@
+{
+  "Vehicles": {
+    "Satellite": {},
+    "Satellite2": {},
+    "Car": {}
+  },
+  "NetworkSimulation": {
+    "Backend": "ns3",
+    "StepMs": 20,
+    "Routing": "olsr",
+    "MaxRangeMeters": 250.0,
+    "TxPowerDbm": 16.0,
+    "WarmupSeconds": 0.1,
+    "PacketTimeoutSeconds": 2.0,
+    "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner",
+    "SatelliteLinkModel": {
+      "Enabled": true,
+      "FrequencyHz": 2200000000.0,
+      "BandwidthHz": 5000000.0,
+      "DataRateBps": 2000000.0,
+      "TxPowerDbm": 40.0,
+      "TxAntennaGainDbi": 10.0,
+      "RxAntennaGainDbi": 20.0,
+      "SystemLossDb": 2.0,
+      "NoiseFigureDb": 3.0,
+      "MinSnrDb": 3.0,
+      "PacketErrorModel": "none"
+    },
+    "SpaceAccessPolicy": {
+      "Enabled": true,
+      "FailMode": "closed",
+      "MaxStateAgeSeconds": 5.0,
+      "Rules": [
+        {
+          "Source": "Satellite",
+          "Destination": "Car",
+          "AccessTopic": "/space/Satellite/access/Car",
+          "Bidirectional": true
+        },
+        {
+          "Source": "Satellite2",
+          "Destination": "Car",
+          "AccessTopic": "/space/Satellite2/access/Car",
+          "Bidirectional": true
+        }
+      ]
+    }
+  }
+}

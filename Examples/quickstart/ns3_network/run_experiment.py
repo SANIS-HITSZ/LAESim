@@ -8,6 +8,7 @@ import json
 import math
 import threading
 import time
+import uuid
 
 import rospy
 from nav_msgs.msg import Odometry
@@ -32,7 +33,7 @@ def main() -> int:
     lock = threading.RLock()
     positions = {}
     received = {}
-    prefix = f"quickstart-{int(time.time())}"
+    prefix = f"quickstart-{uuid.uuid4().hex[:12]}"
 
     def odom_callback(message: Odometry, vehicle_name: str) -> None:
         point = message.pose.pose.position
@@ -121,6 +122,9 @@ def main() -> int:
         int(received[packet_id].get("simulation_time_ns", 0))
         for packet_id in delivered
     ]
+    latencies = [
+        int(received[packet_id].get("latency_ns", 0)) for packet_id in delivered
+    ]
     summary = {
         "source": args.source,
         "destination": args.destination,
@@ -129,6 +133,7 @@ def main() -> int:
         "dropped": len(dropped),
         "delivery_ratio": len(delivered) / len(packet_ids),
         "simulation_time_ns": simulation_times,
+        "latency_ns": latencies,
     }
     print(json.dumps(summary, indent=2))
 

@@ -7,6 +7,32 @@
     "TxPowerDbm": 16.0,
     "WarmupSeconds": 3.0,
     "PacketTimeoutSeconds": 5.0,
-    "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner"
+    "RunnerPath": "~/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner",
+    "SatelliteLinkModel": {
+      "Enabled": false,
+      "FrequencyHz": 2200000000.0,
+      "BandwidthHz": 5000000.0,
+      "DataRateBps": 2000000.0,
+      "TxPowerDbm": 40.0,
+      "TxAntennaGainDbi": 10.0,
+      "RxAntennaGainDbi": 20.0,
+      "SystemLossDb": 2.0,
+      "NoiseFigureDb": 3.0,
+      "MinSnrDb": 3.0,
+      "PacketErrorModel": "bpsk"
+    },
+    "SpaceAccessPolicy": {
+      "Enabled": false,
+      "FailMode": "closed",
+      "MaxStateAgeSeconds": 2.0,
+      "Rules": [
+        {
+          "Source": "Satellite",
+          "Destination": "Car",
+          "AccessTopic": "/space/Satellite/access/Car",
+          "Bidirectional": true
+        }
+      ]
+    }
   }
 }

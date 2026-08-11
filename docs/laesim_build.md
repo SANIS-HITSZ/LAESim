@@ -19,7 +19,7 @@ Visual Studio 工作负载、Unreal 基础环境和 AirSim 通用依赖可先参
 
 ```powershell
 $LaesimRoot = Join-Path $HOME "source\LAESim"
-git clone --branch V1.4 https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
+git clone --branch V1.5 https://github.com/SANIS-HITSZ/LAESim.git $LaesimRoot
 Set-Location $LaesimRoot
 ```
 
@@ -160,6 +160,4 @@ Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force -ErrorAction Silen
 
 `car_assets.zip` 失败时通常会回退到默认车辆模型；Eigen 下载失败会阻止 AirLib 编译，应先解决网络或代理问题。
 
-完成 Windows/UE 构建后，可以先阅读[使用 LAESim](laesim_use.md)。需要 ROS 或 ns-3 时继续完成下面的可选环境安装。
-
---8<-- "docs/includes/laesim_wsl_ros_ns3.md"
+完成 Windows/UE 构建后，可以先阅读[使用 LAESim](laesim_use.md)。需要 ROS 或 ns-3 时继续阅读独立维护的 [WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md) 文档；该页面同时记录 ns-3 runner、网络桥接器、星地链路和回归测试流程。

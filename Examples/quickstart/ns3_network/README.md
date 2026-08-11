@@ -11,7 +11,7 @@
 
 ## 1. 前置条件
 
-先完成项目文档中的 [WSL2、ROS 与 ns-3 安装](https://sanis-hitsz.github.io/LAESim/laesim_build/#wsl-ros-ns3)，并确认以下文件存在：
+先完成项目文档中的 [WSL2、ROS 与 ns-3 安装](https://sanis-hitsz.github.io/LAESim/laesim_wsl_ros_ns3/)，并确认以下文件存在：
 
 ```text
 $HOME/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner
@@ -97,6 +97,7 @@ expectation 'delivered' passed
 ```
 
 `simulation_time_ns` 应全部大于 0；如果为 0，说明实际使用的是 `Backend: none`。
+V1.5 还会返回 `latency_ns`，表示每个数据包从发送到送达的 ns-3 仿真时延；它与 runner 已累计运行到的 `simulation_time_ns` 含义不同。
 
 ## 5. 修改配置并验证丢包
 

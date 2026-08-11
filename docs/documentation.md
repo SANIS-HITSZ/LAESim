@@ -1,6 +1,6 @@
 # LAESim 文档
 
-LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室维护。本文档面向仿真平台使用者和贡献者，集中记录项目自身的混合载具、SceneMap、构建流程、ROS/ns-3 集成与可复现实验。AirSim 通用 API、传感器和飞控内容直接引用上游官方文档。
+LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室维护。本文档面向仿真平台使用者和贡献者，集中记录项目自身的混合载具、SceneMap、天基任务、构建流程、ROS/ns-3 集成与可复现实验。AirSim 通用 API、传感器和飞控内容直接引用上游官方文档。
 
 ## 从这里开始
 
@@ -8,8 +8,9 @@ LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知�
 | --- | --- |
 | 了解 LAESim 相比 AirSim 增加了什么 | [核心特色](laesim_features.md) |
 | 在 Windows 中构建 UE 4.27 插件 | [安装与构建 LAESim](laesim_build.md) |
-| 安装 WSL2、ROS Noetic 和 ns-3 | [WSL2、ROS 与 ns-3](laesim_build.md#wsl-ros-ns3) |
+| 安装 WSL2、ROS Noetic 和 ns-3 | [WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md) |
 | 选择配置并启动混合载具场景 | [使用 LAESim](laesim_use.md) |
+| 运行轨道、覆盖、星地和星间任务 | [天基任务桥接](space_mission_bridge.md) |
 | 查看已验证的协同与通信实验 | [仿真案例](simulation_cases.md) |
 
 ## 核心组成
@@ -17,7 +18,8 @@ LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知�
 - `AirGround` 混合模式：在同一场景运行无人机、车辆、舰船和卫星。
 - SceneMap：导入图片地图，支持比例尺、GPS 配准和坐标转换。
 - Python/ROS 接口：控制载具并采集状态、相机、IMU、GPS 和 Lidar。
-- 可选 ns-3 后端：模拟 Wi-Fi ad hoc、路由、时延、吞吐量与丢包。
+- 天基任务桥接：处理 TLE/星历、多星多目标 access、覆盖窗口和 UE 显示同步。
+- 可选 ns-3 后端：模拟 Wi-Fi ad hoc、路由，以及按真实斜距计算的星地/星间逻辑链路。
 
 ## 上游资料
 

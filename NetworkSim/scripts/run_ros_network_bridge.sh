@@ -23,6 +23,12 @@ if [[ ! -f "${SETTINGS}" ]]; then
     exit 1
 fi
 
+echo "LAESim ROS network bridge"
+echo "  PROJECT_ROOT=${PROJECT_ROOT}"
+echo "  ROS_WORKSPACE=${ROS_WORKSPACE}"
+echo "  SETTINGS=${SETTINGS}"
+echo "  BACKEND=${BACKEND:-settings/default}"
+
 set +u
 source /opt/ros/noetic/setup.bash
 source "${ROS_WORKSPACE}/devel/setup.bash"

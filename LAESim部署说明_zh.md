@@ -9,8 +9,10 @@
 - 船具备 Python API、ROS topic、示例脚本、settings 模板和传感器配置链路。
 - 默认船模型为 052B Boat，源码资产放在 `Unreal\Assets\Boat\Models\Boat`，构建时自动复制到 AirSim 插件 Content。
 - 新增 `SimpleSatellite` 卫星载具类型，默认 API 端口为 `41491`。卫星运动模型是三维空间理想质点：按 NED 速度 `vx/vy/vz` 和 `yaw_rate` 移动，无持续移动指令时静止悬停。
+- 新增天基任务桥接脚本：支持 TLE/SGP4、CSV 和 mock 数据源，输出卫星位置、局部 NED、任务可见性和缩放后的 UE 显示坐标。
 - 默认卫星模型源码资产放在 `Unreal\Assets\Satellite\Models\Satellite`，构建时自动复制到 `Unreal\Plugins\AirSim\Content\Models\Satellite`，`settings.json` 不需要指定模型路径。
 - 新增 `SceneMap` 图片地图功能：可在 `settings.json` 启动加载图片为可碰撞平面地图，支持任意长宽比卫星图、`GeoReference` GPS 配准和按 GPS / 像素 / 米制坐标出生，也可通过 Python / ROS 在运行时切换、查询和做坐标转换。
+- 新增可选 ns-3 自组织网络仿真：`NetworkSim` 提供 ROS 消息级网络桥接，可在 `Backend=none` 的理想通信和 `Backend=ns3` 的 Wi-Fi ad hoc + OLSR/AODV 离散事件网络之间切换，用于评估时延、吞吐量、丢包和拓扑变化对协同算法的影响。
 - GitHub 上传版保留 AirSim 插件基础 Content 和 StarterContent，排除编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries、高模 SUV、Boat 和 Satellite 构建产物。
 
 更多细节：
@@ -18,6 +20,9 @@
 - `如何加入新的载具类型.md`
 - `如何加入图片场景地图功能.md`
 - `如何将工程简化上传github.md`
+- `docs\space_mission_bridge.md`
+- `docs\laesim_wsl_ros_ns3.md`
+- `NetworkSim\config\network-simulation.example.json`
 - `how_to_use_settings\README_zh.md`
 
 ## 1. 交付
@@ -47,6 +52,8 @@ powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 -Destinatio
 - C++ 桌面开发工具链
 - PowerShell
 - 如果需要 ROS：WSL2 + Ubuntu 20.04 + ROS Noetic
+- 如果需要天基任务 TLE/SGP4 传播：在 AirSim Python 环境中安装 `sgp4`，例如 `conda activate airsim_agent && pip install sgp4`。
+- 如果需要 ns-3 通信网络仿真：WSL2 + ns-3.48 + GCC/G++ 11 或更高版本。Ubuntu 20.04 默认 GCC 9.4.0 不满足 ns-3.48 要求，脚本会尝试安装 `gcc-11/g++-11`；ns-3 不是 Windows 插件编译的前置条件，只在启用 `NetworkSimulation.Backend = ns3` 时需要。
 
 补充说明：
 
@@ -142,7 +149,7 @@ Satellite 的默认模型也不需要在 `settings.json` 里指定。源码仓�
 4. 放好Plugins\AirSim之后，重新点击进入该UE项目，会弹窗显示需要新编译项目，点击编译即可，为该 UE 项目生成工程文件。
 5. 编译该项目的 `Development Editor`。
 6. 在 UE 里设置 `PlayerStart` 和 `AirSimGameMode`。
-7. 准备 `%USERPROFILE%\Documents\AirSim\settings.json`。
+7. 准备 `C:\Users\<用户名>\Documents\AirSim\settings.json`。
 
 如果只是想先验证官方自带 `Blocks` 示例环境，再额外运行：
 
@@ -170,7 +177,7 @@ set UNREAL_ENGINE_ROOT=D:\Epic\UE\UE_4.27
 Windows 侧真正生效的是这份文件：
 
 ```text
-%USERPROFILE%\Documents\AirSim\settings.json
+C:\Users\<用户名>\Documents\AirSim\settings.json
 ```
 
 如果需要现成模板，直接看：
@@ -183,6 +190,8 @@ Windows 侧真正生效的是这份文件：
 - `how_to_use_settings\settings_airground_2uav_1car_1boat_1satellite_with_sensors.json`
 - `how_to_use_settings\settings_scene_map_1uav_1car_1boat.json`
 - `how_to_use_settings\settings_satellite_map_gps_start.json`
+- `how_to_use_settings\settings_space_mission_bridge.json`
+- `NetworkSim\config\network-simulation.example.json`
 
 这些模板已经把常用相机、雷达、ROS 发布项写好，并且对车、船和卫星的 `magnetometer/barometer` 做了显式规避。
 
@@ -192,11 +201,120 @@ Windows 侧真正生效的是这份文件：
 - `how_to_use_settings\settings_scene_map_1uav_1car_1boat.json`
 - `how_to_use_settings\settings_satellite_map_gps_start.json`
 
-### 5.1 图片地图 SceneMap 快速导入
+### 5.1 天基任务桥接
+
+如果需要不依赖商业软件的卫星轨道和任务几何演示，可以使用天基任务桥接脚本。第一版支持 TLE/SGP4、CSV 和 mock 数据源：
+
+```text
+TLE / CSV / Mock -> Multi_use\space_mission_bridge.py -> AirSim RPC -> SimpleSatellite 显示模型
+```
+
+先用 CSV 验证链路：
+
+```powershell
+conda activate <AirSim Python环境名>
+python .\Multi_use\space_mission_bridge.py --provider csv --csv .\Multi_use\space_mission_sample.csv --vehicle Satellite
+```
+
+使用 TLE/SGP4 传播需要安装 `sgp4` 包：
+
+```powershell
+conda activate <AirSim Python环境名>
+pip install sgp4
+python .\Multi_use\space_mission_bridge.py --provider tle --tle .\Multi_use\space_mission_sample.tle --vehicle Satellite
+```
+
+注意：真实轨道采用地球尺度，UE 只使用缩放后的局部 NED 显示坐标。真实距离、仰角、覆盖时间和可见性应以桥接脚本输出为准，不要从 UE 中显示模型的位置反推。
+
+桥接脚本还支持任务目标和可见性输出：
+
+```powershell
+python .\Multi_use\space_mission_bridge.py --provider mock --vehicle Satellite --target Island:22.591164:113.975317:0 --rate 2 --print-every 1
+```
+
+任务分析脚本可以统计多星、多目标、区域网格覆盖、覆盖窗口、重访时间和可见时间段报告：
+
+```powershell
+python .\Multi_use\space_mission_analyzer.py --mission .\Multi_use\space_mission.example.json --out .\Multi_use\space_mission_report --print-summary
+```
+
+详细说明见 `docs\space_mission_bridge.md`。后续可继续扩展动态目标、传感器视场约束和 Orekit 高精度后端。
+
+专业后端为可选能力：`space_backend_probe.py` 可检查 `sgp4`、Orekit、GMAT 和 Basilisk 是否可用；`space_mission_export_gmat.py` 可导出 GMAT 离线任务设计脚本；`--attitude-csv` 可接入 Basilisk 或自定义姿态仿真结果。
+
+### 5.2 可选 ns-3 自组织网络
+
+如果需要研究通信网络对异构协同算法的影响，可以启用 `NetworkSim`。这部分不改变 UE 物理和画面生成职责：UE / LAESim 继续提供载具位置、传感器和控制接口，ROS 网络桥接器负责读取载具里程计、接收应用层消息，并把节点位置和数据包交给 ns-3 后端。
+
+当前 ns-3 集成是完整的 ROS 消息级网络仿真闭环：`/network_sim/tx` 进入网络后端，`/network_sim/rx/<载具名>` 输出送达消息，并可统计时延、吞吐、丢包和路由影响。它不是透明网络栈仿真，普通 ROS topic、TCP 或 UDP 流量不会自动经过 ns-3；需要应用主动把要仿真的数据包发布到 `/network_sim/tx`。
+
+默认保持理想通信：
+
+```json
+"NetworkSimulation": {
+  "Backend": "none",
+  "StepMs": 20,
+  "Routing": "olsr",
+  "MaxRangeMeters": 250.0,
+  "PacketTimeoutSeconds": 5.0
+}
+```
+
+完成 WSL2 / ROS / ns-3 安装后，可以改为：
+
+```json
+"NetworkSimulation": {
+  "Backend": "ns3"
+}
+```
+
+常用流程：
+
+```bash
+export LAESIM_HOME=$HOME/LAESim
+
+# 推荐：一键下载/构建 ns-3.48，编译 runner，并做 smoke 测试
+bash "${LAESIM_HOME}/NetworkSim/scripts/build_and_verify_ns3_runner.sh"
+
+# 或者分步执行：
+bash "${LAESIM_HOME}/NetworkSim/scripts/bootstrap_ns3.sh"
+bash "${LAESIM_HOME}/NetworkSim/scripts/build_ns3_runner.sh"
+ls -l "$HOME/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner"
+
+# 启动 ROS 网络桥接器
+export BACKEND=ns3
+bash "${LAESIM_HOME}/NetworkSim/scripts/run_ros_network_bridge.sh"
+```
+
+默认 runner 路径是 `$HOME/opt/ns-3.48/build/scratch/ns3.48-laesim-ns3-runner`，需要和 `settings.json` 中的 `NetworkSimulation.RunnerPath` 保持一致。如果用自定义 ns-3 目录，先设置 `NS3_ROOT`，再运行两个构建脚本。
+
+冒烟测试：
+
+```bash
+python3 "${LAESIM_HOME}/NetworkSim/tests/smoke_backend.py" --require-ns3
+python3 "${LAESIM_HOME}/NetworkSim/tests/ros_roundtrip_test.py"
+```
+
+没有构建 ns-3 runner 时，去掉 `--require-ns3` 后 `smoke_backend.py` 会只验证 `Backend=none` 并打印 `ns3_skipped`；交付前建议保留 `--require-ns3`，确保真实 ns-3 后端能启动。`ros_roundtrip_test.py` 用来验证 ROS 端到端链路，默认会从当前 `/network_sim/rx/<vehicle>` 话题中自动选择两个真实载具；也可以手动指定：
+
+```bash
+python3 "${LAESIM_HOME}/NetworkSim/tests/ros_roundtrip_test.py" --source F1 --destination F2
+python3 "${LAESIM_HOME}/NetworkSim/tests/ros_roundtrip_test.py" --source Boat --destination Boat2
+```
+
+测试输出中的 `simulation_time_ns` 是 ns-3 runner 的累计仿真时钟，表示包送达时刻；它不是终端等待时间。新版 runner 还会输出 `latency_ns`，表示该数据包从发送到送达的 ns-3 仿真时延。
+
+完整环境、配置字段、ROS 话题和当前边界见：
+
+- `docs\laesim_wsl_ros_ns3.md`
+- `docs\laesim_features.md`
+- `docs\simulation_cases.md`
+
+### 5.3 图片地图 SceneMap 快速导入
 
 最小流程：
 
-1. 准备一张 Windows 能访问的图片，例如 `%USERPROFILE%/Documents/AirSim/maps/test1.png`。
+1. 准备一张 Windows 能访问的图片，例如 `%USERPROFILE%\Documents\AirSim\maps\test1.png`，在 `settings.json` 中可写成 `C:/Users/<用户名>/Documents/AirSim/maps/test1.png` 这类实际绝对路径。
 2. 在 `settings.json` 顶层增加 `SceneMap`，填写 `ImagePath`、`MetersPerPixel`、`PixelCoordinateFrame`、`CollisionEnabled`。
 3. 如果要按 GPS 出生，继续填写 `GeoReference`，把一个已知参考点的经纬度和图片像素坐标写进去。
 4. 在每个载具里用 `StartOnSceneMap` 写出生位置；如果不写，仍然使用旧的 `X/Y/Z/Yaw`。
@@ -270,6 +388,7 @@ ros\src\example
 - `sensor_config_report_ros.py`：读取 `settings.json` 并核对 ROS 话题
 - `camera_record_ros.py`：保存 ROS 相机数据
 - `lidar_record_ros.py`：保存 ROS 雷达点云
+- `NetworkSim\scripts\run_ros_network_bridge.sh`：启动可选网络桥接器，把 ROS 应用消息送入 `none` 或 `ns3` 后端
 
 图片地图功能的 ROS 入口是：
 
@@ -285,7 +404,7 @@ ros\src\example
 建议特别强调下面几件事：
 
 1. 不要只拷 `ros` 子目录。
-2. 要把整个 `LAESim` 放进 WSL 的 ext4 路径，例如 `$HOME/LAESim`。
+2. 要把整个 `LAESim` 放进 WSL 的 ext4 路径，比如 `/home/ag/LAESim`。
 3. 在 WSL 中编译：
 
 ```bash
@@ -314,6 +433,18 @@ bash src/example/connect_ue_ros.sh
 - `41471`：Multirotor
 - `41481`：Boat
 - `41491`：Satellite
+
+### 8.1 ns-3 网络仿真部署要点
+
+ns-3 集成推荐放在 WSL2 中运行，和 Windows UE 进程解耦。当前集成是“ROS 消息级网络仿真”：桥接器订阅 LAESim 里各载具的 odometry，把节点位置更新给 ns-3；应用消息发布到 `/network_sim/tx` 后，后端根据路由、距离、时延和丢包模型决定是否投递到 `/network_sim/rx/<车辆名>`。
+
+需要注意：
+
+- `Backend = none` 时消息立即到达，便于复用原有算法和排查业务逻辑。
+- `Backend = ns3` 时消息经过 ns-3 Wi-Fi ad hoc 网络，当前 runner 支持 `olsr` 和 `aodv`。
+- `MaxRangeMeters` 是当前实现使用的硬通信范围，超出范围后包会在 `PacketTimeoutSeconds` 到期后记录为丢包。
+- ns-3 可以模拟承载图像或点云的字节流，但不会替代 UE 生成画面，也不会自动让未经修改的 ROS/TCP/UDP 程序经过仿真网络；如需透明网络栈，需要后续接入 TAP/EMU 或 DCE。
+- 详细安装与验证步骤见 `docs\laesim_wsl_ros_ns3.md`。
 
 ## 9. 常见编译问题
 

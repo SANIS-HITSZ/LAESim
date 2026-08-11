@@ -1,13 +1,14 @@
 # 仿真案例
 
-本页提供两个面向首次使用者的可复现实验。建议先完成异构载具实验，熟悉 `settings.json` 和 Python API，再进行 ns-3 网络实验。
+本页提供三个可复现实验入口。建议先完成异构载具实验，熟悉 `settings.json` 和 Python API，再按研究需要进行 ns-3 网络或天基任务实验。
 
 | 实验 | 重点 | 环境 | 预计时间 |
 | --- | --- | --- | --- |
 | 实验一：无人机、汽车与船 | `AirGround`、载具配置、RPC 端口、Python API | Windows + UE 4.27 | 约 10 分钟 |
 | 实验二：LAESim 与 ns-3 | ROS 里程计、节点映射、范围内交付、范围外丢包 | Windows + WSL2 + ROS + ns-3 | 约 15 分钟 |
+| 实验三：天基任务与通信 | TLE/SGP4、多星 access、真实斜距链路、UE 显示 | Windows + 可选 WSL2/ROS/ns-3 | 约 15 分钟 |
 
-完整示例统一维护在 [`Examples/quickstart`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.4/Examples/quickstart)，包含可直接复制的配置、运行脚本、预期结果和排查步骤。
+前两个入门示例统一维护在 [`Examples/quickstart`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart)，包含可直接复制的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见[天基任务桥接](space_mission_bridge.md)与[交付检查清单](space_delivery_checklist.md)。
 
 ## 实验一：无人机、汽车与船异构仿真
 
@@ -15,7 +16,7 @@
 
 在同一个 `AirGround` 场景中创建 `UAV`、`Car`、`Boat`，使用各自的 RPC 端口同时发送控制并读取状态。该实验不需要 ROS 或 ns-3。
 
-核心配置如下，完整文件见 [`heterogeneous_fleet/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/settings.json)：
+核心配置如下，完整文件见 [`heterogeneous_fleet/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/settings.json)：
 
 ```json
 {
@@ -69,7 +70,7 @@ boat.setBoatControls(airsim.BoatControls(throttle=0.70), "Boat")
 
 运行约 8 秒后，脚本停止汽车和船并让无人机降落。终端应持续显示无人机局部 NED 坐标、汽车速度、船的纵向/横向速度。
 
-完整步骤和练习见[实验一 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/README.md)，完整代码见 [`run_experiment.py`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/heterogeneous_fleet/run_experiment.py)。
+完整步骤和练习见[实验一 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/README.md)，完整代码见 [`run_experiment.py`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/run_experiment.py)。
 
 ## 实验二：LAESim 节点与 ns-3 通信范围
 
@@ -87,7 +88,7 @@ LAESim odom_local_ned + settings X/Y/Z
           /network_sim/rx/Car
 ```
 
-完整配置见 [`ns3_network/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/ns3_network/settings.json)，关键部分是：
+完整配置见 [`ns3_network/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/ns3_network/settings.json)，关键部分是：
 
 ```json
 {
@@ -108,7 +109,7 @@ LAESim odom_local_ned + settings X/Y/Z
 
 ### 启动链路
 
-先完成[安装与构建页面中的 WSL2、ROS 与 ns-3 步骤](laesim_build.md#wsl-ros-ns3)，在 Windows 仓库根目录复制实验配置：
+先完成 [WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md) 中的安装步骤，在 Windows 仓库根目录复制实验配置：
 
 ```powershell
 $AirSimDir = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'AirSim'
@@ -155,7 +156,7 @@ python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
   --expect delivered
 ```
 
-预期 `sent: 5`、`delivered: 5`、`dropped: 0`，且返回的 `simulation_time_ns` 均大于 0。
+预期 `sent: 5`、`delivered: 5`、`dropped: 0`，且返回的 `simulation_time_ns` 均大于 0。V1.5 同时输出每个包的 `latency_ns`；前者是 runner 的累计仿真时刻，后者才是本包的仿真时延。
 
 然后将 Windows 活动配置中的 `MaxRangeMeters` 改为 `5.0`，重启终端 C 的桥接器，再运行：
 
@@ -164,10 +165,54 @@ python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
   --expect dropped
 ```
 
-两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 `delivered: 0`、`dropped: 5`。完整步骤和排查见[实验二 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.4/Examples/quickstart/ns3_network/README.md)。
+两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 `delivered: 0`、`dropped: 5`。完整步骤和排查见[实验二 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/ns3_network/README.md)。
 
 !!! note
     普通 `/airsim_node/...` 话题不会自动经过 ns-3。需要受到时延和丢包影响的业务消息应发布到 `/network_sim/tx`，接收端订阅 `/network_sim/rx/<目标载具名>`。
+
+## 实验三：天基任务分析与通信联动
+
+### 目标
+
+- 使用 TLE/SGP4 或 CSV 生成卫星真实经纬高和任务时间。
+- 计算多目标可见性、覆盖窗口、重访时间和最佳卫星。
+- 将缩放后的卫星位置同步到 UE，同时保持真实任务几何独立。
+- 可选通过 ROS/NetworkSim 验证星地 access、真实斜距链路预算、星间链路和多跳转发。
+
+### Windows 单机验证
+
+先启用 `how_to_use_settings/settings_space_mission_bridge.json`，进入 UE Play，然后在仓库根目录执行：
+
+```powershell
+python .\Multi_use\space_mission_bridge.py `
+  --provider csv `
+  --csv .\Multi_use\space_mission_sample.csv `
+  --vehicle Satellite `
+  --target Island:22.591164:113.975317:0 `
+  --rate 2
+```
+
+该流程只需要 AirSim Python 依赖。终端应持续输出卫星真值、目标方位角/仰角/斜距和 UE 显示坐标；UE 中卫星模型的位置不用于反推真实链路距离。
+
+离线多星任务分析不需要启动 UE：
+
+```powershell
+python .\Multi_use\space_mission_analyzer.py `
+  --mission .\Multi_use\space_mission.example.json `
+  --out .\Multi_use\space_mission_report `
+  --print-summary
+```
+
+### ROS 与 ns-3 联动
+
+使用 `how_to_use_settings/settings_space_dynamic_targets.json`，并按 [WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md) 启动 ROS wrapper 和 NetworkSim。随后可运行：
+
+```bash
+cd "${HOME}/LAESim"
+bash NetworkSim/scripts/run_tle_constellation_demo.sh
+```
+
+多星桥接会发布 `/space/<satellite>/state`、`/space/<satellite>/access/<target>` 和最佳星/切换状态。NetworkSim 根据 `SpaceAccessPolicy` 和真实斜距逻辑链路决定投递，并将失败阶段与原因发布到 `/network_sim/drop`。不启动这些可选脚本时，原有 UE、Python、ROS 和 `Backend=none` 流程保持不变。
 
 ## 更多场景展示
 

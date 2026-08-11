@@ -1,0 +1,56 @@
+{
+  "analysis": {
+    "start_time": "2026-07-23T00:00:00Z",
+    "duration_s": 300,
+    "step_s": 30,
+    "min_elevation_deg": 5
+  },
+  "reference": {
+    "latitude_deg": 22.591164,
+    "longitude_deg": 113.975317,
+    "altitude_m": 0
+  },
+  "satellites": [
+    {
+      "name": "Satellite",
+      "provider": "csv",
+      "csv": "space_mission_sample.csv"
+    },
+    {
+      "name": "Satellite2",
+      "provider": "csv",
+      "csv": "space_mission_sample.csv"
+    }
+  ],
+  "targets": [
+    {
+      "name": "Island",
+      "kind": "ground",
+      "latitude_deg": 22.591164,
+      "longitude_deg": 113.975317,
+      "altitude_m": 0,
+      "min_elevation_deg": 5
+    },
+    {
+      "name": "SeaArea",
+      "kind": "sea",
+      "type": "area_grid",
+      "center_latitude_deg": 22.50,
+      "center_longitude_deg": 114.05,
+      "altitude_m": 0,
+      "width_km": 8,
+      "height_km": 6,
+      "spacing_km": 2,
+      "min_elevation_deg": 5
+    },
+    {
+      "name": "AirTarget",
+      "kind": "air",
+      "latitude_deg": 22.64,
+      "longitude_deg": 113.90,
+      "altitude_m": 800,
+      "min_elevation_deg": 3,
+      "max_range_m": 700000
+    }
+  ]
+}
