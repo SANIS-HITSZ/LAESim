@@ -67,6 +67,14 @@ python -m json.tool .\Examples\quickstart\ns3_network\settings.json > $null
 python -m unittest discover -s .\NetworkSim\tests -p "test_*.py" -v
 ```
 
+也可使用与 GitHub Actions 完全相同的一键核心验证：
+
+```powershell
+python .\NetworkSim\scripts\verify_v15_core.py
+```
+
+成功标准是返回码为 `0`，且最后输出 `V1.5 CORE VERIFICATION: PASS`。该脚本不需要启动 UE、ROS 或 ns-3；它不替代运行时现场验收。
+
 文档环境安装 MkDocs 及项目扩展后执行：
 
 ```powershell

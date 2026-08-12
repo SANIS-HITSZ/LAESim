@@ -1,0 +1,37 @@
+name: V1.5 Core Verification
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Run portable V1.5 verification
+        run: |
+          python NetworkSim/scripts/verify_v15_core.py | tee v15-core-verification.txt
+
+      - name: Add verification result to job summary
+        if: always()
+        run: |
+          echo '## V1.5 Core Verification' >> "$GITHUB_STEP_SUMMARY"
+          echo '```text' >> "$GITHUB_STEP_SUMMARY"
+          cat v15-core-verification.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload verification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1.5-core-verification-${{ github.run_id }}
+          path: v15-core-verification.txt

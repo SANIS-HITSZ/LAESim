@@ -2,6 +2,9 @@
 
 面向空天地海协同研究的多载具仿真平台
 
+[![V1.5 Core Verification](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/verify_v15_core.yml/badge.svg?branch=V1.5)](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/verify_v15_core.yml?query=branch%3AV1.5)
+[![Documentation Build & Deploy](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/test_docs.yml/badge.svg?branch=V1.5)](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/test_docs.yml?query=branch%3AV1.5)
+
 **维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室**
 
 [项目展示页](https://sanis-hitsz.github.io/LAESim/) · [项目文档](https://sanis-hitsz.github.io/LAESim/documentation/) · [安装与构建](https://sanis-hitsz.github.io/LAESim/laesim_build/) · [仿真案例](https://sanis-hitsz.github.io/LAESim/simulation_cases/)
@@ -118,6 +121,16 @@ V1.5 在继承 V1.4 验证项的基础上，已覆盖以下链路：
 - TLE/SGP4、多星多目标任务分析、覆盖窗口和重访报告
 - 星地真实斜距链路预算、星间多跳、统一时钟和结构化丢包诊断
 - GitHub Pages 文档构建与发布
+
+仓库提供一个 Windows/Linux 通用的核心验证入口：
+
+```bash
+python NetworkSim/scripts/verify_v15_core.py
+```
+
+命令返回码为 `0` 且最后输出 `V1.5 CORE VERIFICATION: PASS` 时，表示可移植源码清单、JSON 配置、Python 语法、异构载具 quickstart、33 个确定性单元测试和理想通信后端冒烟测试全部通过。GitHub 每次 push/PR 都会自动运行同一脚本，页首 `V1.5 Core Verification` 绿色徽章表示当前 `V1.5` 分支通过该层验证，Actions 会保留完整日志作为构建产物。
+
+该绿勾不代表 GitHub 云端启动了 UE、ROS 或真实 ns-3 runner。这些需要外部进程和特定开发环境的链路，应按[WSL2、ROS 与 ns-3](docs/laesim_wsl_ros_ns3.md)和[交付检查清单](docs/space_delivery_checklist.md)运行现场验收；只有得到具体包投递、非零时延、链路转换和 UE 位姿进展证据，才能说明对应的运行时链路 work。
 
 运行时模型外观、碰撞、SceneMap 坐标方向和具体任务算法仍应在目标 UE 场景中按实验配置验证。
 
