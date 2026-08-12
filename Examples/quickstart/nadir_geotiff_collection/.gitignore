@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+input_map.tif
+scene_map.png
+settings.generated.json
+output/

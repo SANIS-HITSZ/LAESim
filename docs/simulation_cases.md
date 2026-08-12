@@ -1,14 +1,15 @@
 # 仿真案例
 
-本页提供三个可复现实验入口。建议先完成异构载具实验，熟悉 `settings.json` 和 Python API，再按研究需要进行 ns-3 网络或天基任务实验。
+本页提供四个可复现实验入口。建议先完成异构载具实验，熟悉 `settings.json` 和 Python API，再按研究需要进行 ns-3 网络、天基任务或视觉数据采集实验。
 
 | 实验 | 重点 | 环境 | 预计时间 |
 | --- | --- | --- | --- |
 | 实验一：无人机、汽车与船 | `AirGround`、载具配置、RPC 端口、Python API | Windows + UE 4.27 | 约 10 分钟 |
 | 实验二：LAESim 与 ns-3 | ROS 里程计、节点映射、范围内交付、范围外丢包 | Windows + WSL2 + ROS + ns-3 | 约 15 分钟 |
 | 实验三：天基任务与通信 | TLE/SGP4、多星 access、真实斜距链路、UE 显示 | Windows + 可选 WSL2/ROS/ns-3 | 约 15 分钟 |
+| 实验四：GeoTIFF 下视采集 | SceneMap、覆盖航线、稳定云台、图像/GPS/ground truth | Windows + UE 4.27 | 按任务时长 |
 
-前两个入门示例统一维护在 [`Examples/quickstart`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart)，包含可直接复制的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见[天基任务桥接](space_mission_bridge.md)与[交付检查清单](space_delivery_checklist.md)。
+入门示例统一维护在 [`Examples/quickstart`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart)，包含可直接复制或生成的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见[天基任务桥接](space_mission_bridge.md)与[交付检查清单](space_delivery_checklist.md)。
 
 ## 实验一：无人机、汽车与船异构仿真
 
@@ -213,6 +214,78 @@ bash NetworkSim/scripts/run_tle_constellation_demo.sh
 ```
 
 多星桥接会发布 `/space/<satellite>/state`、`/space/<satellite>/access/<target>` 和最佳星/切换状态。NetworkSim 根据 `SpaceAccessPolicy` 和真实斜距逻辑链路决定投递，并将失败阶段与原因发布到 `/network_sim/drop`。不启动这些可选脚本时，原有 UE、Python、ROS 和 `Backend=none` 流程保持不变。
+
+## 实验四：GeoTIFF 覆盖飞行与稳定下视数据采集
+
+### 目标
+
+- 将带地理标签的 GeoTIFF 转换为 `NorthUp` SceneMap，并自动生成比例尺、GPS 参考和 Windows 图片路径。
+- 按真实地面米规划多航带覆盖路线，使用额外稳定下视相机采集图像。
+- 以固定频率关联图像、AirSim GPS、物理真值、状态估计和纳秒时间戳。
+- 同时保留理想规划轨迹与实际物理轨迹，用于视觉定位、导航和地图匹配算法评估。
+
+完整工程位于 [`Examples/quickstart/nadir_geotiff_collection`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart/nadir_geotiff_collection)。地图和数据集通常体积较大且可能受授权限制，因此不随仓库分发；用户提供自己的 GeoTIFF。
+
+### 准备 SceneMap
+
+在仓库根目录运行：
+
+```powershell
+py -3 -m pip install -r .\Examples\quickstart\nadir_geotiff_collection\requirements.txt
+py -3 .\Examples\quickstart\nadir_geotiff_collection\prepare_scenemap.py `
+  --tif C:\data\area.tif
+```
+
+脚本生成 `scene_map.png` 和 `settings.generated.json`。后者包含 GeoTIFF 中心 `OriginGeopoint`、当地真实 `MetersPerPixel`、`GeoReference` 以及下面的稳定云台：
+
+```json
+"nadir": {
+  "Pitch": -90,
+  "Roll": 0,
+  "Yaw": 0,
+  "Gimbal": {
+    "Stabilization": 1.0,
+    "Pitch": -90,
+    "Roll": 0,
+    "Yaw": 0
+  },
+  "CaptureSettings": [
+    { "ImageType": 0, "Width": 256, "Height": 256, "FOV_Degrees": 90 }
+  ]
+}
+```
+
+相机外层角度是相对机体的安装姿态；`Gimbal` 内角度是世界坐标系稳定目标。仅写前者时，无人机转弯倾斜仍会改变取景范围。
+
+### 规划与实时采集
+
+先在不启动 UE 的情况下检查航线：
+
+```powershell
+py -3 .\Examples\quickstart\nadir_geotiff_collection\collect_geotiff_dataset.py `
+  --tif C:\data\area.tif --plan-only --overwrite
+```
+
+把 `settings.generated.json` 复制到 `%USERPROFILE%\Documents\AirSim\settings.json`，完整重启 UE 并进入 Play，然后运行：
+
+```powershell
+py -3 .\Examples\quickstart\nadir_geotiff_collection\collect_airsim_nadir.py `
+  --tif C:\data\area.tif `
+  --output .\Examples\quickstart\nadir_geotiff_collection\output\run01 `
+  --no-land-after
+```
+
+默认参数是 1000 m、4.6 m/s、35 m 相对高度、218 s 和 10 Hz，可通过命令行覆盖。结果中的 `groundtruth.csv` 来自 `simGetGroundTruthKinematics()`；经纬度由 SceneMap 局部 NED 和 GeoTIFF 地理参考换算。`metadata.csv` 逐帧关联图像、GPS、真值、估计状态和碰撞信息，`runtime_summary.json` 用于检查采集频率和跳帧。
+
+### 验收边界
+
+结构检查无需 UE 和地图：
+
+```powershell
+py -3 .\Examples\quickstart\nadir_geotiff_collection\validate_example.py
+```
+
+实时验收应确认 SceneMap 加载成功、云台画面不随机体横滚/俯仰、`skipped_schedule_frame_count=0` 且实际频率接近目标。SceneMap 是平面图片，不提供真实建筑侧面、地形起伏和三维遮挡；这些任务应换用对应三维 UE 场景，但仍可复用稳定云台与采集脚本。
 
 ## 更多场景展示
 

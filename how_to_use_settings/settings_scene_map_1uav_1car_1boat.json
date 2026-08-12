@@ -47,6 +47,23 @@
           "Y": 0,
           "Yaw": 0,
           "Z": 0.3
+        },
+        "nadir_stabilized": {
+          "CaptureSettings": [
+            { "PublishToRos": 1, "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 90, "AutoExposureSpeed": 100, "MotionBlurAmount": 0 }
+          ],
+          "Pitch": -90,
+          "Roll": 0,
+          "Yaw": 0,
+          "X": 0,
+          "Y": 0,
+          "Z": 0.3,
+          "Gimbal": {
+            "Stabilization": 1.0,
+            "Pitch": -90,
+            "Roll": 0,
+            "Yaw": 0
+          }
         }
       }
     },
@@ -115,7 +132,7 @@
   },
   "SubWindows": [
     { "WindowID": 0, "ImageType": 0, "CameraName": "front_center_scene", "VehicleName": "UAV" },
-    { "WindowID": 1, "ImageType": 0, "CameraName": "front_center_scene", "VehicleName": "Car" },
-    { "WindowID": 2, "ImageType": 0, "CameraName": "front_center_scene", "VehicleName": "Boat" }
+    { "WindowID": 1, "ImageType": 0, "CameraName": "nadir_stabilized", "VehicleName": "UAV" },
+    { "WindowID": 2, "ImageType": 0, "CameraName": "front_center_scene", "VehicleName": "Car" }
   ]
 }

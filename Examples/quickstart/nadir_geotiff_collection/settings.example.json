@@ -1,0 +1,80 @@
+{
+  "SettingsVersion": 1.2,
+  "SimMode": "AirGround",
+  "ApiServerPortCV": 41451,
+  "ApiServerPortMultirotor": 41471,
+  "OriginGeopoint": {
+    "Latitude": 0.0,
+    "Longitude": 0.0,
+    "Altitude": -200.0
+  },
+  "SceneMap": {
+    "Enabled": true,
+    "ImagePath": "C:/replace/with/absolute/path/scene_map.png",
+    "ObjectName": "LAESimNadirCollectionMap",
+    "MetersPerPixel": 1.0,
+    "PixelCoordinateFrame": "NorthUp",
+    "CenterX": 0.0,
+    "CenterY": 0.0,
+    "Z": -200.0,
+    "Yaw": 0.0,
+    "CollisionEnabled": false,
+    "SegmentationId": 21,
+    "GeoReference": {
+      "Enabled": true,
+      "ReferenceLatitude": 0.0,
+      "ReferenceLongitude": 0.0,
+      "ReferenceAltitude": 0.0,
+      "ReferenceU": 0.0,
+      "ReferenceV": 0.0
+    }
+  },
+  "Vehicles": {
+    "UAV": {
+      "VehicleType": "SimpleFlight",
+      "AutoCreate": true,
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0,
+      "Sensors": {
+        "gps": { "SensorType": 3, "Enabled": true },
+        "imu": { "SensorType": 2, "Enabled": true }
+      },
+      "Cameras": {
+        "nadir": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "Pitch": -90.0,
+          "Roll": 0.0,
+          "Yaw": 0.0,
+          "Gimbal": {
+            "Stabilization": 1.0,
+            "Pitch": -90.0,
+            "Roll": 0.0,
+            "Yaw": 0.0
+          },
+          "CaptureSettings": [
+            {
+              "ImageType": 0,
+              "Width": 256,
+              "Height": 256,
+              "FOV_Degrees": 90.0,
+              "AutoExposureSpeed": 100.0,
+              "MotionBlurAmount": 0.0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "SubWindows": [
+    {
+      "WindowID": 0,
+      "ImageType": 0,
+      "CameraName": "nadir",
+      "VehicleName": "UAV",
+      "Visible": true
+    }
+  ]
+}

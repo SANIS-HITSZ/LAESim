@@ -92,7 +92,7 @@ LAESim 保留两种可切换的通信模式：
 | `Multi_use/` | 无 ROS 控制、传感器、SceneMap 和天基任务工具 |
 | `ros/` | ROS Noetic 工作空间、消息、服务与示例 |
 | `NetworkSim/` | 可选 ns-3 runner、ROS 网络桥接器和测试 |
-| `Examples/quickstart/` | 异构载具与 ns-3 两个可复现入门实验 |
+| `Examples/quickstart/` | 异构载具、ns-3 与 GeoTIFF 稳定下视采集实验 |
 | `how_to_use_settings/` | 单载具、混合载具、卫星和 SceneMap 配置模板 |
 | `docs/` | LAESim 中文文档与展示页内容 |
 

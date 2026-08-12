@@ -100,6 +100,13 @@ def main() -> int:
         ],
     )
     run_step(
+        "Nadir GeoTIFF collection quickstart configuration",
+        [
+            sys.executable,
+            "Examples/quickstart/nadir_geotiff_collection/validate_example.py",
+        ],
+    )
+    run_step(
         "NetworkSim deterministic unit tests",
         [
             sys.executable,

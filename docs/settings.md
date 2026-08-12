@@ -354,7 +354,9 @@ This adds fluctuations on horizontal line.
 * `HorzDistortionStrength`: This determines how large is the distortion.
 
 ### Gimbal
-The `Gimbal` element allows to freeze camera orientation for pitch, roll and/or yaw. This setting is ignored unless `ImageType` is -1. The `Stabilization` is defaulted to 0 meaning no gimbal i.e. camera orientation changes with body orientation on all axis. The value of 1 means full stabilization. The value between 0 to 1 acts as a weight for fixed angles specified (in degrees, in world-frame) in `Pitch`, `Roll` and `Yaw` elements and orientation of the vehicle body. When any of the angles is omitted from json or set to NaN, that angle is not stabilized (i.e. it moves along with vehicle body).
+The `Gimbal` element stabilizes a named vehicle camera or external camera in world-frame pitch, roll and/or yaw. `Stabilization` defaults to 0, meaning the camera follows the vehicle body. A value of 1 means full stabilization; values between 0 and 1 blend the fixed world-frame angles with body orientation. When an angle is omitted or NaN, that axis is not stabilized. For example, a fully stabilized nadir camera uses `Stabilization: 1`, `Pitch: -90`, `Roll: 0`, and `Yaw: 0`; omit `Yaw` if the image should remain nadir while following vehicle heading.
+
+`X/Y/Z/Pitch/Roll/Yaw` at camera level define the camera mounting pose relative to the vehicle. The same angle names inside `Gimbal` define the stabilization target in the world frame; they are not a second relative rotation.
 
 ### UnrealEngine
 This element contains settings specific to the Unreal Engine. These will be ignored in the Unity project.

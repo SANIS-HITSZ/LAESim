@@ -502,7 +502,7 @@ bool WorldSimApi::simLoadSceneMapInternal(const msr::airlib::AirSimSettings::Sce
 
         const auto pixel_frame = msr::airlib::Utils::toLower(scene_map_setting.pixel_coordinate_frame);
         const bool north_up = pixel_frame == "northup" || pixel_frame == "north_up" || pixel_frame == "googleearth" || pixel_frame == "google_earth" || pixel_frame == "satellite";
-        const float visual_yaw = scene_map_setting.yaw + (north_up ? -90.0f : 0.0f);
+        const float visual_yaw = scene_map_setting.yaw + (north_up ? 90.0f : 0.0f);
         const FVector actor_location = simmode_->getGlobalNedTransform().fromGlobalNed(Vector3r(scene_map_setting.center_x, scene_map_setting.center_y, scene_map_setting.z));
         const FQuat actor_rotation = FRotator(0.0f, visual_yaw, 0.0f).Quaternion();
         UAirBlueprintLib::LogMessageString("SceneMap PixelFrame/VisualYaw: ",
@@ -520,7 +520,7 @@ bool WorldSimApi::simLoadSceneMapInternal(const msr::airlib::AirSimSettings::Sce
         mesh_component->SetRelativeLocation(FVector::ZeroVector);
         mesh_component->SetWorldScale3D(FVector(width_m, height_m, 1.0f));
         mesh_component->SetHiddenInGame(false, true);
-        mesh_component->SetMobility(EComponentMobility::Static);
+        mesh_component->SetMobility(EComponentMobility::Movable);
         mesh_component->SetCollisionEnabled(scene_map_setting.collision_enabled ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
         mesh_component->SetCollisionObjectType(ECC_WorldStatic);
         mesh_component->SetCollisionResponseToAllChannels(scene_map_setting.collision_enabled ? ECR_Block : ECR_Ignore);
@@ -531,6 +531,8 @@ bool WorldSimApi::simLoadSceneMapInternal(const msr::airlib::AirSimSettings::Sce
 
         actor->SetRootComponent(mesh_component);
         mesh_component->RegisterComponent();
+        actor->SetActorLocationAndRotation(actor_location, actor_rotation, false, nullptr, ETeleportType::TeleportPhysics);
+        mesh_component->SetMobility(EComponentMobility::Static);
 
         scene_map_actor_ = actor;
         scene_map_info_.enabled = true;

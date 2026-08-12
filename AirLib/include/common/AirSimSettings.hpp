@@ -1482,8 +1482,8 @@ namespace airlib
                         vehicle_setting.start_on_scene_map.has_altitude ? vehicle_setting.start_on_scene_map.altitude : reference_geo.altitude);
                     const auto ned_from_reference = EarthUtils::GeodeticToNedFast(vehicle_geo, reference_geo);
                     if (scene_map_setting.usesNorthUpPixels()) {
-                        local_x = reference_local.x() + ned_from_reference.y();
-                        local_y = reference_local.y() - ned_from_reference.x();
+                        local_x = reference_local.x() + ned_from_reference.x();
+                        local_y = reference_local.y() + ned_from_reference.y();
                     }
                     else {
                         local_x = reference_local.x() + ned_from_reference.x();

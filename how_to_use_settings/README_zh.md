@@ -1,8 +1,9 @@
 # how_to_use_settings 使用说明
 
-这个目录里放了 9 份可直接起步的 `settings.json` 模板；可选通信网络配置示例放在 `NetworkSim\config\network-simulation.example.json`，可按需叠加到任意模板顶层：
+这个目录里放了 10 份可直接起步的 `settings.json` 模板；可选通信网络配置示例放在 `NetworkSim\config\network-simulation.example.json`，GeoTIFF 数据采集的配置生成器放在 `Examples\quickstart\nadir_geotiff_collection`：
 
 - `settings_single_uav_with_sensors.json`
+- `settings_uav_stable_nadir_camera.json`
 - `settings_single_car_with_sensors.json`
 - `settings_airground_3uav_3car_with_sensors.json`
 - `settings_airground_2uav_1car_1boat_with_sensors.json`
@@ -12,6 +13,7 @@
 - `settings_space_mission_bridge.json`
 - `settings_space_dynamic_targets.json`
 - `..\NetworkSim\config\network-simulation.example.json`
+- `..\Examples\quickstart\nadir_geotiff_collection\prepare_scenemap.py`
 
 推荐使用方法：
 
@@ -43,6 +45,19 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 - 配了 `imu / gps / magnetometer / barometer / lidar`
 - 配了前视、下视相机
 - 相机里包含 `Scene / DepthPlanar / Segmentation`
+- 下视相机已启用世界系稳定云台，机体倾斜时仍保持正下方
+
+### 1.1.1 前视 + 稳定下视相机
+
+`settings_uav_stable_nadir_camera.json`
+
+适合：
+
+- 正射图像采集、地图匹配和视觉定位
+- 同时保留普通前视相机与额外稳定下视相机
+- 对比机体系相机和世界系稳定云台的画面差异
+
+模板中的 `nadir_stabilized` 使用 `Gimbal.Stabilization=1`，完整说明见第 9.1 节。
 
 ### 1.2 单汽车
 
@@ -153,7 +168,7 @@ C:\Users\<用户名>\Documents\AirSim\settings.json
 
 特点：
 
-- `PixelCoordinateFrame = NorthUp`：按卫星图/Google Earth 场景处理像素，并使用 LAESim 当前 UE 地图显示层的 -90 度轴向补偿
+- `PixelCoordinateFrame = NorthUp`：按卫星图/Google Earth 场景处理像素，并使用 LAESim 当前 UE 地图显示层的 +90 度轴向补偿
 - `GeoReference`：用一个已知经纬度的参考点把图片配准到 GPS
 - `StartOnSceneMap.CoordinateType = GPS`：载具按 `Latitude / Longitude / Altitude` 出生
 
@@ -476,9 +491,9 @@ GPS 模式：
 
 坐标约定：
 
-- `PixelCoordinateFrame = NorthUp` 时，像素模式保持 `U` 沿图面右方、`V` 沿图面下方；GPS 模式会把纬度减小产生的南向位移映射到图面右方，也就是 `U` 增大
+- `PixelCoordinateFrame = NorthUp` 时，`U` 沿图面向东增大、`V` 沿图面向南增大；经度增大对应 `U` 增大，纬度减小对应 `V` 增大
 - `PixelCoordinateFrame = NED` 时，保持旧版 `U -> +X`、`V -> +Y`
-- `NorthUp` 会在 UE 显示层自动补偿 -90 度轴向差；GPS 出生内部使用 `local_x=east, local_y=-north` 对齐当前图面，用户不要再手动给 `SceneMap.Yaw` 加 90 度
+- `NorthUp` 会在 UE 显示层自动补偿 +90 度轴向差；像素、GPS 和世界 NED 转换保持同一北向约定，用户不要再手动修改 `SceneMap.Yaw`
 - 像素原点在图片左上角，地图中心是 `(图片宽 / 2, 图片高 / 2)`
 - `MapX / MapY` 是以地图中心为原点的局部米制坐标
 - `Height` 表示离地图平面的高度；无人机通常为正数，车和船通常为 `0`
@@ -763,6 +778,48 @@ API / ROS 状态里会同时给出 `speed`、`forward_speed`、`lateral_speed`�
 - `ImageType 1`：`DepthPlanar`
 - `ImageType 5`：`Segmentation`
 - `PublishToRos = 1` 才会让 ROS 示例期待对应图像话题
+
+### 9.1 稳定云台与额外下视相机
+
+只写相机的 `Pitch / Roll / Yaw` 设置的是**相机相对载具的安装姿态**。例如 `Pitch=-90` 会让相机朝向机体下方，但无人机起步、制动或转弯时，相机仍会随机体横滚和俯仰。正射采集、地图匹配、目标跟踪、巡检和着陆观测通常还需要 `Gimbal` 稳定：
+
+```json
+"Cameras": {
+  "nadir_stabilized": {
+    "X": 0.0,
+    "Y": 0.0,
+    "Z": 0.2,
+    "Pitch": -90.0,
+    "Roll": 0.0,
+    "Yaw": 0.0,
+    "Gimbal": {
+      "Stabilization": 1.0,
+      "Pitch": -90.0,
+      "Roll": 0.0,
+      "Yaw": 0.0
+    },
+    "CaptureSettings": [
+      {
+        "PublishToRos": 1,
+        "ImageType": 0,
+        "Width": 640,
+        "Height": 480,
+        "FOV_Degrees": 90,
+        "AutoExposureSpeed": 100,
+        "MotionBlurAmount": 0
+      }
+    ]
+  }
+}
+```
+
+- `Stabilization=0`：不稳定，相机完全跟随机体；`1`：完全固定到指定世界姿态；中间值是机体姿态和目标姿态的混合。
+- `Gimbal.Pitch/Roll/Yaw` 是世界坐标系目标角，不是相对机体的二次旋转。稳定下视通常写 `Pitch=-90, Roll=0, Yaw=0`。
+- 如果希望画面始终朝下，但航向继续随机头变化，可省略 `Gimbal.Yaw`；未填写的轴保持跟随机体。
+- `Cameras` 可以保留原有前视相机并增加一个新名字，不需要替换默认相机。调用 API 时使用该名字，例如 `simGetImages(..., vehicle_name="UAV")` 的请求相机名写 `nadir_stabilized`。
+- 改完相机或云台配置必须重新开始 UE Play。`SubWindows` 只决定编辑器里显示哪个相机，不影响该相机能否通过 Python/ROS 采集。
+
+完整的 GeoTIFF 覆盖飞行、稳定下视相机、10 Hz 图像和 ground truth 采集案例见 `Examples\quickstart\nadir_geotiff_collection`。
 
 ## 10. 想加 lidar 怎么加
 

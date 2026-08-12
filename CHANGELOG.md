@@ -4,6 +4,10 @@
 
 V1.5 以 LAESim V1.4 为基线，保留其空天地海混合载具、SceneMap、Python/ROS 接口、ns-3 runner、项目文档站和 quickstart 实验，并增加：
 
+- 修正 SceneMap 动态根组件注册后丢失 Actor 位置/旋转的问题，并通过实拍配准将 `NorthUp` 的 UE 显示补偿修正为 +90 度。
+- 新增 GeoTIFF 覆盖飞行与稳定下视数据采集 quickstart，输出图像、GPS、物理真值、估计轨迹和采集频率统计。
+- 增加稳定云台 settings 模板，并补充相机安装姿态与世界系 `Gimbal` 目标姿态说明。
+
 - TLE/SGP4、CSV、mock 与可选 Orekit 天基任务后端。
 - 多卫星、多目标、覆盖窗口、重访时间、最佳星选择和链路切换分析。
 - 与 UE 显示坐标解耦的星地链路预算、星间链路和多跳路由。

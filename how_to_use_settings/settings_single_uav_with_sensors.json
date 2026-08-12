@@ -101,6 +101,12 @@
           ],
           "Pitch": -90,
           "Roll": 0.0,
+          "Gimbal": {
+            "Stabilization": 1.0,
+            "Pitch": -90.0,
+            "Roll": 0.0,
+            "Yaw": 0.0
+          },
           "X": 0.25,
           "Y": 0.0,
           "Yaw": 0,

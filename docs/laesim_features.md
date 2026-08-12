@@ -83,6 +83,8 @@ SceneMap 可以在启动时或运行时把图片加载为 UE 平面地图，支�
 
 配置模板见仓库中的 `settings_scene_map_1uav_1car_1boat.json` 和 `settings_satellite_map_gps_start.json`。
 
+V1.5 的 `Examples/quickstart/nadir_geotiff_collection` 可从 GeoTIFF 自动生成带 GPS 配准的 SceneMap 配置，并通过世界系稳定下视云台采集图像、物理真值、状态估计和时间戳。稳定云台也可以作为额外相机独立加入普通三维场景，不要求启用 SceneMap。
+
 ## 可选 ns-3 自组织网络
 
 LAESim 将通信后端做成可配置能力：

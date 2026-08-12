@@ -13,6 +13,7 @@ LAESim 的主要使用入口是 Windows 侧 `settings.json`、UE 场景，以及
 仓库提供以下常用模板：
 
 - [单无人机与传感器](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_uav_with_sensors.json)
+- [无人机前视与稳定下视相机](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/how_to_use_settings/settings_uav_stable_nadir_camera.json)
 - [单汽车与传感器](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_car_with_sensors.json)
 - [3 架无人机 + 3 辆汽车](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_3uav_3car_with_sensors.json)
 - [2 架无人机 + 1 辆汽车 + 1 艘船](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_2uav_1car_1boat_with_sensors.json)
@@ -39,6 +40,29 @@ LAESim 的主要使用入口是 Windows 侧 `settings.json`、UE 场景，以及
 5. 使用 Python API 或 ROS 示例验证控制与状态。
 
 修改 `settings.json` 后需要重新开始 Play，运行中的场景不会自动重载完整载具配置。
+
+## 稳定云台相机
+
+相机级 `Pitch/Roll/Yaw` 是相对载具的安装姿态，`Gimbal` 是世界坐标系稳定目标。正射采集、地图匹配、巡检和着陆观测可在保留前视相机的同时增加稳定下视相机：
+
+```json
+"nadir_stabilized": {
+  "Pitch": -90,
+  "Roll": 0,
+  "Yaw": 0,
+  "Gimbal": {
+    "Stabilization": 1.0,
+    "Pitch": -90,
+    "Roll": 0,
+    "Yaw": 0
+  },
+  "CaptureSettings": [
+    { "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 90 }
+  ]
+}
+```
+
+完整配置见上面的稳定下视模板。只稳定俯仰/横滚、让画面航向随机头变化时，省略 `Gimbal.Yaw`。完整 GeoTIFF 覆盖采集流程见[仿真案例](simulation_cases.md#geotiff)。
 
 ## Windows Python API
 
