@@ -245,6 +245,9 @@
 python -m json.tool .\Examples\quickstart\heterogeneous_fleet\settings.json &gt; $null
 python -m json.tool .\Examples\quickstart\ns3_network\settings.json &gt; $null
 python -m unittest discover -s .\NetworkSim\tests -p "test_*.py" -v</code></pre>
+<p>也可使用与 GitHub Actions 完全相同的一键核心验证：</p>
+<pre class="highlight"><code class="language-powershell">python .\NetworkSim\scripts\verify_v15_core.py</code></pre>
+<p>成功标准是返回码为 <code>0</code>，且最后输出 <code>V1.5 CORE VERIFICATION: PASS</code>。该脚本不需要启动 UE、ROS 或 ns-3；它不替代运行时现场验收。</p>
 <p>文档环境安装 MkDocs 及项目扩展后执行：</p>
 <pre class="highlight"><code class="language-powershell">python -m mkdocs build --strict</code></pre>
 <p>涉及 ROS/ns-3 运行时的完整验收按 <a href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a> 执行；涉及天基任务的完整验收按<a href="../space_delivery_checklist/">交付检查清单</a>执行。</p>
