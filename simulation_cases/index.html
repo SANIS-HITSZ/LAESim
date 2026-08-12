@@ -99,9 +99,21 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_10">更多场景展示</a>
+    <li class="toctree-l2"><a class="reference internal" href="#geotiff">实验四：GeoTIFF 覆盖飞行与稳定下视数据采集</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_10">目标</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#_11">场景视频演示</a>
+    <li class="toctree-l3"><a class="reference internal" href="#scenemap">准备 SceneMap</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_11">规划与实时采集</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_12">验收边界</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_13">更多场景展示</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_14">场景视频演示</a>
     </li>
     </ul>
                   </li>
@@ -159,7 +171,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">仿真案例<a class="headerlink" href="#_1" title="Permanent link">#</a></h1>
-<p>本页提供三个可复现实验入口。建议先完成异构载具实验，熟悉 <code>settings.json</code> 和 Python API，再按研究需要进行 ns-3 网络或天基任务实验。</p>
+<p>本页提供四个可复现实验入口。建议先完成异构载具实验，熟悉 <code>settings.json</code> 和 Python API，再按研究需要进行 ns-3 网络、天基任务或视觉数据采集实验。</p>
 <table>
 <thead>
 <tr>
@@ -188,9 +200,15 @@
 <td>Windows + 可选 WSL2/ROS/ns-3</td>
 <td>约 15 分钟</td>
 </tr>
+<tr>
+<td>实验四：GeoTIFF 下视采集</td>
+<td>SceneMap、覆盖航线、稳定云台、图像/GPS/ground truth</td>
+<td>Windows + UE 4.27</td>
+<td>按任务时长</td>
+</tr>
 </tbody>
 </table>
-<p>前两个入门示例统一维护在 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart"><code>Examples/quickstart</code></a>，包含可直接复制的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见<a href="../space_mission_bridge/">天基任务桥接</a>与<a href="../space_delivery_checklist/">交付检查清单</a>。</p>
+<p>入门示例统一维护在 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart"><code>Examples/quickstart</code></a>，包含可直接复制或生成的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见<a href="../space_mission_bridge/">天基任务桥接</a>与<a href="../space_delivery_checklist/">交付检查清单</a>。</p>
 <h2 id="_2">实验一：无人机、汽车与船异构仿真<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
 <h3 id="_3">目标<a class="headerlink" href="#_3" title="Permanent link">#</a></h3>
 <p>在同一个 <code>AirGround</code> 场景中创建 <code>UAV</code>、<code>Car</code>、<code>Boat</code>，使用各自的 RPC 端口同时发送控制并读取状态。该实验不需要 ROS 或 ns-3。</p>
@@ -314,7 +332,51 @@ python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
 <pre class="highlight"><code class="language-bash">cd "${HOME}/LAESim"
 bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
 <p>多星桥接会发布 <code>/space/&lt;satellite&gt;/state</code>、<code>/space/&lt;satellite&gt;/access/&lt;target&gt;</code> 和最佳星/切换状态。NetworkSim 根据 <code>SpaceAccessPolicy</code> 和真实斜距逻辑链路决定投递，并将失败阶段与原因发布到 <code>/network_sim/drop</code>。不启动这些可选脚本时，原有 UE、Python、ROS 和 <code>Backend=none</code> 流程保持不变。</p>
-<h2 id="_10">更多场景展示<a class="headerlink" href="#_10" title="Permanent link">#</a></h2>
+<h2 id="geotiff">实验四：GeoTIFF 覆盖飞行与稳定下视数据采集<a class="headerlink" href="#geotiff" title="Permanent link">#</a></h2>
+<h3 id="_10">目标<a class="headerlink" href="#_10" title="Permanent link">#</a></h3>
+<ul>
+<li>将带地理标签的 GeoTIFF 转换为 <code>NorthUp</code> SceneMap，并自动生成比例尺、GPS 参考和 Windows 图片路径。</li>
+<li>按真实地面米规划多航带覆盖路线，使用额外稳定下视相机采集图像。</li>
+<li>以固定频率关联图像、AirSim GPS、物理真值、状态估计和纳秒时间戳。</li>
+<li>同时保留理想规划轨迹与实际物理轨迹，用于视觉定位、导航和地图匹配算法评估。</li>
+</ul>
+<p>完整工程位于 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart/nadir_geotiff_collection"><code>Examples/quickstart/nadir_geotiff_collection</code></a>。地图和数据集通常体积较大且可能受授权限制，因此不随仓库分发；用户提供自己的 GeoTIFF。</p>
+<h3 id="scenemap">准备 SceneMap<a class="headerlink" href="#scenemap" title="Permanent link">#</a></h3>
+<p>在仓库根目录运行：</p>
+<pre class="highlight"><code class="language-powershell">py -3 -m pip install -r .\Examples\quickstart\nadir_geotiff_collection\requirements.txt
+py -3 .\Examples\quickstart\nadir_geotiff_collection\prepare_scenemap.py `
+  --tif C:\data\area.tif</code></pre>
+<p>脚本生成 <code>scene_map.png</code> 和 <code>settings.generated.json</code>。后者包含 GeoTIFF 中心 <code>OriginGeopoint</code>、当地真实 <code>MetersPerPixel</code>、<code>GeoReference</code> 以及下面的稳定云台：</p>
+<pre class="highlight"><code class="language-json">"nadir": {
+  "Pitch": -90,
+  "Roll": 0,
+  "Yaw": 0,
+  "Gimbal": {
+    "Stabilization": 1.0,
+    "Pitch": -90,
+    "Roll": 0,
+    "Yaw": 0
+  },
+  "CaptureSettings": [
+    { "ImageType": 0, "Width": 256, "Height": 256, "FOV_Degrees": 90 }
+  ]
+}</code></pre>
+<p>相机外层角度是相对机体的安装姿态；<code>Gimbal</code> 内角度是世界坐标系稳定目标。仅写前者时，无人机转弯倾斜仍会改变取景范围。</p>
+<h3 id="_11">规划与实时采集<a class="headerlink" href="#_11" title="Permanent link">#</a></h3>
+<p>先在不启动 UE 的情况下检查航线：</p>
+<pre class="highlight"><code class="language-powershell">py -3 .\Examples\quickstart\nadir_geotiff_collection\collect_geotiff_dataset.py `
+  --tif C:\data\area.tif --plan-only --overwrite</code></pre>
+<p>把 <code>settings.generated.json</code> 复制到 <code>%USERPROFILE%\Documents\AirSim\settings.json</code>，完整重启 UE 并进入 Play，然后运行：</p>
+<pre class="highlight"><code class="language-powershell">py -3 .\Examples\quickstart\nadir_geotiff_collection\collect_airsim_nadir.py `
+  --tif C:\data\area.tif `
+  --output .\Examples\quickstart\nadir_geotiff_collection\output\run01 `
+  --no-land-after</code></pre>
+<p>默认参数是 1000 m、4.6 m/s、35 m 相对高度、218 s 和 10 Hz，可通过命令行覆盖。结果中的 <code>groundtruth.csv</code> 来自 <code>simGetGroundTruthKinematics()</code>；经纬度由 SceneMap 局部 NED 和 GeoTIFF 地理参考换算。<code>metadata.csv</code> 逐帧关联图像、GPS、真值、估计状态和碰撞信息，<code>runtime_summary.json</code> 用于检查采集频率和跳帧。</p>
+<h3 id="_12">验收边界<a class="headerlink" href="#_12" title="Permanent link">#</a></h3>
+<p>结构检查无需 UE 和地图：</p>
+<pre class="highlight"><code class="language-powershell">py -3 .\Examples\quickstart\nadir_geotiff_collection\validate_example.py</code></pre>
+<p>实时验收应确认 SceneMap 加载成功、云台画面不随机体横滚/俯仰、<code>skipped_schedule_frame_count=0</code> 且实际频率接近目标。SceneMap 是平面图片，不提供真实建筑侧面、地形起伏和三维遮挡；这些任务应换用对应三维 UE 场景，但仍可复用稳定云台与采集脚本。</p>
+<h2 id="_13">更多场景展示<a class="headerlink" href="#_13" title="Permanent link">#</a></h2>
 <p>以下画面来自 LAESim 当前开发场景，用于展示统一岛屿环境和多类型载具能力。</p>
 <figure class="laesim-media laesim-media--wide">
   <img src="../assets/showcase/laesim-island-scenemap.png" alt="LAESim 岛屿 SceneMap 仿真场景全景" loading="lazy" />
@@ -341,7 +403,7 @@ bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
   </figure>
 </div>
 
-<h2 id="_11">场景视频演示<a class="headerlink" href="#_11" title="Permanent link">#</a></h2>
+<h2 id="_14">场景视频演示<a class="headerlink" href="#_14" title="Permanent link">#</a></h2>
 <video class="laesim-video" controls preload="metadata" playsinline poster="../assets/showcase/laesim-air-space-sea-overview.png">
   <source src="../assets/showcase/laesim-platform-demo.mp4" type="video/mp4" />
   当前浏览器不支持 HTML5 视频播放。

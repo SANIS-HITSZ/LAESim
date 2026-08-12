@@ -61,6 +61,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#_2">启动场景</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">稳定云台相机</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#windows-python-api">Windows Python API</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#ros-noetic">ROS Noetic</a>
@@ -148,6 +150,7 @@
 <p>仓库提供以下常用模板：</p>
 <ul>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_uav_with_sensors.json">单无人机与传感器</a></li>
+<li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/how_to_use_settings/settings_uav_stable_nadir_camera.json">无人机前视与稳定下视相机</a></li>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_car_with_sensors.json">单汽车与传感器</a></li>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_3uav_3car_with_sensors.json">3 架无人机 + 3 辆汽车</a></li>
 <li><a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_2uav_1car_1boat_with_sensors.json">2 架无人机 + 1 辆汽车 + 1 艘船</a></li>
@@ -169,6 +172,23 @@
 <li>使用 Python API 或 ROS 示例验证控制与状态。</li>
 </ol>
 <p>修改 <code>settings.json</code> 后需要重新开始 Play，运行中的场景不会自动重载完整载具配置。</p>
+<h2 id="_3">稳定云台相机<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<p>相机级 <code>Pitch/Roll/Yaw</code> 是相对载具的安装姿态，<code>Gimbal</code> 是世界坐标系稳定目标。正射采集、地图匹配、巡检和着陆观测可在保留前视相机的同时增加稳定下视相机：</p>
+<pre class="highlight"><code class="language-json">"nadir_stabilized": {
+  "Pitch": -90,
+  "Roll": 0,
+  "Yaw": 0,
+  "Gimbal": {
+    "Stabilization": 1.0,
+    "Pitch": -90,
+    "Roll": 0,
+    "Yaw": 0
+  },
+  "CaptureSettings": [
+    { "ImageType": 0, "Width": 640, "Height": 480, "FOV_Degrees": 90 }
+  ]
+}</code></pre>
+<p>完整配置见上面的稳定下视模板。只稳定俯仰/横滚、让画面航向随机头变化时，省略 <code>Gimbal.Yaw</code>。完整 GeoTIFF 覆盖采集流程见<a href="../simulation_cases/#geotiff">仿真案例</a>。</p>
 <h2 id="windows-python-api">Windows Python API<a class="headerlink" href="#windows-python-api" title="Permanent link">#</a></h2>
 <p><code>Multi_use</code> 目录提供不依赖 ROS 的控制和传感器工具：</p>
 <pre class="highlight"><code class="language-powershell">python .\Multi_use\keyboard_control.py --vehicle UAV
