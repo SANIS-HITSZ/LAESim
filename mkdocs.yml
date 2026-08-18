@@ -29,7 +29,6 @@ exclude_docs: |
   !simulation_cases.md
   !space_mission_bridge.md
   !space_delivery_checklist.md
-  !v1_5_sync_notes.md
   !assets/
   !assets/**
   includes/
@@ -80,8 +79,6 @@ nav:
       - "交付检查清单": space_delivery_checklist.md
   - "仿真案例":
       - "案例概览": simulation_cases.md
-  - "版本":
-      - "V1.5 基线同步说明": v1_5_sync_notes.md
   - "上游参考":
       - "AirSim 官方文档": https://microsoft.github.io/AirSim/
       - "AirSim API 文档": https://microsoft.github.io/AirSim/apis/

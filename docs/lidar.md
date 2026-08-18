@@ -83,6 +83,36 @@ e.g.
 }
 ```
 
+## ROS PointCloud2 frame semantics in LAESim
+
+LAESim's ROS wrapper preserves the configured `DataFrame` in the published
+`sensor_msgs/PointCloud2.header.frame_id`:
+
+DataFrame                  | Point coordinates | ROS `frame_id`
+---------------------------|-------------------|---------------
+`VehicleInertialFrame`     | Fixed NED/ENU frame at this vehicle's starting point | `VEHICLE_NAME`
+`SensorLocalFrame`         | Lidar-local frame | `VEHICLE_NAME/SENSOR_NAME`
+Unknown value              | Not safely identifiable | Sensor frame, with a throttled warning
+
+The relevant TF chain is:
+
+```text
+world_ned -> VEHICLE_NAME -> VEHICLE_NAME/odom_local_ned -> VEHICLE_NAME/SENSOR_NAME
+```
+
+`VEHICLE_NAME` is fixed at the position and orientation configured for that
+vehicle in `settings.json`; `VEHICLE_NAME/odom_local_ned` moves with the
+vehicle. Consequently, `VehicleInertialFrame` data must not be labelled as the
+moving odometry or body frame. In a multi-vehicle setup each inertial point
+cloud initially has a different starting-point origin. Use TF to transform all
+clouds to `world_ned` (or `world_enu`) before merging them.
+
+When `coordinate_system_enu` is enabled, LAESim applies only the NED-to-ENU
+basis change `(x, y, z) -> (y, x, -z)` to point values. It does not apply the
+vehicle pose a second time. Rebuild and restart `airsim_ros_pkgs` after changing
+the wrapper source; restart both UE Play and the wrapper after changing
+`DataFrame` in `settings.json`.
+
 ## Server side visualization for debugging
 
 By default, the lidar points are not drawn on the viewport. To enable the drawing of hit laser points on the viewport, please enable setting `DrawDebugPoints` via settings json.

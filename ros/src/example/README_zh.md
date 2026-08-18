@@ -550,6 +550,25 @@ python3 src/example/lidar_record_ros.py
 ./lidar_record_ros_outputs/lidar_record_<timestamp>/
 ```
 
+### LiDAR 点云坐标检查
+
+不要根据话题名假设点云一定在机体系。实际坐标由 settings 中 LiDAR 的 `DataFrame` 决定：
+
+| `DataFrame` | `PointCloud2.header.frame_id` | 含义 |
+| --- | --- | --- |
+| `VehicleInertialFrame` | `<vehicle>` | 以该载具出生点为原点的固定惯性系 |
+| `SensorLocalFrame` | `<vehicle>/<lidar>` | LiDAR 传感器局部系 |
+
+例如：
+
+```bash
+rostopic echo -n 1 /airsim_node/UAV/lidar/Lidar1/header
+rosrun tf tf_echo world_ned UAV
+rosrun tf tf_echo UAV/odom_local_ned UAV/Lidar1
+```
+
+多架载具的 `odom_local_ned` 和 `VehicleInertialFrame` 都以各自 starting point 为基准。跨载具拼接点云时，先用 TF 转到 `world_ned` 或 `world_enu`，不要直接拼数组，也不要把惯性点云再按当前机体位姿变换一次。参数语义见 `docs/lidar.md`，通用构建和连接步骤见 `docs/laesim_use.md`。
+
 ## 10. _ros_example_common.py
 
 这是内部公共模块，不是给别人直接运行的脚本。它负责：

@@ -105,7 +105,7 @@ IMU sensor data
   Meausrement of distance from an active ranger, such as infrared or IR
 
 - `/airsim_node/VEHICLE_NAME/lidar/SENSOR_NAME` [sensor_msgs::PointCloud2](http://docs.ros.org/api/sensor_msgs/html/msg/PointCloud2.html)
-  LIDAR pointcloud
+  LIDAR pointcloud. LAESim sets `header.frame_id` from the sensor's `DataFrame`: `VehicleInertialFrame` uses the fixed per-vehicle starting frame `VEHICLE_NAME`, while `SensorLocalFrame` uses `VEHICLE_NAME/SENSOR_NAME`. Do not relabel inertial data as `body` or `VEHICLE_NAME/odom_local_ned`; those frames move with the vehicle and would cause a duplicate pose transform. For multi-vehicle fusion, transform each cloud through TF into `world_ned` or `world_enu` first. See [Lidar](lidar.md#ros-pointcloud2-frame-semantics-in-laesim).
 
 #### Subscribers:
 

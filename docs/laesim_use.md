@@ -120,6 +120,47 @@ python3 src/example/vehicle_state_monitor_ros.py
 
 详细参数和 topic/service 见 [LAESim ROS 示例说明](https://github.com/SANIS-HITSZ/LAESim/blob/main/ros/src/example/README_zh.md)。
 
+<a id="ros-lidar-frames"></a>
+### LiDAR DataFrame 与多载具坐标
+
+LiDAR 的 `DataFrame` 决定点坐标本身所在的坐标系，也决定 ROS `PointCloud2.header.frame_id`：
+
+| `DataFrame` | 点坐标含义 | ROS `frame_id` |
+| --- | --- | --- |
+| `VehicleInertialFrame` | 以该载具出生点为原点的固定 NED/ENU 惯性系 | `<vehicle>` |
+| `SensorLocalFrame` | LiDAR 传感器局部坐标系 | `<vehicle>/<lidar>` |
+
+推荐在 settings 中显式填写，避免下游只看话题名猜坐标系：
+
+```json
+"Lidar1": {
+  "SensorType": 6,
+  "Enabled": true,
+  "DataFrame": "VehicleInertialFrame"
+}
+```
+
+当前 TF 链为 `world_ned -> <vehicle> -> <vehicle>/odom_local_ned -> <vehicle>/<lidar>`。其中 `<vehicle>` 是 settings 出生位姿对应的固定帧，`odom_local_ned` 随载具运动。多机点云融合时，各机惯性点云仍然具有不同出生点原点，必须通过 TF 转到 `world_ned`/`world_enu`；不能把数组直接拼接，也不能再次按机体位姿手工变换。
+
+修改 ROS wrapper 源码或切换运行副本后，需要重新编译并重启 wrapper；UE 插件不需要为这个 ROS 元数据修复重新编译：
+
+```bash
+cd ~/LAESim/ros
+source /opt/ros/noetic/setup.bash
+catkin_make --pkg airsim_ros_pkgs -j2
+source devel/setup.bash
+bash src/example/connect_ue_ros.sh
+```
+
+验证实际 header：
+
+```bash
+rostopic echo -n 1 /airsim_node/UAV/lidar/Lidar1/header
+rosrun tf tf_echo world_ned UAV
+```
+
+本节表格即为 LAESim ROS wrapper 的完整 `DataFrame` 映射；更多 ROS 话题检查示例见仓库中的 `ros/src/example/README_zh.md`。
+
 ## 启用或关闭 ns-3
 
 默认保持理想通信：

@@ -265,6 +265,7 @@ void AirsimROSWrapper::create_ros_pubs_from_settings_json()
                     auto lidar_setting = *static_cast<LidarSetting*>(sensor_setting.get());
                     msr::airlib::LidarSimpleParams params;
                     params.initializeFromSettings(lidar_setting, vehicle_setting->vehicle_type);
+                    sensor_publisher.data_frame = params.data_frame;
                     append_static_lidar_tf(vehicle_ros.get(), sensor_name, params);
                     sensor_publisher.publisher = nh_private_.advertise<sensor_msgs::PointCloud2>(vehicle_name + "/lidar/" + sensor_name, 10);
                     break;
@@ -755,11 +756,27 @@ nav_msgs::Odometry AirsimROSWrapper::get_odom_msg_from_multirotor_state(const ms
 // https://docs.ros.org/jade/api/sensor_msgs/html/point__cloud__conversion_8h_source.html#l00066
 // look at UnrealLidarSensor.cpp UnrealLidarSensor::getPointCloud() for math
 // read this carefully https://docs.ros.org/kinetic/api/sensor_msgs/html/msg/PointCloud2.html
-sensor_msgs::PointCloud2 AirsimROSWrapper::get_lidar_msg_from_airsim(const msr::airlib::LidarData& lidar_data, const std::string& vehicle_name) const
+sensor_msgs::PointCloud2 AirsimROSWrapper::get_lidar_msg_from_airsim(const msr::airlib::LidarData& lidar_data,
+                                                                    const std::string& vehicle_name,
+                                                                    const std::string& sensor_name,
+                                                                    const std::string& data_frame) const
 {
     sensor_msgs::PointCloud2 lidar_msg;
     lidar_msg.header.stamp = ros::Time::now();
-    lidar_msg.header.frame_id = "body";
+    if (data_frame == msr::airlib::AirSimSettings::kVehicleInertialFrame) {
+        // In this wrapper's TF tree, vehicle_name is the fixed frame located at
+        // the vehicle's starting pose. The odom child frame follows the vehicle.
+        lidar_msg.header.frame_id = vehicle_name;
+    }
+    else if (data_frame == msr::airlib::AirSimSettings::kSensorLocalFrame) {
+        lidar_msg.header.frame_id = vehicle_name + "/" + sensor_name;
+    }
+    else {
+        lidar_msg.header.frame_id = vehicle_name + "/" + sensor_name;
+        ROS_WARN_STREAM_THROTTLE(5.0, "Unknown LiDAR DataFrame '" << data_frame
+                                                                  << "' for " << vehicle_name << "/" << sensor_name
+                                                                  << "; using the sensor frame id");
+    }
     if (lidar_data.point_cloud.size() > 3) {
         lidar_msg.height = 1;
         lidar_msg.width = lidar_data.point_cloud.size() / 3;
@@ -778,23 +795,15 @@ sensor_msgs::PointCloud2 AirsimROSWrapper::get_lidar_msg_from_airsim(const msr::
         lidar_msg.row_step = lidar_msg.point_step * lidar_msg.width;
         lidar_msg.is_dense = true;
         std::vector<float> data_std = lidar_data.point_cloud;
+        if (isENU_) {
+            for (size_t i = 0; i + 2 < data_std.size(); i += 3) {
+                std::swap(data_std[i], data_std[i + 1]);
+                data_std[i + 2] = -data_std[i + 2];
+            }
+        }
         const unsigned char* bytes = reinterpret_cast<const unsigned char*>(data_std.data());
         std::vector<unsigned char> lidar_msg_data(bytes, bytes + sizeof(float) * data_std.size());
         lidar_msg.data = std::move(lidar_msg_data);
-        if (isENU_) {
-            try {
-                sensor_msgs::PointCloud2 lidar_msg_enu;
-                auto transformStampedENU = tf_buffer_.lookupTransform(AIRSIM_FRAME_ID, "body", ros::Time(0), ros::Duration(1));
-                tf2::doTransform(lidar_msg, lidar_msg_enu, transformStampedENU);
-                lidar_msg_enu.header.stamp = lidar_msg.header.stamp;
-                lidar_msg_enu.header.frame_id = lidar_msg.header.frame_id;
-                lidar_msg = std::move(lidar_msg_enu);
-            }
-            catch (tf2::TransformException& ex) {
-                ROS_WARN("%s", ex.what());
-                ros::Duration(1.0).sleep();
-            }
-        }
     }
     else {
         // msg = []
@@ -1498,7 +1507,11 @@ void AirsimROSWrapper::lidar_timer_cb(const ros::TimerEvent& event)
                 auto* client = get_client(vehicle_name_ptr_pair.second->vehicle_type_);
                 for (auto& lidar_publisher : vehicle_name_ptr_pair.second->lidar_pubs) {
                     auto lidar_data = client->getLidarData(lidar_publisher.sensor_name, vehicle_name_ptr_pair.first);
-                    sensor_msgs::PointCloud2 lidar_msg = get_lidar_msg_from_airsim(lidar_data, vehicle_name_ptr_pair.first);
+                    sensor_msgs::PointCloud2 lidar_msg = get_lidar_msg_from_airsim(
+                        lidar_data,
+                        vehicle_name_ptr_pair.first,
+                        lidar_publisher.sensor_name,
+                        lidar_publisher.data_frame);
                     lidar_publisher.publisher.publish(lidar_msg);
                 }
             }

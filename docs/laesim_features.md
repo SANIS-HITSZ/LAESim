@@ -106,6 +106,12 @@ AirSim/UE 提供载具位置，ROS 网络桥接器把位置和应用消息交给
 
 完整环境、接口和限制见[WSL2、ROS 与 ns-3](laesim_wsl_ros_ns3.md)。
 
+## ROS LiDAR 坐标元数据
+
+V1.5 修复了 ROS wrapper 把所有 LiDAR 点云固定标成 `body` 的问题。包装器现在读取每个传感器的 `DataFrame`：`VehicleInertialFrame` 发布在载具出生点固定帧，`SensorLocalFrame` 发布在传感器局部帧；ENU 模式只执行 `(x,y,z) -> (y,x,-z)` 的轴变换，不再重复叠加载具位姿。
+
+这项修复使 TF、点云数值和消息头语义一致，但不会自动把多辆载具的局部原点合并为一个公共原点。跨载具建图、定位或规划节点仍应通过 TF 把数据统一到 `world_ned` 或 `world_enu`。配置、构建和检查命令见[使用 LAESim](laesim_use.md#ros-lidar-frames)。
+
 ## 继承的 AirSim 能力
 
 相机类型、通用 API、坐标系、PX4、传感器参数等基础能力继续遵循 AirSim。相关内容直接查阅 [AirSim 官方文档](https://microsoft.github.io/AirSim/)，本站只维护 LAESim 的差异和扩展。

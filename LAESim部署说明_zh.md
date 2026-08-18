@@ -13,13 +13,13 @@
 - 默认卫星模型源码资产放在 `Unreal\Assets\Satellite\Models\Satellite`，构建时自动复制到 `Unreal\Plugins\AirSim\Content\Models\Satellite`，`settings.json` 不需要指定模型路径。
 - 新增 `SceneMap` 图片地图功能：可在 `settings.json` 启动加载图片为可碰撞平面地图，支持任意长宽比卫星图、`GeoReference` GPS 配准和按 GPS / 像素 / 米制坐标出生，也可通过 Python / ROS 在运行时切换、查询和做坐标转换。
 - 新增可选 ns-3 自组织网络仿真：`NetworkSim` 提供 ROS 消息级网络桥接，可在 `Backend=none` 的理想通信和 `Backend=ns3` 的 Wi-Fi ad hoc + OLSR/AODV 离散事件网络之间切换，用于评估时延、吞吐量、丢包和拓扑变化对协同算法的影响。
+- ROS LiDAR 包装器根据 settings 中的 `DataFrame` 动态发布正确的 `PointCloud2.header.frame_id`，不再固定写成 `body`。
 - GitHub 上传版保留 AirSim 插件基础 Content 和 StarterContent，排除编译产物、ROS build/devel、AirLib deps、UE Intermediate/Binaries、高模 SUV、Boat 和 Satellite 构建产物。
 
 更多细节：
 
 - `如何加入新的载具类型.md`
 - `如何加入图片场景地图功能.md`
-- `如何将工程简化上传github.md`
 - `docs\space_mission_bridge.md`
 - `docs\laesim_wsl_ros_ns3.md`
 - `NetworkSim\config\network-simulation.example.json`
@@ -42,7 +42,7 @@ powershell -ExecutionPolicy Bypass -File .\PreparePortableSource.ps1 -Destinatio
 
 然后把 `D:\LAESim_portable` 交给对方。
 
-## 2. 电脑需要准备什么（去知乎看Airsim的安装教程的配置就好了，做好适配了）
+## 2. 环境要求
 
 推荐至少具备以下环境：
 
@@ -434,7 +434,35 @@ bash src/example/connect_ue_ros.sh
 - `41481`：Boat
 - `41491`：Satellite
 
-### 8.1 ns-3 网络仿真部署要点
+### 8.1 ROS LiDAR DataFrame 与多机坐标
+
+V1.5 ROS wrapper 不再把所有点云固定标为 `body`。它按 settings 中每个 LiDAR 的 `DataFrame` 发布：
+
+- `VehicleInertialFrame`：点值在该载具出生点固定惯性系，`frame_id=<vehicle>`；
+- `SensorLocalFrame`：点值在传感器局部系，`frame_id=<vehicle>/<lidar>`；
+- 未知值：回退到传感器帧并输出节流告警。
+
+当前 TF 链是 `world_ned -> <vehicle> -> <vehicle>/odom_local_ned -> <vehicle>/<lidar>`。`<vehicle>` 是 settings 初始位置/姿态对应的静态帧，`odom_local_ned` 才随载具运动。因此多机 `VehicleInertialFrame` 点云仍然各有原点，融合前必须通过 TF 转换到 `world_ned`/`world_enu`；不能把 header 改成 `body`，也不能再次叠加载具位姿。
+
+修改配置后要重启 UE Play 和 ROS wrapper。仅修改 ROS wrapper 源码时，不需要重新编译 UE 插件，但需要在 WSL 中执行：
+
+```bash
+cd ~/LAESim/ros
+source /opt/ros/noetic/setup.bash
+catkin_make --pkg airsim_ros_pkgs -j2
+source devel/setup.bash
+```
+
+检查实际 header 与 TF：
+
+```bash
+rostopic echo -n 1 /airsim_node/UAV/lidar/Lidar1/header
+rosrun tf tf_echo world_ned UAV
+```
+
+用户侧配置与检查方法见 `docs\laesim_use.md` 和 `ros\src\example\README_zh.md`。
+
+### 8.2 ns-3 网络仿真部署要点
 
 ns-3 集成推荐放在 WSL2 中运行，和 Windows UE 进程解耦。当前集成是“ROS 消息级网络仿真”：桥接器订阅 LAESim 里各载具的 odometry，把节点位置更新给 ns-3；应用消息发布到 `/network_sim/tx` 后，后端根据路由、距离、时延和丢包模型决定是否投递到 `/network_sim/rx/<车辆名>`。
 
@@ -507,6 +535,7 @@ Remove-Item -LiteralPath .\AirLib\deps\eigen3 -Recurse -Force -ErrorAction Silen
 - 相机 / 雷达数据抓取
 - WSL + ROS Noetic 连接 UE
 - ROS 侧状态查看、键盘控制、相机 / 雷达录制
+- ROS LiDAR 按 `DataFrame` 动态发布正确 frame，WSL 构建通过，并在线验证过惯性帧与传感器局部帧切换
 
 ## 11. 建议先看哪些文档
 

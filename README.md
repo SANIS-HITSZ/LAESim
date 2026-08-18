@@ -103,7 +103,6 @@ LAESim 保留两种可切换的通信模式：
 - [使用 LAESim](https://sanis-hitsz.github.io/LAESim/laesim_use/)
 - [仿真案例](https://sanis-hitsz.github.io/LAESim/simulation_cases/)
 - [天基任务桥接](docs/space_mission_bridge.md)
-- [V1.5 基线同步说明](docs/v1_5_sync_notes.md)
 - [快速入门实验](Examples/quickstart/README.md)
 - [Multi_use 使用说明](Multi_use/README_zh.md)
 - [ROS 示例说明](ros/src/example/README_zh.md)
