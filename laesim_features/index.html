@@ -65,6 +65,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#ns-3">可选 ns-3 自组织网络</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ros-lidar">ROS LiDAR 坐标元数据</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#airsim">继承的 AirSim 能力</a>
     </li>
     </ul>
@@ -86,11 +88,6 @@
               <p class="caption"><span class="caption-text">仿真案例</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../simulation_cases/">案例概览</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">版本</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../v1_5_sync_notes/">V1.5 基线同步说明</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">上游参考</span></p>
@@ -275,6 +272,9 @@
 <li>OLSR 两节点冒烟测试</li>
 </ul>
 <p>完整环境、接口和限制见<a href="../laesim_wsl_ros_ns3/">WSL2、ROS 与 ns-3</a>。</p>
+<h2 id="ros-lidar">ROS LiDAR 坐标元数据<a class="headerlink" href="#ros-lidar" title="Permanent link">#</a></h2>
+<p>V1.5 修复了 ROS wrapper 把所有 LiDAR 点云固定标成 <code>body</code> 的问题。包装器现在读取每个传感器的 <code>DataFrame</code>：<code>VehicleInertialFrame</code> 发布在载具出生点固定帧，<code>SensorLocalFrame</code> 发布在传感器局部帧；ENU 模式只执行 <code>(x,y,z) -&gt; (y,x,-z)</code> 的轴变换，不再重复叠加载具位姿。</p>
+<p>这项修复使 TF、点云数值和消息头语义一致，但不会自动把多辆载具的局部原点合并为一个公共原点。跨载具建图、定位或规划节点仍应通过 TF 把数据统一到 <code>world_ned</code> 或 <code>world_enu</code>。配置、构建和检查命令见<a href="../laesim_use/#ros-lidar-frames">使用 LAESim</a>。</p>
 <h2 id="airsim">继承的 AirSim 能力<a class="headerlink" href="#airsim" title="Permanent link">#</a></h2>
 <p>相机类型、通用 API、坐标系、PX4、传感器参数等基础能力继续遵循 AirSim。相关内容直接查阅 <a href="https://microsoft.github.io/AirSim/">AirSim 官方文档</a>，本站只维护 LAESim 的差异和扩展。</p>
               

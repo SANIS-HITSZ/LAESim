@@ -66,6 +66,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#windows-python-api">Windows Python API</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#ros-noetic">ROS Noetic</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#lidar-dataframe">LiDAR DataFrame 与多载具坐标</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#ns-3">启用或关闭 ns-3</a>
     </li>
@@ -88,11 +92,6 @@
               <p class="caption"><span class="caption-text">仿真案例</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../simulation_cases/">案例概览</a>
-                  </li>
-              </ul>
-              <p class="caption"><span class="caption-text">版本</span></p>
-              <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../v1_5_sync_notes/">V1.5 基线同步说明</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">上游参考</span></p>
@@ -246,6 +245,47 @@ python3 src/example/keyboard_boat_ros.py --vehicle Boat
 python3 src/example/keyboard_satellite_ros.py --vehicle Satellite
 python3 src/example/vehicle_state_monitor_ros.py</code></pre>
 <p>详细参数和 topic/service 见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/main/ros/src/example/README_zh.md">LAESim ROS 示例说明</a>。</p>
+<p><a id="ros-lidar-frames"></a></p>
+<h3 id="lidar-dataframe">LiDAR DataFrame 与多载具坐标<a class="headerlink" href="#lidar-dataframe" title="Permanent link">#</a></h3>
+<p>LiDAR 的 <code>DataFrame</code> 决定点坐标本身所在的坐标系，也决定 ROS <code>PointCloud2.header.frame_id</code>：</p>
+<table>
+<thead>
+<tr>
+<th><code>DataFrame</code></th>
+<th>点坐标含义</th>
+<th>ROS <code>frame_id</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VehicleInertialFrame</code></td>
+<td>以该载具出生点为原点的固定 NED/ENU 惯性系</td>
+<td><code>&lt;vehicle&gt;</code></td>
+</tr>
+<tr>
+<td><code>SensorLocalFrame</code></td>
+<td>LiDAR 传感器局部坐标系</td>
+<td><code>&lt;vehicle&gt;/&lt;lidar&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>推荐在 settings 中显式填写，避免下游只看话题名猜坐标系：</p>
+<pre class="highlight"><code class="language-json">"Lidar1": {
+  "SensorType": 6,
+  "Enabled": true,
+  "DataFrame": "VehicleInertialFrame"
+}</code></pre>
+<p>当前 TF 链为 <code>world_ned -&gt; &lt;vehicle&gt; -&gt; &lt;vehicle&gt;/odom_local_ned -&gt; &lt;vehicle&gt;/&lt;lidar&gt;</code>。其中 <code>&lt;vehicle&gt;</code> 是 settings 出生位姿对应的固定帧，<code>odom_local_ned</code> 随载具运动。多机点云融合时，各机惯性点云仍然具有不同出生点原点，必须通过 TF 转到 <code>world_ned</code>/<code>world_enu</code>；不能把数组直接拼接，也不能再次按机体位姿手工变换。</p>
+<p>修改 ROS wrapper 源码或切换运行副本后，需要重新编译并重启 wrapper；UE 插件不需要为这个 ROS 元数据修复重新编译：</p>
+<pre class="highlight"><code class="language-bash">cd ~/LAESim/ros
+source /opt/ros/noetic/setup.bash
+catkin_make --pkg airsim_ros_pkgs -j2
+source devel/setup.bash
+bash src/example/connect_ue_ros.sh</code></pre>
+<p>验证实际 header：</p>
+<pre class="highlight"><code class="language-bash">rostopic echo -n 1 /airsim_node/UAV/lidar/Lidar1/header
+rosrun tf tf_echo world_ned UAV</code></pre>
+<p>本节表格即为 LAESim ROS wrapper 的完整 <code>DataFrame</code> 映射；更多 ROS 话题检查示例见仓库中的 <code>ros/src/example/README_zh.md</code>。</p>
 <h2 id="ns-3">启用或关闭 ns-3<a class="headerlink" href="#ns-3" title="Permanent link">#</a></h2>
 <p>默认保持理想通信：</p>
 <pre class="highlight"><code class="language-json">"NetworkSimulation": {
