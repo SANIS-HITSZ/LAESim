@@ -165,27 +165,25 @@ title: LAESim
     <div class="landing-section__heading">
       <p class="landing-eyebrow">团队与联系</p>
       <h2 id="team-title">由空天网络与智能感知重点实验室开发维护</h2>
-      <p>LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室持续开发，欢迎试用、反馈问题并开展科研合作。</p>
+      <p>LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室持续开发（实验室负责人：张霆廷、梁天豪），欢迎试用、反馈问题并开展科研合作。</p>
     </div>
     <div class="landing-team__grid">
-      <section class="landing-team__group" aria-labelledby="team-leads">
-        <p class="landing-team__role" id="team-leads">实验室负责人</p>
+      <section class="landing-team__group" aria-labelledby="team-lead">
+        <p class="landing-team__role" id="team-lead">项目负责人</p>
         <div class="landing-team__names">
-          <strong>张霆廷</strong>
-          <strong>梁天豪</strong>
+          <strong>平雨奇</strong>
         </div>
       </section>
       <section class="landing-team__group" aria-labelledby="team-contributors">
-        <p class="landing-team__role" id="team-contributors">主要贡献者</p>
+        <p class="landing-team__role" id="team-contributors">团队成员</p>
         <div class="landing-team__names">
-          <strong>平雨奇</strong>
           <strong>吴俊炜</strong>
           <strong>雷光宇</strong>
         </div>
       </section>
     </div>
     <div class="landing-team__links">
-      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CONTRIBUTORS.md">查看团队与联系方式 →</a>
+      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/README.md">查看团队与联系方式 →</a>
       <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/issues">提出问题或合作建议 →</a>
     </div>
   </div>

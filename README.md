@@ -139,17 +139,18 @@ LAESim 基于 [Microsoft AirSim](https://github.com/microsoft/AirSim) 扩展。�
 
 ## 项目团队
 
-**开发与维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室**
+**开发与维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室**（实验室负责人：张霆廷、梁天豪）
 
-| 角色 | 姓名 | 联系方式 |
-| --- | --- | --- |
-| 实验室负责人 | 张霆廷 | [zhangtt@hit.edu.cn](mailto:zhangtt@hit.edu.cn) |
-| 实验室负责人 | 梁天豪 | [liangth@hit.edu.cn](mailto:liangth@hit.edu.cn) |
-| 主要贡献者 | 平雨奇 | [pingyq@stu.hit.edu.cn](mailto:pingyq@stu.hit.edu.cn) |
-| 主要贡献者 | 吴俊炜 | [220210419@stu.hit.edu.cn](mailto:220210419@stu.hit.edu.cn) |
-| 主要贡献者 | 雷光宇 | [guangyulei@stu.hit.edu.cn](mailto:guangyulei@stu.hit.edu.cn) |
+### 项目负责人
 
-本表按角色分组，不表示贡献排序。团队名单与署名原则见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
+平雨奇 · [pingyq@stu.hit.edu.cn](mailto:pingyq@stu.hit.edu.cn)
+
+### 团队成员
+
+| 姓名 | 联系方式 |
+| --- | --- |
+| 吴俊炜 | [220210419@stu.hit.edu.cn](mailto:220210419@stu.hit.edu.cn) |
+| 雷光宇 | [guangyulei@stu.hit.edu.cn](mailto:guangyulei@stu.hit.edu.cn) |
 
 ## 引用
 
