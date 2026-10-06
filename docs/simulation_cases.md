@@ -1,6 +1,6 @@
 # 仿真案例
 
-本页提供四个随 LAESim 仓库交付的可复现实验入口。建议先完成异构载具实验，熟悉 `settings.json` 和 Python API，再按研究需要进行 ns-3 网络、天基任务或视觉数据采集实验。
+本页提供五个随 LAESim 仓库交付的可复现实验入口。建议先完成异构载具实验，熟悉 `settings.json` 和 Python API，再按研究需要进行 ns-3 网络、天基任务、视觉数据采集或信道约束导航实验。
 
 | 实验 | 重点 | 环境 | 预计时间 |
 | --- | --- | --- | --- |
@@ -8,8 +8,9 @@
 | 实验二：LAESim 与 ns-3 | ROS 里程计、节点映射、范围内交付、范围外丢包 | Windows + WSL2 + ROS + ns-3 | 约 15 分钟 |
 | 实验三：天基任务与通信 | TLE/SGP4、多星 access、真实斜距链路、UE 显示 | Windows + 可选 WSL2/ROS/ns-3 | 约 15 分钟 |
 | 实验四：GeoTIFF 下视采集 | SceneMap、覆盖航线、稳定云台、图像/GPS/ground truth | Windows + UE 4.27 | 按任务时长 |
+| 实验五：[信道地图与无人机导航](radio_map_nav.md) | Sionna RT、RSS/SINR、通信约束路径、API 实飞 | Windows + NVIDIA GPU + UE 4.27 | 首次配置后数分钟 |
 
-入门示例统一维护在 [`Examples/quickstart`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart)，包含可直接复制或生成的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见[天基任务桥接](space_mission_bridge.md)与[交付检查清单](space_delivery_checklist.md)。
+入门示例统一维护在 [`Examples/quickstart`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.6/Examples/quickstart)，包含可直接复制或生成的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见[天基任务桥接](space_mission_bridge.md)与[交付检查清单](space_delivery_checklist.md)。
 
 ## 实验一：无人机、汽车与船异构仿真
 
@@ -17,7 +18,7 @@
 
 在同一个 `AirGround` 场景中创建 `UAV`、`Car`、`Boat`，使用各自的 RPC 端口同时发送控制并读取状态。该实验不需要 ROS 或 ns-3。
 
-核心配置如下，完整文件见 [`heterogeneous_fleet/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/settings.json)：
+核心配置如下，完整文件见 [`heterogeneous_fleet/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/heterogeneous_fleet/settings.json)：
 
 ```json
 {
@@ -71,7 +72,7 @@ boat.setBoatControls(airsim.BoatControls(throttle=0.70), "Boat")
 
 运行约 8 秒后，脚本停止汽车和船并让无人机降落。终端应持续显示无人机局部 NED 坐标、汽车速度、船的纵向/横向速度。
 
-完整步骤和练习见[实验一 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/README.md)，完整代码见 [`run_experiment.py`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/run_experiment.py)。
+完整步骤和练习见[实验一 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/heterogeneous_fleet/README.md)，完整代码见 [`run_experiment.py`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/heterogeneous_fleet/run_experiment.py)。
 
 ## 实验二：LAESim 节点与 ns-3 通信范围
 
@@ -89,7 +90,7 @@ LAESim odom_local_ned + settings X/Y/Z
           /network_sim/rx/Car
 ```
 
-完整配置见 [`ns3_network/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/ns3_network/settings.json)，关键部分是：
+完整配置见 [`ns3_network/settings.json`](https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/ns3_network/settings.json)，关键部分是：
 
 ```json
 {
@@ -166,7 +167,7 @@ python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
   --expect dropped
 ```
 
-两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 `delivered: 0`、`dropped: 5`。完整步骤和排查见[实验二 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/ns3_network/README.md)。
+两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 `delivered: 0`、`dropped: 5`。完整步骤和排查见[实验二 README](https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/ns3_network/README.md)。
 
 !!! note
     普通 `/airsim_node/...` 话题不会自动经过 ns-3。需要受到时延和丢包影响的业务消息应发布到 `/network_sim/tx`，接收端订阅 `/network_sim/rx/<目标载具名>`。
@@ -224,7 +225,7 @@ bash NetworkSim/scripts/run_tle_constellation_demo.sh
 - 以固定频率关联图像、AirSim GPS、物理真值、状态估计和纳秒时间戳。
 - 同时保留理想规划轨迹与实际物理轨迹，用于视觉定位、导航和地图匹配算法评估。
 
-完整工程位于 [`Examples/quickstart/nadir_geotiff_collection`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart/nadir_geotiff_collection)。地图和数据集通常体积较大且可能受授权限制，因此不随仓库分发；用户提供自己的 GeoTIFF。
+完整工程位于 [`Examples/quickstart/nadir_geotiff_collection`](https://github.com/SANIS-HITSZ/LAESim/tree/V1.6/Examples/quickstart/nadir_geotiff_collection)。地图和数据集通常体积较大且可能受授权限制，因此不随仓库分发；用户提供自己的 GeoTIFF。
 
 ### 准备 SceneMap
 

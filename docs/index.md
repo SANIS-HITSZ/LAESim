@@ -13,7 +13,7 @@ title: LAESim
     <p class="landing-hero__lead">在同一个 Unreal Engine 场景中组织无人机、车辆、舰船与卫星，并把天基任务分析、ROS 算法和 ns-3 网络纳入同一套可复现实验流程。</p>
     <div class="landing-actions">
       <a class="landing-button landing-button--primary" href="documentation/">进入文档</a>
-      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">查看 GitHub</a>
+      <a class="landing-button landing-button--secondary" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.6">查看 GitHub</a>
     </div>
     <p class="landing-hero__meta">UE 4.27 · Python API · ROS Noetic · ns-3.48</p>
   </div>
@@ -183,7 +183,7 @@ title: LAESim
       </section>
     </div>
     <div class="landing-team__links">
-      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/README.md">查看团队与联系方式 →</a>
+      <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/README.md">查看团队与联系方式 →</a>
       <a class="landing-text-link" href="https://github.com/SANIS-HITSZ/LAESim/issues">提出问题或合作建议 →</a>
     </div>
   </div>
@@ -197,7 +197,7 @@ title: LAESim
     </div>
     <div class="landing-actions">
       <a class="landing-button landing-button--primary" href="documentation/">阅读文档</a>
-      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">获取源码</a>
+      <a class="landing-button landing-button--outline" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.6">获取源码</a>
     </div>
   </div>
 </section>

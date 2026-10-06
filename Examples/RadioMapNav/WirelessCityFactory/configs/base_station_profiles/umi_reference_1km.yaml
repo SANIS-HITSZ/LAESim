@@ -1,0 +1,61 @@
+global:
+  seed: 20260821
+  name: bs_umi_reference_1km
+  output: examples/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: manhattan
+  building:
+    profile: urban_micro_street_canyon_context
+    coverage_ratio: 0.30
+    density_per_km2: 220
+    height_distribution: normal
+    height_min_m: 12
+    height_max_m: 45
+    height_mean_m: 22
+    height_std_m: 7
+    footprint_min_m: [8, 8]
+    footprint_max_m: [26, 26]
+    separation_m: 4
+  roads:
+    grid_spacing_m: 70
+    width_m: 10
+  base_stations:
+    preset_id: 3gpp_umi_street_canyon_reference_v1
+    preset_version: 1.0.0
+    source_preset_id: 3gpp_umi_street_canyon_reference_v1
+    modified_fields: []
+    deployment_profile: 3gpp_umi_street_canyon_calibration_reference
+    function_type: propagation_calibration
+    source_evidence_level: A
+    parameter_status: simulation_proxy
+    applicable_scenarios: [urban_micro_street_canyon_calibration]
+    placement_family: street_grid
+    density_per_km2: 30
+    height_m: 10
+    height_reference: absolute_agl
+    power_dbm: 44
+    carrier_frequency_hz: 4900000000
+    bandwidth_hz: 100000000
+    antenna_model: sector3-tr38901-8x8-dualpol
+    polarization: cross_dual_slant
+    duplex_mode: TDD
+    sensing_enabled: false
+    sensing_waveform_class: null
+    min_separation_m: 150
+    reference_inter_site_distance_m: 200
+    reference_source: "3GPP TR 38.901 v18.0.0, Table 7.2-1 and calibration tables; https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/18.00.00_60/tr_138901v180000p.pdf"
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 12
+  task:
+    altitude_m: 50
+    altitude_range_m: [35, 115]
+radio:
+  enabled: false
+  preset: formal
+  antenna_model: sector3-tr38901-8x8-dualpol
+  tx_power_dbm: 44
+  downtilt_deg: 12
+ue:
+  enabled: false

@@ -1,0 +1,50 @@
+global:
+  seed: 20260821
+  name: feasibility_irregular_midrise_uma_1km_2m
+  output: examples/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: voronoi
+  building:
+    profile: irregular_midrise
+    coverage_ratio: 0.27
+    density_per_km2: 180
+    height_distribution: normal
+    height_min_m: 8
+    height_max_m: 55
+    height_mean_m: 24
+    height_std_m: 9
+    footprint_min_m: [8, 8]
+    footprint_max_m: [26, 26]
+    separation_m: 4
+  roads:
+    grid_spacing_m: 75
+    width_m: 11
+    radial_count: 8
+    ring_count: 2
+  base_stations:
+    deployment_profile: 3gpp_uma_calibration_reference
+    placement_family: street_grid
+    density_per_km2: 5
+    height_m: 25
+    height_reference: absolute_agl
+    power_dbm: 49
+    min_separation_m: 350
+    reference_inter_site_distance_m: 500
+    reference_source: "3GPP TR 38.901 v18.0.0, Table 7.2-1 and calibration tables; https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/18.00.00_60/tr_138901v180000p.pdf"
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 12
+  task:
+    altitude_m: 65
+    altitude_range_m: [35, 115]
+  validation:
+    grid_resolution_m: 5
+    minimum_largest_component_fraction: 0.95
+radio:
+  enabled: true
+  preset: production_v1
+  tx_power_dbm: 49
+  seed: 20260821
+ue:
+  enabled: false

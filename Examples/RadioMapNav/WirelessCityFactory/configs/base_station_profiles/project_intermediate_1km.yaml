@@ -1,0 +1,51 @@
+global:
+  seed: 20260821
+  name: bs_project_intermediate_1km
+  output: examples/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: manhattan
+  building:
+    profile: urban_intermediate_context
+    coverage_ratio: 0.25
+    density_per_km2: 180
+  roads:
+    grid_spacing_m: 80
+    width_m: 12
+  base_stations:
+    preset_id: project_intermediate_v1
+    preset_version: 1.0.0
+    source_preset_id: project_intermediate_v1
+    modified_fields: []
+    deployment_profile: project_intermediate_not_a_standard_profile
+    function_type: communication
+    source_evidence_level: D
+    parameter_status: simulation_proxy
+    applicable_scenarios: [sensitivity_analysis]
+    placement_family: street_grid
+    density_per_km2: 10
+    height_m: 25
+    height_reference: absolute_agl
+    power_dbm: 49
+    carrier_frequency_hz: 4900000000
+    bandwidth_hz: 100000000
+    antenna_model: sector3-tr38901-8x8-dualpol
+    polarization: cross_dual_slant
+    duplex_mode: TDD
+    sensing_enabled: false
+    sensing_waveform_class: null
+    min_separation_m: 250
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 12
+  task:
+    altitude_m: 50
+    altitude_range_m: [35, 115]
+radio:
+  enabled: false
+  preset: formal
+  antenna_model: sector3-tr38901-8x8-dualpol
+  tx_power_dbm: 49
+  downtilt_deg: 12
+ue:
+  enabled: false

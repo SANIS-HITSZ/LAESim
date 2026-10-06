@@ -2,8 +2,8 @@
 
 面向空天地海协同研究的多载具仿真平台
 
-[![V1.5 Core Verification](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/verify_v15_core.yml/badge.svg?branch=V1.5)](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/verify_v15_core.yml?query=branch%3AV1.5)
-[![Documentation Build & Deploy](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/test_docs.yml/badge.svg?branch=V1.5)](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/test_docs.yml?query=branch%3AV1.5)
+[![V1.6 Core Verification](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/verify_v16_core.yml/badge.svg?branch=V1.6)](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/verify_v16_core.yml?query=branch%3AV1.6)
+[![Documentation Build & Deploy](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/test_docs.yml/badge.svg?branch=V1.6)](https://github.com/SANIS-HITSZ/LAESim/actions/workflows/test_docs.yml?query=branch%3AV1.6)
 
 **维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室**
 
@@ -13,17 +13,18 @@
 
 LAESim 基于 Microsoft AirSim 和 Unreal Engine 4.27 扩展，面向无人机、车辆、舰船与卫星协同任务。项目将多类型载具、图片地图、Python/ROS 接口、天基任务分析和可选 ns-3 网络仿真组织在同一套场景配置与实验流程中。
 
-当前开发版本为 **`V1.5`**，以公开版本 **`V1.4`** 为工程基线继续演进。
+当前版本为 **`V1.6`**，在 `V1.5` 基础上新增 RadioMapNav：程序化城市、Sionna RT 离线信道地图，以及信道质量约束下的无人机路径规划与 LAESim 飞行示例。
 
 ## 核心能力
 
-| 能力 | LAESim V1.5 |
+| 能力 | LAESim V1.6 |
 | --- | --- |
 | 混合载具 | 同一 `AirGround` 场景运行无人机、车辆、舰船和卫星 |
 | SceneMap | 将图片加载为可碰撞地图，支持比例尺、GPS 配准和坐标转换 |
 | 仿真接口 | Windows Python API、ROS Noetic topic/service、多实例独立端口 |
 | 天基任务 | TLE/SGP4、CSV、Orekit 可选后端，多星多目标覆盖与任务窗口分析 |
 | 网络后端 | `none` 理想通信、ns-3 Wi-Fi ad hoc，或使用真实斜距预算的星地/星间逻辑链路 |
+| 无线地图与导航 | Sionna RT 生成场景相关 RSS/SINR 地图，对比几何基线与通信约束路径，并通过 Python API 执行飞行 |
 | 实验指标 | 时延、吞吐量、丢包、覆盖窗口、重访时间、链路切换与丢包原因 |
 | 可复现工程 | settings 模板、构建脚本、ROS/ns-3 安装脚本和冒烟测试 |
 
@@ -93,6 +94,7 @@ LAESim 保留两种可切换的通信模式：
 | `ros/` | ROS Noetic 工作空间、消息、服务与示例 |
 | `NetworkSim/` | 可选 ns-3 runner、ROS 网络桥接器和测试 |
 | `Examples/quickstart/` | 异构载具、ns-3 与 GeoTIFF 稳定下视采集实验 |
+| `Examples/RadioMapNav/` | 程序化城市、Sionna RT 信道地图与通信约束导航 demo |
 | `how_to_use_settings/` | 单载具、混合载具、卫星和 SceneMap 配置模板 |
 | `docs/` | LAESim 中文文档与展示页内容 |
 
@@ -104,6 +106,7 @@ LAESim 保留两种可切换的通信模式：
 - [仿真案例](https://sanis-hitsz.github.io/LAESim/simulation_cases/)
 - [天基任务桥接](docs/space_mission_bridge.md)
 - [快速入门实验](Examples/quickstart/README.md)
+- [RadioMapNav：信道地图与无人机导航](Examples/RadioMapNav/README.md)
 - [Multi_use 使用说明](Multi_use/README_zh.md)
 - [ROS 示例说明](ros/src/example/README_zh.md)
 
@@ -111,7 +114,7 @@ LAESim 保留两种可切换的通信模式：
 
 ## 验证状态
 
-V1.5 在继承 V1.4 验证项的基础上，已覆盖以下链路：
+V1.6 继承 V1.5 的验证入口，并新增 RadioMapNav 验收。原有验证覆盖以下链路：
 
 - Windows AirLib Release 与 UE 4.27 `BlocksEditor Win64 Development` 编译
 - ROS Noetic 消息、服务和 wrapper 编译
@@ -124,10 +127,13 @@ V1.5 在继承 V1.4 验证项的基础上，已覆盖以下链路：
 仓库提供一个 Windows/Linux 通用的核心验证入口：
 
 ```bash
-python NetworkSim/scripts/verify_v15_core.py
+python -m pip install -e "./Examples/RadioMapNav/WirelessCityFactory[dev]"
+python NetworkSim/scripts/verify_v16_core.py
 ```
 
-命令返回码为 `0` 且最后输出 `V1.5 CORE VERIFICATION: PASS` 时，表示可移植源码清单、JSON 配置、Python 语法、异构载具 quickstart、33 个确定性单元测试和理想通信后端冒烟测试全部通过。GitHub 每次 push/PR 都会自动运行同一脚本，页首 `V1.5 Core Verification` 绿色徽章表示当前 `V1.5` 分支通过该层验证，Actions 会保留完整日志作为构建产物。
+命令返回码为 `0` 且最后输出 `V1.6 CORE VERIFICATION: PASS` 时，表示原有可移植源码、配置、quickstart、33 个确定性单元测试和理想通信冒烟测试，以及 RadioMapNav 的 CPU 测试全部通过。页首 `V1.6 Core Verification` 徽章对应此验证入口，Actions 保留完整日志。
+
+RadioMapNav 已在 Windows、RTX 3090、Sionna RT 2.1.0 与 UE 4.27 上完成真实信道地图生成、路径规划、场景导入和 API 飞行：378 个飞行采样点无碰撞、无低于 0 dB SINR 门限的采样点，终点误差约 0.44 米。该 SINR 来自固定 65 米高度的离线地图查询，不是每帧重新射线追踪，也不等同于 ns-3 包级投递验证。配置、对照指标和边界见 [RadioMapNav 验收记录](Examples/RadioMapNav/VERIFICATION.md)。
 
 该绿勾不代表 GitHub 云端启动了 UE、ROS 或真实 ns-3 runner。这些需要外部进程和特定开发环境的链路，应按[WSL2、ROS 与 ns-3](docs/laesim_wsl_ros_ns3.md)和[交付检查清单](docs/space_delivery_checklist.md)运行现场验收；只有得到具体包投递、非零时延、链路转换和 UE 位姿进展证据，才能说明对应的运行时链路 work。
 
@@ -158,4 +164,4 @@ LAESim 基于 [Microsoft AirSim](https://github.com/microsoft/AirSim) 扩展。�
 
 ## 维护与贡献
 
-问题反馈和功能讨论请优先通过 [GitHub Issues](https://github.com/SANIS-HITSZ/LAESim/issues) 提交，代码与文档改进请通过 Pull Requests 参与；V1.5 的变更范围见 [CHANGELOG.md](CHANGELOG.md)。
+问题反馈和功能讨论请优先通过 [GitHub Issues](https://github.com/SANIS-HITSZ/LAESim/issues) 提交，代码与文档改进请通过 Pull Requests 参与；V1.6 的变更范围见 [CHANGELOG.md](CHANGELOG.md)。

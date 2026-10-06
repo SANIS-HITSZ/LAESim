@@ -1,0 +1,55 @@
+global:
+  seed: 20260821
+  name: bs_low_band_wide_area_1km
+  output: examples/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: manhattan
+  building:
+    profile: low_band_suburban_context
+    coverage_ratio: 0.12
+    density_per_km2: 80
+  roads:
+    grid_spacing_m: 120
+    width_m: 10
+  base_stations:
+    preset_id: low_band_wide_area_v1
+    preset_version: 1.0.0
+    source_preset_id: low_band_wide_area_v1
+    modified_fields: []
+    deployment_profile: low_band_wide_area_simulation_reference
+    function_type: communication
+    source_evidence_level: A
+    parameter_status: simulation_proxy
+    applicable_scenarios: [suburban_corridor, logistics_route, emergency_telemetry]
+    placement_family: street_grid
+    density_per_km2: 2
+    height_m: 35
+    height_reference: absolute_agl
+    power_dbm: 49
+    carrier_frequency_hz: 700000000
+    bandwidth_hz: 20000000
+    antenna_model: sector3-tr38901-8x4-dualpol
+    polarization: cross_dual_slant
+    duplex_mode: FDD
+    sensing_enabled: false
+    sensing_waveform_class: null
+    min_separation_m: 500
+    reference_inter_site_distance_m: 1000
+    reference_source: "工信部低空信息基础设施政策与3GPP NR基础规范；频率落点、功率、站高和密度为仿真代理值"
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 6
+  task:
+    altitude_m: 65
+    altitude_range_m: [35, 115]
+radio:
+  enabled: false
+  preset: formal
+  frequency_hz: 700000000
+  bandwidth_hz: 20000000
+  antenna_model: sector3-tr38901-8x4-dualpol
+  tx_power_dbm: 49
+  downtilt_deg: 6
+ue:
+  enabled: false

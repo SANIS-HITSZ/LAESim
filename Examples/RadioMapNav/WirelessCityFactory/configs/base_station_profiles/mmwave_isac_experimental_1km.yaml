@@ -1,0 +1,55 @@
+global:
+  seed: 20260821
+  name: bs_mmwave_isac_experimental_1km
+  output: examples/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: manhattan
+  building:
+    profile: mmwave_hotspot_context
+    coverage_ratio: 0.32
+    density_per_km2: 240
+  roads:
+    grid_spacing_m: 65
+    width_m: 12
+  base_stations:
+    preset_id: mmwave_isac_experimental_v1
+    preset_version: 1.0.0
+    source_preset_id: mmwave_isac_experimental_v1
+    modified_fields: []
+    deployment_profile: mmwave_isac_exploratory_simulation_proxy
+    function_type: communication_and_sensing
+    source_evidence_level: B
+    parameter_status: simulation_proxy
+    applicable_scenarios: [dense_hotspot, event_security, critical_facility]
+    placement_family: street_grid
+    density_per_km2: 25
+    height_m: 15
+    height_reference: absolute_agl
+    power_dbm: 35
+    carrier_frequency_hz: 26000000000
+    bandwidth_hz: 400000000
+    antenna_model: sector3-tr38901-8x8-dualpol
+    polarization: cross_dual_slant
+    duplex_mode: TDD
+    sensing_enabled: true
+    sensing_waveform_class: unspecified_mmwave_isac_waveform
+    min_separation_m: 150
+    reference_inter_site_distance_m: 200
+    reference_source: "国内公开毫米波通感演示；全部射频与部署数值均为探索性仿真代理值"
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 6
+  task:
+    altitude_m: 65
+    altitude_range_m: [35, 115]
+radio:
+  enabled: false
+  preset: formal
+  frequency_hz: 26000000000
+  bandwidth_hz: 400000000
+  antenna_model: sector3-tr38901-8x8-dualpol
+  tx_power_dbm: 35
+  downtilt_deg: 6
+ue:
+  enabled: false

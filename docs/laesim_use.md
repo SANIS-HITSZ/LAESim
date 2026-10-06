@@ -13,7 +13,7 @@ LAESim 的主要使用入口是 Windows 侧 `settings.json`、UE 场景，以及
 仓库提供以下常用模板：
 
 - [单无人机与传感器](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_uav_with_sensors.json)
-- [无人机前视与稳定下视相机](https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/how_to_use_settings/settings_uav_stable_nadir_camera.json)
+- [无人机前视与稳定下视相机](https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/how_to_use_settings/settings_uav_stable_nadir_camera.json)
 - [单汽车与传感器](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_single_car_with_sensors.json)
 - [3 架无人机 + 3 辆汽车](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_3uav_3car_with_sensors.json)
 - [2 架无人机 + 1 辆汽车 + 1 艘船](https://github.com/SANIS-HITSZ/LAESim/blob/main/how_to_use_settings/settings_airground_2uav_1car_1boat_with_sensors.json)

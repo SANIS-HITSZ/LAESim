@@ -1,0 +1,41 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "4.27",
+  "Category": "Simulation",
+  "Description": "Wireless City Factory environment for LAESim/AirSim",
+  "Modules": [
+    {
+      "Name": "WirelessCityFactory",
+      "Type": "Runtime",
+      "LoadingPhase": "Default",
+      "AdditionalDependencies": [
+        "AirSim"
+      ]
+    }
+  ],
+  "TargetPlatforms": [
+    "WindowsNoEditor"
+  ],
+  "Plugins": [
+    {
+      "Name": "AirSim",
+      "Enabled": true
+    },
+    {
+      "Name": "PythonScriptPlugin",
+      "Enabled": true
+    },
+    {
+      "Name": "EditorScriptingUtilities",
+      "Enabled": true
+    },
+    {
+      "Name": "SteamVR",
+      "Enabled": false
+    },
+    {
+      "Name": "OculusVR",
+      "Enabled": false
+    }
+  ]
+}

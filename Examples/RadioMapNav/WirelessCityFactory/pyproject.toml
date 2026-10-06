@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wireless-city-factory"
+version = "0.1.0"
+description = "Deterministic procedural wireless city, Sionna RT, and Unreal-ready bundle generator"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+rt = ["sionna-rt>=2.0,<3"]
+dev = ["pytest>=7.4", "ruff>=0.5"]
+
+[project.scripts]
+wireless-city = "wireless_city_factory.cli:main"
+wireless-city-viewer = "wireless_city_factory.web_app:main"
+
+[tool.setuptools.package-data]
+wireless_city_factory = ["web/*", "web/vendor/*"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"

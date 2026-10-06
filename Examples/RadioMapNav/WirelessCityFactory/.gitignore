@@ -1,0 +1,30 @@
+# Python environments, caches, and local package metadata
+.venv/
+.venv-*/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Generated city, radio, and UE bundles. Keep only source configs and code in Git.
+examples/outputs/
+
+# Unreal generated state and compiled products
+unreal/WirelessCityFactory/Binaries/
+unreal/WirelessCityFactory/Intermediate/
+unreal/WirelessCityFactory/Saved/
+unreal/WirelessCityFactory/DerivedDataCache/
+unreal/WirelessCityFactory/.vs/
+unreal/WirelessCityFactory/*.sln
+unreal/WirelessCityFactory/*.suo
+
+# External AirSim vendor tree and copied compatibility assets.
+# Install these with scripts/SetupAirSim.ps1; do not commit the vendor tree
+# without an explicit license, submodule, or Git LFS decision.
+unreal/WirelessCityFactory/Plugins/AirSim/
+unreal/WirelessCityFactory/Content/AirSim/
+
+# Generated city assets imported into the Unreal project
+unreal/WirelessCityFactory/Content/WirelessCity/

@@ -67,11 +67,19 @@ $excludeRelativeDirectories = @(
     "Unreal\Plugins\AirSim\Content\Models\Boat",
     "Unreal\Plugins\AirSim\Content\Models\Satellite",
     "Unreal\Plugins\AirSim\Content\VehicleAdv\SUV",
-    "Unreal\Plugins\AirSim\Source\AirLib"
+    "Unreal\Plugins\AirSim\Source\AirLib",
+    "Examples\RadioMapNav\WirelessCityFactory\examples\outputs",
+    "Examples\RadioMapNav\WirelessCityFactory\runtime",
+    "Examples\RadioMapNav\WirelessCityFactory\unreal\WirelessCityFactory\Plugins\AirSim",
+    "Examples\RadioMapNav\WirelessCityFactory\unreal\WirelessCityFactory\Content\AirSim",
+    "Examples\RadioMapNav\WirelessCityFactory\unreal\WirelessCityFactory\Content\WirelessCity"
 )
 
 function ShouldSkipDirectory([System.IO.DirectoryInfo]$directoryInfo) {
-    if ($excludeDirNames -contains $directoryInfo.Name) {
+    if (($excludeDirNames -contains $directoryInfo.Name) -or
+        ($directoryInfo.Name -like ".venv*") -or
+        ($directoryInfo.Name -like "*.egg-info") -or
+        ($directoryInfo.Name -eq ".ruff_cache")) {
         return $true
     }
 

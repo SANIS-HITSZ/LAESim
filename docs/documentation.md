@@ -12,6 +12,7 @@ LAESim 由哈尔滨工业大学（深圳）广东省空天网络与智能感知�
 | 选择配置并启动混合载具场景 | [使用 LAESim](laesim_use.md) |
 | 运行轨道、覆盖、星地和星间任务 | [天基任务桥接](space_mission_bridge.md) |
 | 查看已验证的协同与通信实验 | [仿真案例](simulation_cases.md) |
+| 生成信道地图并执行通信约束导航 | [RadioMapNav](radio_map_nav.md) |
 
 ## 核心组成
 

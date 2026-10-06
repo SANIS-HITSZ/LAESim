@@ -1,0 +1,55 @@
+global:
+  seed: 20260821
+  name: bs_sub6_low_altitude_macro_1km
+  output: examples/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: manhattan
+  building:
+    profile: sub6_urban_macro_context
+    coverage_ratio: 0.25
+    density_per_km2: 180
+  roads:
+    grid_spacing_m: 80
+    width_m: 12
+  base_stations:
+    preset_id: sub6_low_altitude_macro_v1
+    preset_version: 1.0.0
+    source_preset_id: sub6_low_altitude_macro_v1
+    modified_fields: []
+    deployment_profile: sub6_low_altitude_macro_simulation_reference
+    function_type: low_altitude_communication
+    source_evidence_level: A
+    parameter_status: simulation_proxy
+    applicable_scenarios: [regular_urban, low_altitude_route, public_network_enhancement]
+    placement_family: street_grid
+    density_per_km2: 5
+    height_m: 25
+    height_reference: absolute_agl
+    power_dbm: 49
+    carrier_frequency_hz: 3500000000
+    bandwidth_hz: 100000000
+    antenna_model: sector3-tr38901-8x8-dualpol
+    polarization: cross_dual_slant
+    duplex_mode: TDD
+    sensing_enabled: false
+    sensing_waveform_class: null
+    min_separation_m: 350
+    reference_inter_site_distance_m: 500
+    reference_source: "3GPP TR 38.901 UMa几何与项目低空仿真代理值；https://www.3gpp.org/dynareport/38901.htm"
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 8
+  task:
+    altitude_m: 65
+    altitude_range_m: [35, 115]
+radio:
+  enabled: false
+  preset: formal
+  frequency_hz: 3500000000
+  bandwidth_hz: 100000000
+  antenna_model: sector3-tr38901-8x8-dualpol
+  tx_power_dbm: 49
+  downtilt_deg: 8
+ue:
+  enabled: false

@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Wireless City Factory</title>
+  <link rel="stylesheet" href="./styles.css?v=20261003-1">
+</head>
+<body>
+<div id="wcf-app">
+  <header class="app-header">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true"><i data-lucide="building-2"></i></div>
+      <div>
+        <h1>Wireless City Factory</h1>
+        <p>程序化城市与基站配置器</p>
+      </div>
+    </div>
+    <div class="header-actions" aria-label="导出生成结果">
+      <button class="btn btn-quiet download-action" data-file="config.json" disabled><i data-lucide="file-cog"></i><span>配置</span></button>
+      <button class="btn btn-quiet download-action" data-file="scene.json" disabled><i data-lucide="braces"></i><span>场景</span></button>
+      <button class="btn btn-quiet download-action" data-file="base_station_manifest.json" disabled><i data-lucide="radio-tower"></i><span>基站</span></button>
+      <button class="btn btn-quiet download-action" data-file="scene.obj" disabled><i data-lucide="box"></i><span>OBJ</span></button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="inspector" aria-label="生成参数">
+      <div class="tabs" role="tablist" aria-label="参数类型">
+        <button id="city-tab" class="tab is-active" type="button" role="tab" aria-selected="true" aria-controls="city-panel">城市</button>
+        <button id="station-tab" class="tab" type="button" role="tab" aria-selected="false" aria-controls="station-panel">基站</button>
+        <button id="radio-tab" class="tab" type="button" role="tab" aria-selected="false" aria-controls="radio-panel">无线与无人机</button>
+        <button id="task-tab" class="tab" type="button" role="tab" aria-selected="false" aria-controls="task-panel">任务</button>
+        <button id="laesim-tab" class="tab" type="button" role="tab" aria-selected="false" aria-controls="laesim-panel">LAESim</button>
+      </div>
+
+      <form id="generator-form">
+        <section id="city-panel" class="tab-panel" role="tabpanel" aria-labelledby="city-tab">
+          <div class="section-block">
+            <label class="field span-2">城市预设
+              <select id="city-preset"></select>
+            </label>
+            <label class="field">随机种子
+              <input id="seed" type="number" step="1" value="20260821">
+            </label>
+            <label class="field">道路形态
+              <select id="morphology">
+                <option value="manhattan">Manhattan 网格</option>
+                <option value="voronoi">有机不规则街区</option>
+                <option value="bsp_tjunction">BSP / T字路</option>
+                <option value="radial_organic">放射与环路</option>
+              </select>
+            </label>
+          </div>
+
+          <fieldset class="section-block">
+            <legend>场景范围</legend>
+            <label class="field">X尺寸 <span>m</span><input id="size-x" type="number" min="100" max="2000" step="10"></label>
+            <label class="field">Y尺寸 <span>m</span><input id="size-y" type="number" min="100" max="2000" step="10"></label>
+            <label class="field">道路间距 <span>m</span><input id="road-spacing" type="number" min="5" step="1"></label>
+            <label class="field">道路宽度 <span>m</span><input id="road-width" type="number" min="1" step="1"></label>
+            <label class="field">放射道路数<input id="radial-count" type="number" min="2" step="1"></label>
+            <label class="field">环路数量<input id="ring-count" type="number" min="0" step="1"></label>
+          </fieldset>
+
+          <fieldset class="section-block">
+            <legend>建筑分布</legend>
+            <label class="field">占地覆盖率<input id="coverage" type="number" min="0" max="0.95" step="0.01"></label>
+            <label class="field">密度 <span>栋/km²</span><input id="building-density" type="number" min="0" max="1000" step="1"></label>
+            <label class="field span-2">高度分布
+              <select id="height-distribution"><option value="uniform">均匀分布</option><option value="normal">正态分布</option><option value="lognormal">对数正态分布</option></select>
+            </label>
+            <label class="field">最低高度 <span>m</span><input id="height-min" type="number" min="1" step="1"></label>
+            <label class="field">最高高度 <span>m</span><input id="height-max" type="number" min="1" step="1"></label>
+            <label class="field">平均高度 <span>m</span><input id="height-mean" type="number" min="1" step="1"></label>
+            <label class="field">高度标准差 <span>m</span><input id="height-std" type="number" min="0" step="1"></label>
+            <label class="field">最小宽度 <span>m</span><input id="foot-min-x" type="number" min="2" step="1"></label>
+            <label class="field">最小进深 <span>m</span><input id="foot-min-y" type="number" min="2" step="1"></label>
+            <label class="field">最大宽度 <span>m</span><input id="foot-max-x" type="number" min="2" step="1"></label>
+            <label class="field">最大进深 <span>m</span><input id="foot-max-y" type="number" min="2" step="1"></label>
+            <label class="field span-2">建筑间距 <span>m</span><input id="separation" type="number" min="0" step="1"></label>
+          </fieldset>
+        </section>
+
+        <section id="station-panel" class="tab-panel" role="tabpanel" aria-labelledby="station-tab" hidden>
+          <div class="section-block">
+            <label class="field span-2">基站预设
+              <select id="station-preset"></select>
+            </label>
+            <div class="preset-summary span-2">
+              <div class="preset-summary-heading">
+                <span>预设说明</span>
+                <span id="station-evidence-level" class="preset-chip preset-chip-evidence">—</span>
+              </div>
+              <p id="station-preset-description" class="preset-note"></p>
+              <div class="preset-chips" aria-label="预设属性">
+                <span id="station-function-type" class="preset-chip">—</span>
+                <span id="station-parameter-status" class="preset-chip preset-chip-status">—</span>
+              </div>
+              <p id="station-modification-note" class="preset-modification" hidden>
+                已修改：<strong id="station-modified-fields">无</strong>
+              </p>
+              <details class="preset-details">
+                <summary>查看依据与适用范围</summary>
+                <dl id="station-preset-metadata" class="preset-metadata">
+                  <dt>预设编号</dt><dd id="station-preset-id">—</dd>
+                  <dt>适用场景</dt><dd id="station-scenarios">—</dd>
+                  <dt>参考来源</dt><dd id="station-reference-source">—</dd>
+                </dl>
+              </details>
+            </div>
+          </div>
+
+          <fieldset class="section-block">
+            <legend>部署</legend>
+            <label class="field span-2">位置策略
+              <select id="placement-family"><option value="street_grid">道路网格</option><option value="rooftop_grid">规则屋顶</option><option value="random_rooftop">随机屋顶</option></select>
+            </label>
+            <label class="field">站点密度 <span>站/km²</span><input id="station-density" type="number" min="0" max="100" step="1"></label>
+            <label class="field">最小站间距 <span>m</span><input id="station-separation" type="number" min="0" step="10"></label>
+            <label class="field">天线高度 <span>m</span><input id="station-height" type="number" min="1" step="1"></label>
+            <label class="field">高度语义
+              <select id="height-reference"><option value="absolute_agl">绝对离地高度</option><option value="mast_above_rooftop">屋顶以上杆高</option></select>
+            </label>
+            <label class="field">参考站间距 <span>m</span><input id="reference-isd" type="number" min="1" step="1"></label>
+            <label class="field">随机偏移 <span>m</span><input id="random-offset" type="number" min="0" step="1"></label>
+          </fieldset>
+
+          <fieldset class="section-block">
+            <legend>射频与扇区</legend>
+            <label class="field">功率 <span>dBm/sector</span><input id="station-power" type="number" step="1"></label>
+            <label class="field">载波频率 <span>GHz</span><input id="station-frequency" type="number" min="0.1" max="100" step="0.1"></label>
+            <label class="field">信道带宽 <span>MHz</span><input id="station-bandwidth" type="number" min="1" max="1000" step="1"></label>
+            <label class="field">下倾角 <span>°</span><input id="downtilt" type="number" min="-90" max="90" step="1"></label>
+            <label class="field">扇区数量<input id="sector-count" type="number" min="1" max="6" step="1"></label>
+            <label class="field span-2">扇区方位角 <span>用逗号分隔</span><input id="sector-azimuths" type="text" value="0, 120, 240"></label>
+            <label class="field span-2">天线模型
+              <select id="antenna-model"><option value="sector3-tr38901-8x8-dualpol">8×8交叉双极化（128端口）</option><option value="sector3-tr38901-8x4-dualpol">8×4交叉双极化（64端口）</option><option value="sector3-tr38901-ula8">8阵元垂直阵列</option><option value="isotropic">各向同性</option></select>
+            </label>
+          </fieldset>
+        </section>
+
+        <section id="task-panel" class="tab-panel" role="tabpanel" aria-labelledby="task-tab" hidden>
+          <fieldset class="section-block feature-block">
+            <legend>起点与终点</legend>
+            <label class="field span-2">任务点模式
+              <select id="task-point-mode"><option value="auto">自动选择可复现任务点</option><option value="manual">地图点选或坐标输入</option></select>
+            </label>
+            <div id="task-point-controls" class="conditional-controls span-2" aria-disabled="true">
+              <label class="field">起点 X <span>m</span><input id="task-start-x" type="number" min="0" step="0.1"></label>
+              <label class="field">起点 Y <span>m</span><input id="task-start-y" type="number" min="0" step="0.1"></label>
+              <button id="pick-task-start" class="btn" type="button"><i data-lucide="map-pin"></i><span>在地图选起点</span></button>
+              <span></span>
+              <label class="field">终点 X <span>m</span><input id="task-goal-x" type="number" min="0" step="0.1"></label>
+              <label class="field">终点 Y <span>m</span><input id="task-goal-y" type="number" min="0" step="0.1"></label>
+              <button id="pick-task-goal" class="btn" type="button"><i data-lucide="flag"></i><span>在地图选终点</span></button>
+              <p id="task-pick-guidance" class="feature-note" hidden>请在右侧城市地面点击位置。</p>
+            </div>
+            <label class="field span-2">定高飞行高度 <span>m</span><input id="task-altitude" type="number" min="35" max="115" step="1" value="65"></label>
+            <p class="feature-note span-2">自动模式会随城市重新生成任务点；手动模式会把坐标写入运行配置并参与场景指纹。</p>
+          </fieldset>
+
+          <fieldset class="section-block feature-block">
+            <legend>通信硬约束</legend>
+            <label class="field span-2">任务预设<select id="mission-preset"></select></label>
+            <p id="mission-preset-description" class="feature-note span-2"></p>
+            <div id="mission-constraint-controls" class="conditional-controls span-2">
+              <label class="field">最低 SINR <span>dB</span><input id="minimum-sinr" type="number" step="0.5"></label>
+              <label class="field">最低 RSS <span>dBm</span><input id="minimum-rss" type="number" step="1"></label>
+              <label class="field span-2">最大中断比例 <span>首版固定为 0</span><input id="maximum-outage" type="number" min="0" max="0" step="0.01" disabled></label>
+            </div>
+            <p class="feature-note span-2">这些是透明的项目实验预设，不作为 3GPP 业务门限或设备指标。程序不会自动放宽硬约束。</p>
+          </fieldset>
+
+          <fieldset class="section-block feature-block">
+            <legend>运行前检查</legend>
+            <button id="run-preflight" class="btn span-2" type="button" disabled><i data-lucide="shield-check"></i><span>检查任务可执行性</span></button>
+            <div id="preflight-results" class="preflight-results span-2" aria-live="polite"><p>生成无线地图后可检查。</p></div>
+          </fieldset>
+        </section>
+
+        <section id="radio-panel" class="tab-panel" role="tabpanel" aria-labelledby="radio-tab" hidden>
+          <fieldset class="section-block feature-block">
+            <legend>离线无线地图</legend>
+            <label class="feature-switch span-2">
+              <span><strong>启用 Sionna RT</strong><small id="sionna-status">正在检查运行环境…</small></span>
+              <input id="radio-enabled" type="checkbox" role="switch">
+            </label>
+            <div id="radio-controls" class="conditional-controls span-2" aria-disabled="true">
+              <label class="field span-2">计算质量
+                <select id="radio-quality">
+                  <option value="quick">快速预览 · 40 m 网格（仅看趋势）</option>
+                  <option value="balanced">平衡 · 20 m 网格</option>
+                  <option value="detailed">精细 · 10 m 网格</option>
+                </select>
+              </label>
+              <p id="radio-carrier-summary" class="carrier-summary span-2">使用基站配置：4.9 GHz · 100 MHz</p>
+              <label class="field">热力图指标
+                <select id="radio-metric"><option value="rss">最强宽带 RSS</option><option value="sinr">全频复用 SINR</option></select>
+              </label>
+              <label class="field">色标范围
+                <select id="radio-scale-mode"><option value="adaptive">自适应（P5–P95）</option><option value="fixed">固定（便于对比）</option></select>
+              </label>
+              <p class="feature-note span-2">Sionna RT 会根据当前城市、建筑和基站执行离线射线追踪。整张网格始终显示；低于检测门限的区域使用色标最低档，灰色才表示真实数值缺失。</p>
+            </div>
+          </fieldset>
+
+          <fieldset class="section-block feature-block">
+            <legend>虚拟无人机</legend>
+            <label class="feature-switch span-2">
+              <span><strong>显示无人机</strong><small>可独立演示，也可同步 LAESim 真实状态</small></span>
+              <input id="uav-enabled" type="checkbox" role="switch" checked>
+            </label>
+            <div id="uav-controls" class="conditional-controls span-2">
+              <label class="field span-2">轨迹位置 <span id="route-progress-value">0%</span><input id="route-progress" type="range" min="0" max="100" step="1" value="0"></label>
+              <label class="field span-2">演示高度 <span>m</span><input id="uav-altitude" type="number" min="35" max="115" step="1" value="65" disabled></label>
+              <button id="play-route" class="btn span-2" type="button"><i data-lucide="play"></i><span>播放轨迹</span></button>
+              <p class="feature-note span-2">启用无线地图后，无人机移动时会查询当前位置的宽带 RSS、全频复用 SINR 和服务小区。</p>
+            </div>
+          </fieldset>
+        </section>
+
+        <section id="laesim-panel" class="tab-panel" role="tabpanel" aria-labelledby="laesim-tab" hidden>
+          <fieldset class="section-block feature-block">
+            <legend>场景接入</legend>
+            <div class="laesim-scene-status span-2" aria-live="polite">
+              <dl>
+                <dt>当前结果</dt><dd id="laesim-run-id">尚未生成</dd>
+                <dt>导入数据包</dt><dd id="laesim-bundle-status">未就绪</dd>
+                <dt>UE 场景</dt><dd id="laesim-import-status">尚未导入</dd>
+                <dt>一致性</dt><dd id="laesim-match-status">等待检查</dd>
+              </dl>
+            </div>
+            <button id="import-laesim" class="btn span-2" type="button" disabled><i data-lucide="package-check"></i><span>导入或更新 LAESim</span></button>
+            <button id="open-laesim" class="btn span-2" type="button" disabled><i data-lucide="external-link"></i><span>打开 LAESim 场景</span></button>
+            <p class="feature-note span-2">导入前请关闭 Unreal Editor。完成后打开场景并点击播放，再启动实时飞行任务。</p>
+          </fieldset>
+
+          <fieldset class="section-block feature-block">
+            <legend>实时任务</legend>
+            <label class="feature-switch span-2">
+              <span><strong>同步 LAESim</strong><small id="laesim-status">未连接，等待任务启动</small></span>
+              <input id="laesim-sync" type="checkbox" role="switch">
+            </label>
+            <label class="feature-switch span-2">
+              <span><strong>显示信道热力图</strong><small>关闭后保留轨迹、无人机和实时信号读数</small></span>
+              <input id="laesim-radio-visible" type="checkbox" role="switch" checked disabled>
+            </label>
+            <div class="laesim-scene-status span-2" aria-live="polite">
+              <dl>
+                <dt>任务场景</dt><dd id="laesim-live-run">尚无任务</dd>
+                <dt>任务状态</dt><dd id="laesim-task-status">未连接</dd>
+                <dt>约束参数</dt><dd id="laesim-planning-constraint">—</dd>
+                <dt>任务进程</dt><dd id="laesim-process-status">未启动</dd>
+                <dt>任务日志</dt><dd id="laesim-process-output">—</dd>
+              </dl>
+            </div>
+            <div class="mission-actions span-2">
+              <button id="start-laesim-mission" class="btn btn-primary" type="button" disabled><i data-lucide="play"></i><span>执行任务</span></button>
+              <button id="stop-laesim-mission" class="btn btn-danger" type="button" disabled><i data-lucide="square"></i><span>停止任务</span></button>
+            </div>
+            <p id="laesim-guidance" class="mission-guidance span-2" hidden></p>
+            <p class="feature-note span-2">先在 UE 中点击播放，再执行任务。同步只接受当前网页生成的同一运行编号；停止时会先请求无人机悬停并释放控制权。</p>
+          </fieldset>
+        </section>
+
+        <div class="form-footer">
+          <div id="form-status" class="form-status" aria-live="polite">准备生成</div>
+          <button id="generate-button" class="btn btn-primary" type="submit"><i data-lucide="sparkles"></i><span id="generate-label">生成三维城市</span></button>
+        </div>
+      </form>
+    </aside>
+
+    <section class="viewport-shell" aria-label="三维城市视图">
+      <div class="viewport-toolbar">
+        <div class="view-actions">
+          <button id="reset-camera" class="icon-button" type="button" aria-label="重置透视视角" data-tooltip="重置透视视角"><i data-lucide="rotate-ccw"></i></button>
+          <button id="top-camera" class="icon-button" type="button" aria-label="切换俯视视角" data-tooltip="俯视视角"><i data-lucide="map"></i></button>
+        </div>
+        <div class="layer-toggles" aria-label="图层显示">
+          <label><input type="checkbox" data-layer="buildings" checked>建筑</label>
+          <label><input type="checkbox" data-layer="roads" checked>道路</label>
+          <label><input type="checkbox" data-layer="stations" checked>基站</label>
+          <label><input type="checkbox" data-layer="sectors" checked>扇区</label>
+          <label><input type="checkbox" data-layer="tasks" checked>任务</label>
+          <label><input type="checkbox" data-layer="radio" disabled>无线</label>
+          <label><input type="checkbox" data-layer="trajectory" checked>轨迹</label>
+          <label><input type="checkbox" data-layer="uav" checked>无人机</label>
+        </div>
+      </div>
+      <div id="route-comparison-panel" class="route-comparison-panel" hidden aria-live="polite">
+        <div class="route-comparison-heading">
+          <div>
+            <strong>航迹与通信对比</strong>
+            <span>同一场景、起终点与信道地图</span>
+          </div>
+          <span id="route-threshold" class="route-threshold">—</span>
+        </div>
+        <div class="route-comparison-content">
+          <table>
+            <thead>
+              <tr><th>航迹</th><th>距离</th><th>最低 SINR</th><th>平均 SINR</th><th>中断采样</th><th>小区切换</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th><i class="route-swatch baseline"></i>几何基线</th>
+                <td id="route-base-length">—</td><td id="route-base-min-sinr">—</td><td id="route-base-mean-sinr">—</td><td id="route-base-outage">—</td><td id="route-base-handovers">—</td>
+              </tr>
+              <tr>
+                <th><i class="route-swatch connectivity"></i>通信约束</th>
+                <td id="route-rf-length">—</td><td id="route-rf-min-sinr">—</td><td id="route-rf-mean-sinr">—</td><td id="route-rf-outage">—</td><td id="route-rf-handovers">—</td>
+              </tr>
+            </tbody>
+          </table>
+          <p id="route-gain-summary" class="route-gain-summary">—</p>
+        </div>
+      </div>
+      <div id="viewport">
+        <canvas id="city-canvas" aria-label="可旋转缩放的程序化三维城市"></canvas>
+        <div id="loading-state" class="loading-state" hidden><span class="spinner" aria-hidden="true"></span><span>正在生成并验证城市…</span></div>
+        <div class="scene-stats" aria-live="polite">
+          <span><strong id="stat-buildings">—</strong> 建筑</span>
+          <span><strong id="stat-sites">—</strong> 站点</span>
+          <span><strong id="stat-sectors">—</strong> 扇区</span>
+          <span><strong id="stat-coverage">—</strong> 覆盖率</span>
+        </div>
+        <div class="scene-legend" aria-label="地图图例">
+          <span><i class="legend-mark building"></i>建筑</span><span><i class="legend-mark station"></i>基站</span><span><i class="legend-mark start"></i>起点</span><span><i class="legend-mark goal"></i>终点</span><span><i class="legend-mark uav"></i>虚拟无人机</span>
+        </div>
+        <div id="radio-legend" class="radio-map-panel" hidden aria-live="polite">
+          <div class="radio-map-heading"><strong id="radio-legend-label">最强宽带 RSS 信道地图</strong><span id="radio-map-height">—</span></div>
+          <div class="radio-gradient"></div>
+          <div class="radio-scale"><span id="radio-scale-min">−125 dBm</span><span id="radio-scale-mid">−85 dBm</span><span id="radio-scale-max">−45 dBm</span></div>
+          <div id="radio-map-summary" class="radio-map-summary">—</div>
+          <div id="radio-map-carrier" class="radio-map-carrier">—</div>
+        </div>
+        <div id="rf-panel" class="rf-panel card" hidden aria-live="polite">
+          <div class="rf-heading"><strong>当前位置无线观测</strong><span id="rf-backend">Sionna RT 离线地图</span></div>
+          <dl>
+            <dt>位置</dt><dd id="rf-position">—</dd>
+            <dt>最强宽带 RSS</dt><dd id="rf-rsrp">—</dd>
+            <dt>全频复用 SINR</dt><dd id="rf-sinr">—</dd>
+            <dt>服务小区</dt><dd id="rf-cell">—</dd>
+            <dt>连接状态</dt><dd id="rf-outage">—</dd>
+          </dl>
+        </div>
+        <div id="selection-panel" class="selection-panel card" hidden>
+          <div class="selection-heading"><strong id="selection-title">对象</strong><button id="close-selection" class="icon-button" type="button" aria-label="关闭对象信息"><i data-lucide="x"></i></button></div>
+          <dl id="selection-details"></dl>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="./vendor/lucide.min.js"></script>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+<script type="module" src="./app.js?v=20261004-2"></script>
+</body>
+</html>

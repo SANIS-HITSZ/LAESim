@@ -1,5 +1,14 @@
 # Changelog
 
+## V1.6 (2026-10-06)
+
+- 新增 `Examples/RadioMapNav`，解压交付 WirelessCityFactory 源码、配置、文档和原始使用说明。
+- 支持程序化城市及基站部署、Sionna RT 离线信道地图、RSS/SINR 查询和通信约束路径规划。
+- 提供独立 UE 4.27 场景导入、LAESim Python API 实飞、JSONL 日志与网页同步；刷新页面优先恢复当前任务。
+- 完成 RTX 3090 / Sionna RT 2.1.0 的真实地图生成和 UE 飞行验收，结果见 `Examples/RadioMapNav/VERIFICATION.md`。
+- 增加 V1.6 核心验证和 CI，继承 V1.5 检查；可移植源码打包排除新示例的虚拟环境、生成地图和外部插件。
+- 更新版本、软件引用信息及文档发布分支；不改变原有 ns-3 后端。
+
 ## V1.5 (development)
 
 V1.5 以 LAESim V1.4 为基线，保留其空天地海混合载具、SceneMap、Python/ROS 接口、ns-3 runner、项目文档站和 quickstart 实验，并增加：

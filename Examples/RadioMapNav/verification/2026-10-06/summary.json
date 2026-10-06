@@ -1,0 +1,85 @@
+{
+  "contract": "wireless-city-paper-usecase-v1",
+  "evidence_level": "single-run-demonstrator",
+  "run_id": "connectivity_usecase-9608b3f43650",
+  "scene_id": "connectivity_usecase-manhattan-20260824",
+  "task_id": "task-000",
+  "fingerprints": {
+    "config_fingerprint": "9608b3f43650568215ad3f4cd396bd8008c785a3f7435ce450f02cdbf02c016b",
+    "scene_fingerprint": "e639364a256f6c86bce3702268e50ac190bcfd54347f4cfc2ac57fa6c7f79a78",
+    "base_station_fingerprint": "911e02b42f662d25e911ea7ba7abd9a6e2b11451cea95eca655d9b6b38b1fbb0",
+    "radio_fingerprint": "57f730c8f5c0c01f8b6d29e7b72a06ee0b1bf76f6700ee8ace72b4f857325c87"
+  },
+  "setup": {
+    "start_m": [
+      50.0,
+      50.0,
+      65.0
+    ],
+    "goal_m": [
+      350.0,
+      330.0,
+      65.0
+    ],
+    "flight_altitude_m": 65.0,
+    "minimum_sinr_db": 0.0,
+    "maximum_outage_fraction": 0.0,
+    "radio_grid": "12 x 1 x 20 x 20",
+    "frequency_hz": 3500000000.0,
+    "bandwidth_hz": 100000000.0
+  },
+  "routes": {
+    "baseline": {
+      "mode": "baseline",
+      "length_m": 410.85459859935156,
+      "outage_fraction": 0.08459743290548424,
+      "minimum_sinr_db": -3.2508171680438065,
+      "mean_sinr_db": 10.08528306734296,
+      "minimum_serving_rss_dbm": -70.12625304725282,
+      "mean_serving_rss_dbm": -55.99655571968646,
+      "handover_count": 5,
+      "replans": 62,
+      "final_error_m": 0.0,
+      "reached_goal": true
+    },
+    "connectivity": {
+      "mode": "connectivity",
+      "length_m": 476.5327521444349,
+      "outage_fraction": 0.0,
+      "minimum_sinr_db": 0.03690162244972535,
+      "mean_sinr_db": 12.520118554469386,
+      "minimum_serving_rss_dbm": -66.82144027487409,
+      "mean_serving_rss_dbm": -51.09486172344449,
+      "handover_count": 2,
+      "replans": 4,
+      "final_error_m": 0.0,
+      "reached_goal": true
+    }
+  },
+  "comparison": {
+    "distance_change_percent": 15.985741371518625,
+    "minimum_sinr_gain_db": 3.287718790493532,
+    "mean_sinr_change_db": 2.434835487126426,
+    "outage_reduction_percentage_points": 8.459743290548424,
+    "handover_change": -3.0
+  },
+  "execution": {
+    "executed_mode": "connectivity",
+    "baseline_execution": "offline-planning-only",
+    "sample_count": 378,
+    "duration_s": 99.557555,
+    "actual_path_length_m": 476.69790675332086,
+    "collision_sample_count": 0,
+    "terminal_type": "complete",
+    "final_error_m": 0.4439639254877463,
+    "final_position_scene_m": [
+      350.11322021484375,
+      330.1435241699219,
+      65.4045812189579
+    ]
+  },
+  "sources": {
+    "run_dir": "H:\\LAESim\\Examples\\RadioMapNav\\WirelessCityFactory\\examples\\outputs\\connectivity_usecase-9608b3f43650",
+    "mission_log": "H:\\LAESim\\Examples\\RadioMapNav\\WirelessCityFactory\\runtime\\missions\\connectivity_usecase-9608b3f43650-20261006T084855Z.jsonl"
+  }
+}

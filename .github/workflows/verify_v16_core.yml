@@ -1,0 +1,28 @@
+name: V1.6 Core Verification
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.10'
+      - name: Install RadioMapNav CPU test dependencies
+        run: python -m pip install -e './Examples/RadioMapNav/WirelessCityFactory[dev]'
+      - name: Run V1.6 portable verification
+        shell: bash
+        run: |
+          set -o pipefail
+          python NetworkSim/scripts/verify_v16_core.py | tee v16-core-verification.txt
+      - name: Upload verification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v1.6-core-verification-${{ github.run_id }}
+          path: v16-core-verification.txt
