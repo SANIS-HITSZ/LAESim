@@ -1,0 +1,35 @@
+global:
+  seed: 20260821
+  name: city_diverse_1km
+  output: SceneGen/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: manhattan
+  building:
+    profile: overridden_by_city_profile
+    coverage_ratio: 0.25
+    density_per_km2: 180
+  roads:
+    grid_spacing_m: 80
+    width_m: 12
+  base_stations:
+    deployment_profile: custom_city_comparison
+    placement_family: rooftop_grid
+    density_per_km2: 10
+    height_m: 5
+    height_reference: mast_above_rooftop
+    power_dbm: 44
+    min_separation_m: 80
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 0
+  task:
+    altitude_m: 50
+    altitude_range_m: [35, 115]
+  validation:
+    grid_resolution_m: 5
+    minimum_largest_component_fraction: 0.95
+radio:
+  enabled: false
+ue:
+  enabled: false

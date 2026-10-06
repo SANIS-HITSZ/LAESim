@@ -1,1 +1,5 @@
 WirelessCityFactory/runtime/
+WirelessCityFactory/.venv*/
+WirelessCityFactory/examples/outputs/
+WirelessCityFactory/src/
+outputs/

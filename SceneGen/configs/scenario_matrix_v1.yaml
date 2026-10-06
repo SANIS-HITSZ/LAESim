@@ -1,0 +1,60 @@
+schema_version: wireless-city-scenario-matrix-v1
+status: radio_v4_regeneration_required
+decision_date: 2026-09-10
+
+city_set:
+  size_m: [1000, 1000]
+  profiles:
+    - dense_highrise_grid
+    - irregular_midrise
+    - sparse_suburban
+  seeds: [20260821, 20260822, 20260823]
+
+base_station_profiles:
+  uma_reference:
+    config: RadioSim/configs/base_station_profiles/uma_reference_1km.yaml
+    source_label: 3gpp_uma_calibration_reference
+  umi_reference:
+    config: RadioSim/configs/base_station_profiles/umi_reference_1km.yaml
+    source_label: 3gpp_umi_street_canyon_calibration_reference
+
+pairings:
+  - city_profile: dense_highrise_grid
+    base_station_profile: umi_reference
+    rationale: dense_street_level_microcell_baseline
+  - city_profile: irregular_midrise
+    base_station_profile: uma_reference
+    rationale: sparse_macro_coverage_baseline
+  - city_profile: sparse_suburban
+    base_station_profile: uma_reference
+    rationale: low_density_macro_baseline_not_3gpp_rma
+
+radio_map:
+  frequency_hz: 4.9e9
+  bandwidth_hz: 100e6
+  cell_size_m: 2
+  measurement_heights_m: [35, 65, 95, 115]
+  detection_threshold_dbm: -125
+  outage_threshold_db: -6
+  propagation:
+    los: true
+    specular_reflection: true
+    refraction: false
+    diffraction: false
+    diffuse_reflection: false
+  production_sampling_budget:
+    status: invalidated_by_radio_v4_orientation_fix
+    samples_per_logical_sector: 16777216
+    preset: production_v1
+    benchmark_config: SceneGen/configs/radio_sampling_benchmark_umi_2m.yaml
+    benchmark_report: SceneGen/outputs/radio_sampling_benchmark_umi_2m-report.json
+    reference_samples_per_logical_sector: 67108864
+    acceptance_basis:
+      detectable_best_rsrp_p95_abs_error_db: 0.638802
+      detectable_serving_sinr_p95_abs_error_db: 0.584609
+      detectable_serving_cell_agreement: 0.987757
+    full_scale_feasibility:
+      status: complete
+      uma_result: SceneGen/outputs/feasibility_irregular_midrise_uma_1km_2m-2b506541953d
+      umi_result: SceneGen/outputs/feasibility_dense_highrise_umi_1km_2m-65359b205eb8
+      production_set_manifest: SceneGen/outputs/production_radio_set_v1.json

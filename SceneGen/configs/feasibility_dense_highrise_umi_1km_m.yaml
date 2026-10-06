@@ -1,0 +1,50 @@
+global:
+  seed: 20260821
+  name: feasibility_dense_highrise_umi_1km_2m
+  output: SceneGen/outputs
+city:
+  size_m: [1000, 1000]
+  morphology: manhattan
+  building:
+    profile: dense_highrise_grid
+    coverage_ratio: 0.38
+    density_per_km2: 220
+    height_distribution: lognormal
+    height_min_m: 25
+    height_max_m: 140
+    height_mean_m: 55
+    height_std_m: 25
+    footprint_min_m: [12, 12]
+    footprint_max_m: [34, 34]
+    separation_m: 5
+  roads:
+    grid_spacing_m: 90
+    width_m: 18
+    radial_count: 8
+    ring_count: 2
+  base_stations:
+    deployment_profile: 3gpp_umi_street_canyon_calibration_reference
+    placement_family: street_grid
+    density_per_km2: 30
+    height_m: 10
+    height_reference: absolute_agl
+    power_dbm: 44
+    min_separation_m: 150
+    reference_inter_site_distance_m: 200
+    reference_source: "3GPP TR 38.901 v18.0.0, Table 7.2-1 and calibration tables; https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/18.00.00_60/tr_138901v180000p.pdf"
+    sectors: 3
+    sector_azimuths_deg: [0, 120, 240]
+    downtilt_deg: 12
+  task:
+    altitude_m: 65
+    altitude_range_m: [35, 115]
+  validation:
+    grid_resolution_m: 5
+    minimum_largest_component_fraction: 0.95
+radio:
+  enabled: true
+  preset: production_v1
+  tx_power_dbm: 44
+  seed: 20260821
+ue:
+  enabled: false

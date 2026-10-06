@@ -62,6 +62,14 @@ $excludeFileNames = @(
 )
 
 $excludeRelativeDirectories = @(
+    "SceneGen\outputs",
+    "SceneGen\runtime",
+    "RadioSim\outputs",
+    "RadioSim\runtime",
+    "Examples\RadioMapNav\outputs",
+    "Unreal\Environments\SceneGen\Plugins\AirSim",
+    "Unreal\Environments\SceneGen\Content\AirSim",
+    "Unreal\Environments\SceneGen\Content\WirelessCity",
     "external\rpclib",
     "Unreal\Environments\Blocks\Plugins\AirSim",
     "Unreal\Plugins\AirSim\Content\Models\Boat",

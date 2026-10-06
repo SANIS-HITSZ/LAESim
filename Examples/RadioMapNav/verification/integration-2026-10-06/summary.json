@@ -1,0 +1,85 @@
+{
+  "contract": "wireless-city-paper-usecase-v1",
+  "evidence_level": "single-run-demonstrator",
+  "run_id": "connectivity_usecase-14a83bb043c9",
+  "scene_id": "connectivity_usecase-manhattan-20260824",
+  "task_id": "task-000",
+  "fingerprints": {
+    "config_fingerprint": "14a83bb043c944e6c0278f0729a4ec4a437e449a1dd26f0e052a8563b93ae6fc",
+    "scene_fingerprint": "254e35c85a2386c515a5476b8ec71f0660332cbea907ed8958ea87b8138e56a9",
+    "base_station_fingerprint": "eff6bb25b71a4bb001164b61e24b5d6c36a3315f6a3f001896a1e8e63de2e96e",
+    "radio_fingerprint": "61891eb220dc51416449d39050b0fa2e6accb97024a06a64fffc6f87b3a74165"
+  },
+  "setup": {
+    "start_m": [
+      50.0,
+      50.0,
+      65.0
+    ],
+    "goal_m": [
+      350.0,
+      330.0,
+      65.0
+    ],
+    "flight_altitude_m": 65.0,
+    "minimum_sinr_db": 0.0,
+    "maximum_outage_fraction": 0.0,
+    "radio_grid": "12 x 1 x 20 x 20",
+    "frequency_hz": 3500000000.0,
+    "bandwidth_hz": 100000000.0
+  },
+  "routes": {
+    "baseline": {
+      "mode": "baseline",
+      "length_m": 410.85461960874903,
+      "outage_fraction": 0.08459743290548424,
+      "minimum_sinr_db": -3.250823568905068,
+      "mean_sinr_db": 10.085285674828084,
+      "minimum_serving_rss_dbm": -70.12620642102907,
+      "mean_serving_rss_dbm": -55.99655190774596,
+      "handover_count": 5,
+      "replans": 62,
+      "final_error_m": 8.038873388460929e-14,
+      "reached_goal": true
+    },
+    "connectivity": {
+      "mode": "connectivity",
+      "length_m": 476.5327308584501,
+      "outage_fraction": 0.0,
+      "minimum_sinr_db": 0.0369017383382275,
+      "mean_sinr_db": 12.520121985585938,
+      "minimum_serving_rss_dbm": -66.82144027487409,
+      "mean_serving_rss_dbm": -51.09485911528687,
+      "handover_count": 2,
+      "replans": 4,
+      "final_error_m": 0.0,
+      "reached_goal": true
+    }
+  },
+  "comparison": {
+    "distance_change_percent": 15.985730259585607,
+    "minimum_sinr_gain_db": 3.2877253072432953,
+    "mean_sinr_change_db": 2.434836310757854,
+    "outage_reduction_percentage_points": 8.459743290548424,
+    "handover_change": -3.0
+  },
+  "execution": {
+    "executed_mode": "connectivity",
+    "baseline_execution": "offline-planning-only",
+    "sample_count": 378,
+    "duration_s": 99.311269,
+    "actual_path_length_m": 475.4666846760982,
+    "collision_sample_count": 0,
+    "terminal_type": "complete",
+    "final_error_m": 0.44097543207920165,
+    "final_position_scene_m": [
+      350.1066589355469,
+      330.1339416503906,
+      65.40637770295143
+    ]
+  },
+  "sources": {
+    "run_dir": "H:\\LAESim\\Examples\\RadioMapNav\\outputs\\connectivity_usecase-14a83bb043c9",
+    "mission_log": "H:\\LAESim\\SceneGen\\runtime\\missions\\connectivity_usecase-14a83bb043c9-20261006T093055Z.jsonl"
+  }
+}

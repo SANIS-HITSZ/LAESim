@@ -1,0 +1,35 @@
+global:
+  seed: 20260821
+  name: city_only_smoke
+  output: SceneGen/outputs
+city:
+  size_m: [240, 240]
+  morphology: manhattan
+  building:
+    profile: urban
+    coverage_ratio: 0.22
+    density_per_km2: 120
+    height_distribution: lognormal
+    height_min_m: 8
+    height_max_m: 70
+    height_mean_m: 24
+    height_std_m: 10
+    footprint_min_m: [8, 8]
+    footprint_max_m: [20, 20]
+    separation_m: 4
+  roads:
+    grid_spacing_m: 60
+    width_m: 10
+  base_stations:
+    placement_family: rooftop_grid
+    density_per_km2: 12
+    height_m: 30
+    power_dbm: 44
+  task:
+    altitude_m: 50
+    altitude_range_m: [35, 115]
+radio:
+  enabled: false
+ue:
+  enabled: false
+

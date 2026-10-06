@@ -15,6 +15,8 @@ LAESim 基于 Microsoft AirSim 和 Unreal Engine 4.27 扩展，面向无人机�
 
 当前版本为 **`V1.6`**，在 `V1.5` 基础上新增 RadioMapNav：程序化城市、Sionna RT 离线信道地图，以及信道质量约束下的无人机路径规划与 LAESim 飞行示例。
 
+通用场景生成与 UE 导入位于 [SceneGen](SceneGen/README.md)，通用信道地图构建与查询位于 [RadioSim](RadioSim/README.md)；RadioMapNav 作为依赖这些平台能力的应用示例。
+
 ## 核心能力
 
 | 能力 | LAESim V1.6 |
@@ -94,7 +96,9 @@ LAESim 保留两种可切换的通信模式：
 | `ros/` | ROS Noetic 工作空间、消息、服务与示例 |
 | `NetworkSim/` | 可选 ns-3 runner、ROS 网络桥接器和测试 |
 | `Examples/quickstart/` | 异构载具、ns-3 与 GeoTIFF 稳定下视采集实验 |
-| `Examples/RadioMapNav/` | 程序化城市、Sionna RT 信道地图与通信约束导航 demo |
+| `SceneGen/` | 通用程序化场景、统一几何、网页配置与 UE 导入 |
+| `RadioSim/` | Sionna RT 信道地图构建、查询与 LAESim API 桥接 |
+| `Examples/RadioMapNav/` | 依赖平台模块的通信约束导航、飞行与实验结果 |
 | `how_to_use_settings/` | 单载具、混合载具、卫星和 SceneMap 配置模板 |
 | `docs/` | LAESim 中文文档与展示页内容 |
 
@@ -127,13 +131,13 @@ V1.6 继承 V1.5 的验证入口，并新增 RadioMapNav 验收。原有验证�
 仓库提供一个 Windows/Linux 通用的核心验证入口：
 
 ```bash
-python -m pip install -e "./Examples/RadioMapNav/WirelessCityFactory[dev]"
+python -m pip install -e ".[dev]"
 python NetworkSim/scripts/verify_v16_core.py
 ```
 
 命令返回码为 `0` 且最后输出 `V1.6 CORE VERIFICATION: PASS` 时，表示原有可移植源码、配置、quickstart、33 个确定性单元测试和理想通信冒烟测试，以及 RadioMapNav 的 CPU 测试全部通过。页首 `V1.6 Core Verification` 徽章对应此验证入口，Actions 保留完整日志。
 
-RadioMapNav 已在 Windows、RTX 3090、Sionna RT 2.1.0 与 UE 4.27 上完成真实信道地图生成、路径规划、场景导入和 API 飞行：378 个飞行采样点无碰撞、无低于 0 dB SINR 门限的采样点，终点误差约 0.44 米。该 SINR 来自固定 65 米高度的离线地图查询，不是每帧重新射线追踪，也不等同于 ns-3 包级投递验证。配置、对照指标和边界见 [RadioMapNav 验收记录](Examples/RadioMapNav/VERIFICATION.md)。
+RadioMapNav 已在 Windows、RTX 3090、Sionna RT 2.1.0 与 UE 4.27 上完成真实信道地图生成、路径规划、场景导入和 API 飞行：378 个飞行采样点无碰撞、无低于 0 dB SINR 门限的采样点，终点误差约 0.44 米。该 SINR 来自固定 65 米高度的离线地图查询，不是每帧重新射线追踪，也不等同于 ns-3 包级投递验证。配置、对照指标和边界统一见 [RadioMapNav README](Examples/RadioMapNav/README.md#验收结果)。
 
 该绿勾不代表 GitHub 云端启动了 UE、ROS 或真实 ns-3 runner。这些需要外部进程和特定开发环境的链路，应按[WSL2、ROS 与 ns-3](docs/laesim_wsl_ros_ns3.md)和[交付检查清单](docs/space_delivery_checklist.md)运行现场验收；只有得到具体包投递、非零时延、链路转换和 UE 位姿进展证据，才能说明对应的运行时链路 work。
 
@@ -147,7 +151,7 @@ LAESim 基于 [Microsoft AirSim](https://github.com/microsoft/AirSim) 扩展。�
 
 **开发与维护单位：哈尔滨工业大学（深圳）广东省空天网络与智能感知重点实验室**（实验室负责人：张霆廷、梁天豪）
 
-### 项目负责人
+### 项目协调人
 
 平雨奇 · [pingyq@stu.hit.edu.cn](mailto:pingyq@stu.hit.edu.cn)
 
@@ -157,6 +161,9 @@ LAESim 基于 [Microsoft AirSim](https://github.com/microsoft/AirSim) 扩展。�
 | --- | --- |
 | 吴俊炜 | [220210419@stu.hit.edu.cn](mailto:220210419@stu.hit.edu.cn) |
 | 雷光宇 | [guangyulei@stu.hit.edu.cn](mailto:guangyulei@stu.hit.edu.cn) |
+| 李修如 | [m15336370867@163.com](mailto:m15336370867@163.com) |
+
+团队名单与署名原则见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
 
 ## 引用
 

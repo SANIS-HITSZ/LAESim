@@ -403,3 +403,17 @@ PythonClient/docs/_build
 
 # clangd generated folder, for e.g. from VSCode clangd extension
 .cache/
+
+# LAESim optional Python tools and generated scenes
+/.venv*/
+/*.egg-info/
+/SceneGen/outputs/
+/SceneGen/runtime/
+/RadioSim/outputs/
+/RadioSim/runtime/
+/.pytest_cache/
+/.ruff_cache/
+/Unreal/Environments/SceneGen/Plugins/AirSim/
+/Unreal/Environments/SceneGen/Content/AirSim/
+/Unreal/Environments/SceneGen/Content/WirelessCity/
+/Unreal/Environments/SceneGen/*.sln

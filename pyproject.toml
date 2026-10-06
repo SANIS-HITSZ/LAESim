@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "laesim-tools"
+version = "1.6.0"
+description = "LAESim scene generation, UE import, and optional Sionna RT radio maps"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+rt = ["sionna-rt>=2.0,<3"]
+dev = ["pytest>=7.4", "ruff>=0.5"]
+
+[project.scripts]
+laesim-scene = "laesim_scene.cli:main"
+laesim-scene-viewer = "laesim_scene.web_app:main"
+laesim-radio = "laesim_radio.cli:main"
+laesim-radio-nav = "laesim_radio_nav.mission:main"
+
+[tool.setuptools.package-data]
+laesim_scene = ["web/*", "web/vendor/*"]
+
+[tool.setuptools]
+packages = ["laesim_scene", "laesim_radio", "laesim_radio_nav"]
+package-dir = {laesim_scene = "SceneGen/python/laesim_scene", laesim_radio = "RadioSim/python/laesim_radio", laesim_radio_nav = "Examples/RadioMapNav/python/laesim_radio_nav"}
+
+[tool.pytest.ini_options]
+testpaths = ["SceneGen/tests", "RadioSim/tests", "Examples/RadioMapNav/tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
