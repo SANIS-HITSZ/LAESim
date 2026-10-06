@@ -2,38 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/documentation/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/laesim_build/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/laesim_features/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/laesim_use/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/laesim_wsl_ros_ns3/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
+    </url>
+    <url>
+         <loc>https://sanis-hitsz.github.io/LAESim/radio_map_nav/</loc>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/simulation_cases/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/space_delivery_checklist/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
     <url>
          <loc>https://sanis-hitsz.github.io/LAESim/space_mission_bridge/</loc>
-         <lastmod>2026-09-26</lastmod>
+         <lastmod>2026-10-06</lastmod>
     </url>
 </urlset>

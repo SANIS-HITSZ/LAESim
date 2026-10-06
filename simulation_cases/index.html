@@ -34,7 +34,7 @@
           <a href=".." class="icon icon-home"> LAESim 中文文档
         </a>
         <div class="version">
-          V1.5
+          V1.6
         </div><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -117,6 +117,8 @@
     </li>
     </ul>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../radio_map_nav/">信道地图与无人机导航</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">上游参考</span></p>
               <ul>
@@ -129,15 +131,15 @@
               </ul>
               <p class="caption"><span class="caption-text">项目</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5">GitHub 仓库</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.6">GitHub 仓库</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/README.md">团队与联系</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/README.md">团队与联系</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CITATION.cff">引用 LAESim</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/CITATION.cff">引用 LAESim</a>
                   </li>
                   <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/issues">提交问题</a>
                   </li>
-                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/CHANGELOG.md">更新记录</a>
+                  <li class="toctree-l1"><a class="" href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/CHANGELOG.md">更新记录</a>
                   </li>
               </ul>
       </div>
@@ -157,7 +159,7 @@
           <li class="breadcrumb-item">仿真案例</li>
       <li class="breadcrumb-item active">案例概览</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.5/docs/simulation_cases.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/SANIS-HITSZ/LAESim/edit/V1.6/docs/simulation_cases.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -166,7 +168,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="_1">仿真案例<a class="headerlink" href="#_1" title="Permanent link">#</a></h1>
-<p>本页提供四个随 LAESim 仓库交付的可复现实验入口。建议先完成异构载具实验，熟悉 <code>settings.json</code> 和 Python API，再按研究需要进行 ns-3 网络、天基任务或视觉数据采集实验。</p>
+<p>本页提供五个随 LAESim 仓库交付的可复现实验入口。建议先完成异构载具实验，熟悉 <code>settings.json</code> 和 Python API，再按研究需要进行 ns-3 网络、天基任务、视觉数据采集或信道约束导航实验。</p>
 <table>
 <thead>
 <tr>
@@ -201,13 +203,19 @@
 <td>Windows + UE 4.27</td>
 <td>按任务时长</td>
 </tr>
+<tr>
+<td>实验五：<a href="../radio_map_nav/">信道地图与无人机导航</a></td>
+<td>Sionna RT、RSS/SINR、通信约束路径、API 实飞</td>
+<td>Windows + NVIDIA GPU + UE 4.27</td>
+<td>首次配置后数分钟</td>
+</tr>
 </tbody>
 </table>
-<p>入门示例统一维护在 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart"><code>Examples/quickstart</code></a>，包含可直接复制或生成的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见<a href="../space_mission_bridge/">天基任务桥接</a>与<a href="../space_delivery_checklist/">交付检查清单</a>。</p>
+<p>入门示例统一维护在 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.6/Examples/quickstart"><code>Examples/quickstart</code></a>，包含可直接复制或生成的配置、运行脚本、预期结果和排查步骤。天基任务的完整命令和验收矩阵见<a href="../space_mission_bridge/">天基任务桥接</a>与<a href="../space_delivery_checklist/">交付检查清单</a>。</p>
 <h2 id="_2">实验一：无人机、汽车与船异构仿真<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
 <h3 id="_3">目标<a class="headerlink" href="#_3" title="Permanent link">#</a></h3>
 <p>在同一个 <code>AirGround</code> 场景中创建 <code>UAV</code>、<code>Car</code>、<code>Boat</code>，使用各自的 RPC 端口同时发送控制并读取状态。该实验不需要 ROS 或 ns-3。</p>
-<p>核心配置如下，完整文件见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/settings.json"><code>heterogeneous_fleet/settings.json</code></a>：</p>
+<p>核心配置如下，完整文件见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/heterogeneous_fleet/settings.json"><code>heterogeneous_fleet/settings.json</code></a>：</p>
 <pre class="highlight"><code class="language-json">{
   "SimMode": "AirGround",
   "ApiServerPortCar": 41461,
@@ -238,7 +246,7 @@ uav.moveByVelocityAsync(2, 0, 0, duration, vehicle_name="UAV")
 car.setCarControls(airsim.CarControls(throttle=0.55), "Car")
 boat.setBoatControls(airsim.BoatControls(throttle=0.70), "Boat")</code></pre>
 <p>运行约 8 秒后，脚本停止汽车和船并让无人机降落。终端应持续显示无人机局部 NED 坐标、汽车速度、船的纵向/横向速度。</p>
-<p>完整步骤和练习见<a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/README.md">实验一 README</a>，完整代码见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/heterogeneous_fleet/run_experiment.py"><code>run_experiment.py</code></a>。</p>
+<p>完整步骤和练习见<a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/heterogeneous_fleet/README.md">实验一 README</a>，完整代码见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/heterogeneous_fleet/run_experiment.py"><code>run_experiment.py</code></a>。</p>
 <h2 id="laesim-ns-3">实验二：LAESim 节点与 ns-3 通信范围<a class="headerlink" href="#laesim-ns-3" title="Permanent link">#</a></h2>
 <h3 id="_5">目标<a class="headerlink" href="#_5" title="Permanent link">#</a></h3>
 <p>将 <code>settings.json</code> 中的 <code>UAV</code> 和 <code>Car</code> 自动映射为同名 ns-3 节点，通过 ROS 网络桥接器发送消息，并分别复现通信范围内全部交付和范围外全部丢包。</p>
@@ -249,7 +257,7 @@ boat.setBoatControls(airsim.BoatControls(throttle=0.70), "Boat")</code></pre>
          ns-3 Wi-Fi ad hoc + OLSR
                     ↓ DELIVER
           /network_sim/rx/Car</code></pre>
-<p>完整配置见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/ns3_network/settings.json"><code>ns3_network/settings.json</code></a>，关键部分是：</p>
+<p>完整配置见 <a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/ns3_network/settings.json"><code>ns3_network/settings.json</code></a>，关键部分是：</p>
 <pre class="highlight"><code class="language-json">{
   "Vehicles": {
     "UAV": { "VehicleType": "SimpleFlight", "X": 0,  "Y": 0, "Z": -2 },
@@ -295,7 +303,7 @@ python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
 <p>然后将 Windows 活动配置中的 <code>MaxRangeMeters</code> 改为 <code>5.0</code>，重启终端 C 的桥接器，再运行：</p>
 <pre class="highlight"><code class="language-bash">python3 "${HOME}/LAESim/Examples/quickstart/ns3_network/run_experiment.py" \
   --expect dropped</code></pre>
-<p>两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 <code>delivered: 0</code>、<code>dropped: 5</code>。完整步骤和排查见<a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.5/Examples/quickstart/ns3_network/README.md">实验二 README</a>。</p>
+<p>两个出生点相距约 20 米，超过 5 米硬通信范围，因此预期 <code>delivered: 0</code>、<code>dropped: 5</code>。完整步骤和排查见<a href="https://github.com/SANIS-HITSZ/LAESim/blob/V1.6/Examples/quickstart/ns3_network/README.md">实验二 README</a>。</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>普通 <code>/airsim_node/...</code> 话题不会自动经过 ns-3。需要受到时延和丢包影响的业务消息应发布到 <code>/network_sim/tx</code>，接收端订阅 <code>/network_sim/rx/&lt;目标载具名&gt;</code>。</p>
@@ -335,7 +343,7 @@ bash NetworkSim/scripts/run_tle_constellation_demo.sh</code></pre>
 <li>以固定频率关联图像、AirSim GPS、物理真值、状态估计和纳秒时间戳。</li>
 <li>同时保留理想规划轨迹与实际物理轨迹，用于视觉定位、导航和地图匹配算法评估。</li>
 </ul>
-<p>完整工程位于 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.5/Examples/quickstart/nadir_geotiff_collection"><code>Examples/quickstart/nadir_geotiff_collection</code></a>。地图和数据集通常体积较大且可能受授权限制，因此不随仓库分发；用户提供自己的 GeoTIFF。</p>
+<p>完整工程位于 <a href="https://github.com/SANIS-HITSZ/LAESim/tree/V1.6/Examples/quickstart/nadir_geotiff_collection"><code>Examples/quickstart/nadir_geotiff_collection</code></a>。地图和数据集通常体积较大且可能受授权限制，因此不随仓库分发；用户提供自己的 GeoTIFF。</p>
 <h3 id="scenemap">准备 SceneMap<a class="headerlink" href="#scenemap" title="Permanent link">#</a></h3>
 <p>在仓库根目录运行：</p>
 <pre class="highlight"><code class="language-powershell">py -3 -m pip install -r .\Examples\quickstart\nadir_geotiff_collection\requirements.txt
@@ -410,6 +418,7 @@ py -3 .\Examples\quickstart\nadir_geotiff_collection\prepare_scenemap.py `
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../space_delivery_checklist/" class="btn btn-neutral float-left" title="交付检查清单"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../radio_map_nav/" class="btn btn-neutral float-right" title="信道地图与无人机导航">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -439,6 +448,8 @@ py -3 .\Examples\quickstart\nadir_geotiff_collection\prepare_scenemap.py `
     
       <span><a href="../space_delivery_checklist/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../radio_map_nav/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
