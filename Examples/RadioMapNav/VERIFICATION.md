@@ -28,7 +28,7 @@ extracted demo, not copied from the original Word documents.
 | Real Sionna RT map generation | PASS; CUDA computation, not a mock map |
 | Offline baseline and connectivity planning | Both reached the goal |
 | Current AirLib and UE demo compilation | PASS |
-| UE scene import and validator | PASS; all 22 checks true |
+| UE scene import and validator | PASS; all 21 checks true |
 | Actual LAESim mission | Exit code 0; completion record written |
 | Desktop / mobile browser | 1440 x 900 and 390 x 844; nonblank WebGL canvas, no page errors or horizontal overflow |
 
